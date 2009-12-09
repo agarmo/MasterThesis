@@ -1,3 +1,5 @@
 Dette er en test om hvordan en ny branch vil se ut på github.com
 
+Disposisjon kan settes opp på denne måten. Hvordan er det nå når dette blir comittet.
+
 
