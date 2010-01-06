@@ -1,0 +1,15 @@
+Study plan
+
+Temporary problem: How to make the Snake Robot "sense" its environment? How to know where to move?
+
+What do I need to know?
+    - Denavit-Hartenberg Convention
+    - Snake Robot modelling
+    - Snake Motion
+    - How a Laser Scanner works and its application
+    - Computer Vision, Camera analysis, Edge detection etc.
+    - Efficient representation of a 3D world
+
+
+
+
