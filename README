@@ -3,7 +3,7 @@ Master Thesis at Norwegian University of Science and Technology.
 This is the final work at the masters degree in engineering cybernetics at NUST. The work
 is performed at the spring of 2010. 
 
-The thesis is about Simultaneous Location and Mapping (SLAM). The task is to design and
+The thesis is about Simultaneous Localization and Mapping (SLAM). The task is to design and
 implement a SLAM functionality into the snake robot designed by SINTEF. The robot has
 active wheels. The robot has elements which has two degrees of freedom each, meaning that
 they can bend both sideways and up/downwards. This can be used when the robot are
