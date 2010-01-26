@@ -1,0 +1,13 @@
+\begin{thebibliography}{1}
+
+\bibitem{lastname07}
+{\sc Lastname}.
+\newblock {\bf Title}.
+\newblock {\em Journal of Sth}, 2007.
+
+\bibitem{name06}
+{\sc Name}.
+\newblock {\bf Title}.
+\newblock {\em Journal of Sth}, 2006.
+
+\end{thebibliography}
