@@ -3,18 +3,18 @@ Master Thesis at Norwegian University of Science and Technology.
 This is the final work at the masters degree in engineering cybernetics at NUST. The work
 is performed at the spring of 2010. 
 
-The thesis is about Simultaneous Localization and Mapping (SLAM). The task is to design and
-implement a SLAM functionality into the snake robot designed by SINTEF. The robot has
-active wheels. The robot has elements which has two degrees of freedom each, meaning that
-they can bend both sideways and up/downwards. This can be used when the robot are
-operating in confined spaces less than some threshold, dependant on the number of elements
-that the robot has, to climb vertical in the confined space, preferably a pipe, tube or
-other ducts. 
+The work done in this master thesis is mainly focused on the PiKo snake robot developed by
+SINTEF. The robot is equipped with active wheels which can be used when the robot is
+traveling in confined spaces, such as pipes, vents and so forth. The idea of the robot is
+to use it to inspect those places. This wheels also makes it possible for the robot to
+move vertical in shafts given that the shaft is not to wide. 
 
-The snake robot that this master thesis will concern are equipped with a time-of-flight
-camera, and a laser scanner. The goal of the thesis is to make an working implementation
-that solves the SLAM problem. 
+The work performed in this thesis to survey the use of 2D and 3D sensors and fuse these
+sensor measurements to make a good and reliable map of the environments. Secondly this
+data should be represented in a good way. This thesis will also survey the different 
+opportunities and possibilities that are available. 
 
-That is what I think, anyway. 
+Anders Garmo
+28.01.2010
 
 
