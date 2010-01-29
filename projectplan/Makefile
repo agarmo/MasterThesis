@@ -1,9 +1,8 @@
 PDF = pdflatex
 BIBTEX = bibtex
+ 
 
-FLAGS = 
-
-all : 
+all : index.tex
 	$(PDF) index.tex
 
 index.tex : 
