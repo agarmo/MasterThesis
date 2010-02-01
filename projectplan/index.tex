@@ -6,7 +6,7 @@
 \usepackage{fullpage}
 
 
-\title{\begin{huge}\textbf{Project plan}\end{huge} \\ TTK4500: Master Thesis Project }
+\title{\begin{huge}\textbf{Project plan}\end{huge} \\ TTK4900: Master Thesis Project }
 \author{Anders Garmo}
 
 \begin{document}
@@ -22,11 +22,12 @@ last work on the masters degree in Engineering Cybernetics. This document will t
 predict the work flow of the project. 
 
 \section{Product}
-The product of this work will be a master thesis report. There will be some test results
-and possibly some usable code to be implemented on the robot.
+The product of this work will be a master thesis report. Test results from the fusion of
+the sensor data will also be among the results. The project will also generate usable code
+for the testing of the sensors. 
 
 \section{Milestones and Goals}
-Proper milestones for the project is important to ensure a good work flow throughout the
+Proper milestones and goals for the project is important to ensure a good work flow throughout the
 project work. This should reflect the work progress, and maybe include some lesser
 milestones when the planning of the project is more complete.
 
@@ -50,10 +51,19 @@ milestones when the planning of the project is more complete.
 
 \section{Timeline}
 Basically the master thesis work will be performed during 21 weeks of work in the spring
-semester. 
-
-Project start will be January 17th and the submit date is June 13th as stated in the
+semester. The project start will be January 17th and the submit date is June 13th as stated in the
 Master contract. 
+
+
+\section{Meetings}
+There will be meetings with the supervisors once a week. In this meetings the work done in
+the previous week will be talked about and the next weeks work will be discussed.  
+
+
+\subsection{Testing}
+During the implementation phase, tests need to be performed to see how the proposed
+solution performs. This tests will likely be scheduled in late April. There will be a number of
+tests, which will be engineered to sort out the pro's and con's of the sensors. 
 
 
 \section{Milestones}
@@ -65,23 +75,46 @@ Master contract.
     \hline
         \textbf{1}  &   \paragraph{Literature Study} This should map out what is
                         stat-of-the-art now and what are the major research topics.
-                        It should also 
-                                    & February 15 \\
+                        \begin{itemize}
+                            \item Study of 2D sensors 
+                            \item Study of 3D sensors
+                            \item Study of Sensor Fusion techniques.
+                            \item Application of the above in real applications
+                        \end{itemize}
+                                                       
+                                                       & February 15 \\
         \hline
-        \textbf{2}  &   \paragraph{Solution Modelling}  
-                                    
-                                    & Mars 15 \\
+        \textbf{2}  &   \paragraph{Solution Modelling} Find a solution for the problem
+                        at hand. This is the natural extension to the literature study,
+                        and the two milestones will possibly fuse together. 
+                        \begin{itemize}
+                            \item Define the working space of the robot and sensors. 
+                            \item Find possible solutions to the problem. 
+                            \item Representation of the sensor data
+                        \end{itemize}
+                                   
+                                                       & Mars 15 \\
         \hline
-        \textbf{3}  &   \paragraph{Implementation and Testing} 
-
-                                    & May 1 \\
+        \textbf{3}  &   \paragraph{Implementation and Testing} This is probably the most
+                        time consuming period.
+                        \begin{itemize}
+                            \item Implement the sensor fusion strategy.
+                            \item Test the possible performance gain
+                            \item Test the proposed sensor data representation
+                        \end{itemize}
+                                                       & May 15 \\
         \hline
-        \textbf{4}  &   \paragraph{Discussion and Conclusion}
-            
-                                    & June 13 \\
+        \textbf{4}  &   \paragraph{Discussion and Conclusion} Discussion of the test
+                        results. 
+                        \begin{itemize}
+                            \item Discuss the test results
+                            \item Finalize the report
+                        \end{itemize}
+                                                       & June 13 \\
 
     \hline
 \end{tabular}
+
 
 
 \end{document}
