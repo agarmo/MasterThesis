@@ -4,6 +4,7 @@
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage[english]{babel}
 \usepackage{fullpage}
+\usepackage{multirow}
 
 
 \title{\begin{huge}\textbf{Project plan}\end{huge} \\ TTK4900: Master Thesis Project }
@@ -74,55 +75,53 @@ the previous week will be talked about and the next weeks work will be discussed
 
 
 \section{Milestones}
-\begin{tabular}{| c | p{11.5cm} || c |}
+\begin{tabular}{| c | p{10.5cm} || c |}
     \hline
         Milestone   &   Activity    &   Deadline \\
     \hline
     \hline
-        \textbf{1}  &   \paragraph{Literature Study} This should map out what is
-                        stat-of-the-art now and what are the major research topics.
-                        \begin{itemize}
-                            \item Study of 2D sensors 
-                            \item Study of 3D sensors
-                            \item Evaluate pro's and con's of the sensors
-                            \item Study of Sensor Fusion techniques
-                            \item Application of the above in real applications
-                        \end{itemize}
-                                                       & February 15 \\
+        \multirow{6}{*}{\textbf{1}}  &   
+                        \textbf{Literature Study} This should map out what is
+                        stat-of-the-art now and what are the major research topics. & \\
+                        & & \\
+                        & $\bullet$ Study of 2D sensors & February 15 \\ 
+                        & $\bullet$ Study of 3D sensors & February 15 \\ 
+                        & $\bullet$ Evaluate pro's and con's of the sensors & February 15 \\ 
+                        & $\bullet$ Study of Sensor Fusion techniques & February 22 \\
+                        & $\bullet$ Application of the above in real applications & February 22 \\
         \hline
-        \textbf{2}  &   \paragraph{Solution Modelling} Find a solution for the problem
+        \multirow{4}{*}{\textbf{2}}  &   
+                        \textbf{Solution Modelling} Find a solution for the problem
                         at hand. This is the natural extension to the literature study,
-                        and the two milestones will possibly fuse together. 
-                        \begin{itemize}
-                            \item Define the working space of the robot and sensors 
-                            \item Find possible solutions to the problem 
-                            \item Representation of the sensor data
-                        \end{itemize}
-                                                       & Mars 15 \\
+                        and the two milestones will possibly fuse together. & \\
+                        & & \\                        
+                        & $\bullet$ Define the working space of the robot and sensors & Mars 8 \\
+                        & $\bullet$ Find possible solutions to the problem & Mars 8 \\
+                        & $\bullet$ Representation of the sensor data & Mars 15 \\
         \hline
-        \textbf{3}  &   \paragraph{Implementation and Testing} This is probably the most
+        \multirow{8}{*}{\textbf{3}}  & 
+                        \textbf{Implementation and Testing} This is probably the most
                         time consuming period. Testing of the scheme should be scheduled
-                        around the last two weeks of April.
-                        \begin{itemize}
-                            \item Implement some interface with the sensors
-                            \item Implement the sensor fusion strategy
-                            \item Implement some representation of the data
-                            \item Test the possible performance gain
-                            \item Test the proposed sensor data representation
-                        \end{itemize}
-                                                       & May 15 \\
+                        around the last two weeks of April.  & \\
+                        & & \\
+                        & $\bullet$ Implement some interface with the 2D sensor & Mars 22  \\
+                        & $\bullet$ Implement some interface with the 3D sensor & Mars 29 \\
+                        & $\bullet$ Implement the sensor fusion strategy & April 12 \\
+                        & $\bullet$ Implement some representation of the data & April 19 \\
+                        & $\bullet$ Testing of the proposed scheme or recording the necessary data & Week 16 and 17 \\
+                        & $\bullet$ Make changes and retest with recorded data, to get desired
+                        results & May 24 \\
         \hline
-        \textbf{4}  &   \paragraph{Discussion and Conclusion} This is the most important
+        \multirow{6}{*}{\textbf{4}}  &   
+                        \textbf{Discussion and Conclusion} This is the most important
                         aspect of the project, which justifies the time used on the
-                        project.
-                        \begin{itemize}
-                            \item Discuss the test results
-                            \item Identify error conditions and why the results are as
-                                they are
-                            \item Discuss improvements and further work
-                            \item Finalize the report
-                        \end{itemize}
-                                                       & June 13 \\
+                        project. & \\
+                        & &  \\
+                        & $\bullet$ Discuss the test results & June 5 \\
+                        & $\bullet$ Identify error conditions and why the results are as they are &
+                                            June 5 \\
+                        & $\bullet$ Discuss improvements and further work & June 13 \\
+                        & $\bullet$ Finalize the report & June 13 \\
     \hline
 \end{tabular}
 
