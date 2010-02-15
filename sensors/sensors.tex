@@ -1,0 +1,42 @@
+\documentclass[a4paper, 10pt]{article}
+
+\usepackage[utf8x, latin1]{inputenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[english]{babel}
+\usepackage{fullpage}
+\usepackage{multirow}
+
+
+\begin{document}
+
+\section{Possible laser scanners for robot navigations}
+A search on the internet revealed that there was a few sensors which was usually equipped
+for robot navigations.
+
+\begin{itemize}
+    \item SICK USA LMS-100
+    \item SICK USA LMS-200
+    \item Hokuyo UTM-30LX
+    \item Hokuyo URG-04LX-UG01
+    \item Hukoyo URG-04LX
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+    \hline
+    Sensor & Range & Accuracy & FoV & Ang Res & Weight & Scan Freq & Power Cons &  Cost \\
+    \hline
+    LMS-100 & 20 m & 12 mm &  $270^{\circ}$ & $0.25-0.5^{\circ}$  & 1.1 kg    & 50 Hz & Not specified  & \$5500 \\
+    \hline
+    LMS-200 & 80 m & 30 mm &  $180^{\circ}$  & $0.25-1^{\circ}$  & 4.5 kg    & 75 Hz & Not specified &  \$5000 \\
+    \hline
+    UTM-30LX & 30 m & 30 mm & $270^{\circ}$ & $0.25^{\circ}$  & 210 g     & 40 Hz  &$<8$ W   &  \$5000 \\
+    \hline
+    URG-04LX & 4 m & 10 mm & $240^{\circ}$ & $0.36^{\circ}$ & 160 g  & 10 Hz & ca 2.5 W &  \$2400 \\
+    \hline
+    URG-04LX-URG01 & 5.6 m & 30 mm & $240^{\circ}$ & $0.36^{\circ}$ & 160 g & 10 Hz & ca 2.5 W & \$1100 \\
+    \hline
+\end{tabular}
+\end{center}
+
+\end{document}
