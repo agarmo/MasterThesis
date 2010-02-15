@@ -1,4 +1,4 @@
-\documentclass[twoside, a4paper]{report}
+\documentclass[twoside, a4paper]{book}
 
 
 
@@ -19,6 +19,34 @@
 \setlength{\columnsep}{20pt} % space between columns; default 10pt quite narrow
 \usepackage[nottoc]{tocbibind} % correct page numbers for bib in TOC, nottoc suppresses an entry for TOC itself
 %\usepackage{nextpage}
+
+\usepackage[utf8x, latin1]{inputenc}
+
+%:-------------------------- Glossary/Abbrev./Symbols -----------------------
+
+\usepackage[intoc]{nomencl} % load nomencl extension; include in TOC
+%\nomrefpage % to include page numbers after abbrevations
+\renewcommand{\nomname}{Glossary} % rename nomenclature
+\renewcommand{\nomlabel}[1]{\textbf{#1}} % make abbreviations bold
+\makenomenclature % used to be \makeglossary
+\newcommand{\g}{\footnote{For all abbreviations see the glossary on page \pageref{nom}.}} % type "\g" to refer to glossary
+
+% used to be for sorting into categories:
+%\renewcommand\nomgroup[1]{%
+%  \ifthenelse{\equal{#1}{A}}{%
+%   \item[\textbf{Roman Symbols}] }{%             A - Roman
+%    \ifthenelse{\equal{#1}{G}}{%
+%     \item[\textbf{Greek Symbols}]}{%             G - Greek
+%      \ifthenelse{\equal{#1}{R}}{%
+%        \item[\textbf{Superscripts}]}{%              R - Superscripts
+%          \ifthenelse{\equal{#1}{S}}{%
+%           \item[\textbf{Subscripts}]}{{%             S - Subscripts
+%	    \ifthenelse{\equal{#1}{X}}{%
+%	     \item[\textbf{Other Symbols}]}{{%    X - Other Symbols
+%	    \ifthenelse{\equal{#1}{Z}}{%
+%	     \item[\textbf{Acronyms}]}%              Z - Acronyms
+%              			{{}}}}}}}}}}
+
 
 
 %-------Hyperref and graphics ---------------%
@@ -134,43 +162,10 @@
 
 % These macros define an environment for front matter that is always 
 % single column even in a double-column document.
-
 \newenvironment{alwayssingle}{%
        \@restonecolfalse\if@twocolumn\@restonecoltrue\onecolumn
        \else\newpage\fi}
        {\if@restonecol\twocolumn\else\newpage\fi}
-
-%define title page layout
-\renewcommand{\maketitle}{%
-\begin{alwayssingle}
-    \renewcommand{\footnotesize}{\small}
-    \renewcommand{\footnoterule}{\relax}
-    \thispagestyle{empty}
-%  \null\vfill
-  \begin{center}
-    { \Huge {\bfseries {\@title}} \par}
-{\large \vspace*{35mm} {{\@crest} \par} \vspace*{25mm}}
-    {{\Large \@author} \par}
-%	\vspace*{1ex}
-%	{{\@cityofbirth} \par}    
-{\large 
-	\vspace*{1ex}
-    {{\@collegeordept} \par}
-	\vspace*{1ex}
-    {{\@university} \par}
-	\vspace*{25mm}
-    {{\submittedtext} \par}
-	\vspace*{1ex}
-    {\it {\@degree} \par}
-	\vspace*{2ex}
-    {\@degreedate}
-}%end large
-  \end{center}
-  \null\vfill
-\end{alwayssingle}}
-
-% page number for cover back side should have page number blanked
-
 
 %:-------------------------- front matter layout -----------------------
 
@@ -180,7 +175,7 @@
 % own page and is set out in verse format.
 
 \newenvironment{dedication}
-{\begin{alwayssingle}
+{
   \pagestyle{empty}
   \begin{center}
   \vspace*{1.5cm}
@@ -188,7 +183,7 @@
   \end{center}
   \vspace{0.5cm}
   \begin{quote} \begin{center}}
-{\end{center} \end{quote} \end{alwayssingle}}
+{\end{center} \end{quote}}
 
 
 % ACKNOWLEDGEMENTS
@@ -200,14 +195,13 @@
 
 \newenvironment{acknowledgements}
 {\pagestyle{empty}
-\begin{alwayssingle}
 \begin{center}
 \vspace*{1.5cm}
 {\Large \bfseries Acknowledgements}
 \end{center}
 \vspace{0.5cm}
 \begin{quote}}
-{\end{quote}\end{alwayssingle}}
+{\end{quote}}
 
 % The acknowledgementslong environment puts a large, bold, centered 
 % "Acknowledgements" label at the top of the page. The acknowledgement itself 
@@ -215,13 +209,12 @@
 
 \newenvironment{acknowledgementslong}
 {\pagestyle{empty}
-\begin{alwayssingle}
 \begin{center}
 \vspace*{1.5cm}
 {\Large \bfseries Acknowledgements}
 \end{center}
 \vspace{0.5cm}\begin{quote}}
-{\end{quote}\end{alwayssingle}}
+{\end{quote}}
 
 %ABSTRACT
 %
@@ -229,31 +222,31 @@
 %the top of the page. The abstract itself appears in a quote environment,
 %i.e. tabbed in at both sides, and on its own page.
 
-\newenvironment{abstracts} {\begin{alwayssingle} \pagestyle{empty}
+\newenvironment{abstracts} { \pagestyle{empty}
   \begin{center}
   \vspace*{1.5cm}
   {\Large \bfseries  Abstract}
   \end{center}
   \vspace{0.5cm}
    \begin{quote}}
-{\end{quote}\end{alwayssingle}}
+{\end{quote}}
 
 %The abstractlong environment puts a large, bold, centered "Abstract" label at
 %the top of the page. The abstract itself does not appears in a quote
 %environment so you can get more in.
 
-\newenvironment{abstractslong} {\begin{alwayssingle} \pagestyle{empty}
+\newenvironment{abstractslong} { \pagestyle{empty}
   \begin{center}
   \vspace*{1.5cm}
   {\Large \bfseries  Abstract}
   \end{center}
   \vspace{0.5cm} \begin{quote}}
-{\end{quote}\end{alwayssingle}}
+      {\end{quote}}
 
 %The abstractseparate environment is for running of a page with the abstract
 %on including title and author etc as required to be handed in separately
 
-\newenvironment{abstractseparate} {\begin{alwayssingle} \pagestyle{empty}
+\newenvironment{abstractseparate} {\pagestyle{empty}
   \vspace*{-1in}
  \begin{center}
     { \Large {\bfseries {\@title}} \par}
@@ -267,18 +260,18 @@
 \vspace*{2ex}
     {\@degreedate}}
   \end{center}}
-{\end{alwayssingle}}
+{}
 
 %Statement of originality if required
 
-\newenvironment{declaration} {\begin{alwayssingle} \pagestyle{empty}
+\newenvironment{declaration} { \pagestyle{empty}
   \begin{center}
   \vspace*{1.5cm}
   {\Large \bfseries  Declaration}
   \end{center}
   \vspace{0.5cm}
    \begin{quote}}
-{\end{quote}\end{alwayssingle}}
+{\end{quote}}
 
 
 %:-------------------------- page numbers: roman+arabic -----------------------
@@ -298,10 +291,204 @@
 {\newpage\renewcommand{\thepage}{\arabic{page}}\setcounter{page}{1}}
 
 
+%: ----------------------------------------------------------------------
+%:                  TITLE PAGE: name, degree,..
+% ----------------------------------------------------------------------
+% below is to generate the title page with crest and author name
+
+%if output to PDF then put the following in PDF header
+%\pdfinfo { /Title  (Master Thesis)
+%               /Creator (Tex)
+%               /Producer (pdfTeX)
+%               /Author (Anders Garmo)
+%               /CreationDate (Monday:20100617000000)  %format D:YYYYMMDDhhmmss
+%               /ModDate (D:YYYYMMDDhhmm)
+%               /Subject (xyz)
+%               /Keywords (add, your, keywords, here) }
+%\pdfcatalog { /PageMode (/UseOutlines)
+%                  /OpenAction (fitbh)  }
+
+
+\title{3D/2D Sensor Fusion}
+
+
+
+\author{Anders Garmo}
+
+\collegeordept{Institute of Cybernetics}
+\university{Norwegian University of Sience and Technology}
+
+% The crest is a graphics file of the logo of your research institution.
+% Place it in ./0_frontmatter/figures and specify the width
+
+%\crest{\includegraphics[width=4cm]{logo.png}}
+  
+\degree{MSc}
+\degreedate{2010 06}
+
+
+% ----------------------------------------------------------------------
+       
+% turn of those nasty overfull and underfull hboxes
+\hbadness=10000
+\hfuzz=50pt
+
+
+%: --------------------------------------------------------------
+%:                  FRONT MATTER: dedications, abstract,..
+% --------------------------------------------------------------
 
 \begin{document}
 
-\section{TEST}
+%: ----------------------- generate cover page ------------------------
+
+\maketitle  % command to print the title page with above variables
+
+
+%: ----------------------- tie in front matter ------------------------
+
+\begin{abstracts}
+    The abstract needs to be very good. This is what defines what is done and how it went.
+\end{abstracts}
+
+\frontmatter
+
+\begin{acknowledgements}
+    This is where i thank people. The teatchers and professors at my university and my
+    girlfriend and family for supporting me.
+\end{acknowledgements}
+
+
+
+%: ----------------------- contents ------------------------
+
+\setcounter{secnumdepth}{3} % organisational level that receives a numbers
+\setcounter{tocdepth}{3}    % print table of contents for level 3
+\tableofcontents            % print the table of contents
+% levels are: 0 - chapter, 1 - section, 2 - subsection, 3 - subsection
+
+
+%: ----------------------- list of figures/tables ------------------------
+
+%\listoffigures	% print list of figures
+
+
+
+%: ----------------------- glossary ------------------------
+
+% Tie in external source file for definitions: /0_frontmatter/glossary.tex
+% Glossary entries can also be defined in the main text. See glossary.tex
+
+\include{glossary}
+
+\begin{multicols}{2} % \begin{multicols}{#columns}[header text][space]
+\begin{footnotesize} % scriptsize(7) < footnotesize(8) < small (9) < normal (10)
+
+\printnomenclature[1.5cm] % [] = distance between entry and description
+\label{nom} % target name for links to glossary
+
+\end{footnotesize}
+\end{multicols}
+
+
+
+%: --------------------------------------------------------------
+%:                  MAIN DOCUMENT SECTION
+% --------------------------------------------------------------
+
+% the main text starts here with the introduction, 1st chapter,...
+\mainmatter
+
+%\renewcommand{\chaptername}{} % uncomment to print only "1" not "Chapter 1"
+
+
+%: ----------------------- subdocuments ------------------------
+
+% Parts of the thesis are included below. Rename the files as required.
+% But take care that the paths match. You can also change the order of appearance by moving the include commands.
+
+\include{chap1-introduction}
+
+
+\include{chap2-background}
+
+
+\include{chap3-sensors}
+
+
+\include{chap4-sensorfusion}
+
+
+\include{chap5-representation}
+
+
+\include{chap6-implementation}
+
+
+\include{chap7-testresults}
+
+
+\include{chap8-discussion}
+
+
+\include{chap9-conclusions}
+
+
+
+
+
+%\language{english}
+
+% sets line spacing
+\renewcommand\baselinestretch{1.2}
+\baselineskip=18pt plus1pt
+
+
+
+% --------------------------------------------------------------
+%:                  BACK MATTER: appendices, refs,..
+% --------------------------------------------------------------
+
+% the back matter: appendix and references close the thesis
+
+
+%: ----------------------- bibliography ------------------------
+
+% The section below defines how references are listed and formatted
+% The default below is 2 columns, small font, complete author names.
+% Entries are also linked back to the page number in the text and to external URL if provided in the BibTex file.
+
+
+% PhDbiblio-url2 = names small caps, title bold & hyperlinked, link to page 
+\begin{multicols}{2} % \begin{multicols}{ # columns}[ header text][ space]
+\begin{tiny} % tiny(5) < scriptsize(7) < footnotesize(8) < small (9)
+
+\bibliographystyle{plain} % Title is link if provided
+\renewcommand{\bibname}{References} % changes the header; default: Bibliography
+
+\bibliography{references} % adjust this to fit your BibTex file
+
+\end{tiny}
+\end{multicols}
+
+% --------------------------------------------------------------
+% Various bibliography styles exit. Replace above style as desired.
+
+% in-text refs: (1) (1; 2)
+% ref list: alphabetical; author(s) in small caps; initials last name; page(s)
+%\bibliographystyle{Latex/Classes/PhDbiblio-case} % title forced lower case
+%\bibliographystyle{Latex/Classes/PhDbiblio-bold} % title as in bibtex but bold
+%\bibliographystyle{Latex/Classes/PhDbiblio-url} % bold + www link if provided
+
+%\bibliographystyle{Latex/Classes/jmb} % calls style file jmb.bst
+% in-text refs: author (year) without brackets
+% ref list: alphabetical; author(s) in normal font; last name, initials; page(s)
+
+%\bibliographystyle{plainnat} % calls style file plainnat.bst
+% in-text refs: author (year) without brackets
+% (this works with package natbib)
+
+
 \end{document}
 
 

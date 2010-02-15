@@ -1,54 +1,129 @@
 \documentclass[a4paper, 10pt]{article}
 
-\usepackage[utf8x]{inputenc}
+\usepackage[utf8x, latin1]{inputenc}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage[english]{babel}
+\usepackage{fullpage}
+\usepackage{multirow}
 
 
-\title{Project Plan Master Thesis}
+\title{\begin{huge}\textbf{Project plan}\end{huge} \\ TTK4900: Master Thesis Project }
 \author{Anders Garmo}
 
 \begin{document}
 
-
 \maketitle
 
+\newpage
 
 \section{Introduction}
 The \emph{Master Thesis} at the Norwegian University of Science and Technology are the
-last work on the masters degree in Engineering Cybernetics. This is the project plan for
-the work which I'm going to do the spring semester at NUST. 
+last work on the masters degree in Engineering Cybernetics. This document will try to
+predict the work flow of the project. 
 
 \section{Product}
-The product of my work this semester is a report, and possibly a working program which
-will help for further development of the snake robot. 
-
+The product of this work will be a master thesis report. Test results from the fusion of
+the sensor data will also be among the results. The project will also generate usable code
+for the testing of the sensors. 
 
 \section{Milestones and Goals}
-Proper milestones for the project is important to ensure a good work flow throughout the
-project work. This should reflect the work progress, and maybe include some lesser
-milestones when the planning of the project is more complete.
+Proper milestones and goals for the project are important to ensure a good work flow throughout the
+project work. The goals are shown below. This is how I see how the project should evolve. 
 
 \begin{enumerate}
     \item Literature study
-    \item Modelling and solution plotting
         \begin{enumerate}
-            \item Find solution
-            \item Model solution
+            \item Sensor study
+            \item 3D/2D sensor fusion
+            \item Representation of the sensor data
         \end{enumerate}
-    \item Implementation of the solution
-    \item Testing of the solution
-    \item Finalize the solution
+    \item Find possible solutions
+        \begin{enumerate}
+            \item Sketch integration of the sensors
+            \item Find a sensor fusion approach
+        \end{enumerate}
+    \item Implementing the solutions and testing
+        \begin{enumerate}
+            \item Interface the sensors to control unit
+            \item Implement a senor fusion algorithm
+            \item Test the sensor fusion approach and gather data
+        \end{enumerate}
+    \item Discussion of the test results
+        \begin{enumerate}
+            \item Analyze the test results
+            \item Identify possible error conditions
+            \item Discuss performance of sensor fusion
+        \end{enumerate}
+    \item Final conclusions
 \end{enumerate}
-
 
 
 \section{Timeline}
 Basically the master thesis work will be performed during 21 weeks of work in the spring
-semester. 
-
-Project start will be January 17th and the submit date is June 13th as stated in the
+semester. The project start will be January 17th and the submit date is June 13th as stated in the
 Master contract. 
+
+\subsection{Testing}
+During the implementation phase, tests need to be performed to see how the proposed
+solution performs. This tests will likely be scheduled the last two weeks of April. There will be a number of
+tests, which will be engineered to sort out the pro's and con's of the sensors. 
+
+
+\section{Meetings}
+There will be meetings with the supervisors once a week. In this meetings the work done in
+the previous week will be talked about and the next weeks work will be discussed.  
+
+
+\section{Milestones}
+\begin{tabular}{| c | p{10.5cm} || c |}
+    \hline
+        Milestone   &   Activity    &   Deadline \\
+    \hline
+    \hline
+        \multirow{6}{*}{\textbf{1}}  &   
+                        \textbf{Literature Study} This should map out what is
+                        stat-of-the-art now and what are the major research topics. & \\
+                        & & \\
+                        & $\bullet$ Study of 2D sensors & February 15 \\ 
+                        & $\bullet$ Study of 3D sensors & February 15 \\ 
+                        & $\bullet$ Evaluate pro's and con's of the sensors & February 15 \\ 
+                        & $\bullet$ Study of Sensor Fusion techniques & February 22 \\
+                        & $\bullet$ Application of the above in real applications & February 22 \\
+        \hline
+        \multirow{4}{*}{\textbf{2}}  &   
+                        \textbf{Solution Modelling} Find a solution for the problem
+                        at hand. This is the natural extension to the literature study,
+                        and the two milestones will possibly fuse together. & \\
+                        & & \\                        
+                        & $\bullet$ Define the working space of the robot and sensors & Mars 8 \\
+                        & $\bullet$ Find possible solutions to the problem & Mars 8 \\
+                        & $\bullet$ Representation of the sensor data & Mars 15 \\
+        \hline
+        \multirow{8}{*}{\textbf{3}}  & 
+                        \textbf{Implementation and Testing} This is probably the most
+                        time consuming period. Testing of the scheme should be scheduled
+                        around the last two weeks of April.  & \\
+                        & & \\
+                        & $\bullet$ Implement some interface with the 2D sensor & Mars 22  \\
+                        & $\bullet$ Implement some interface with the 3D sensor & Mars 29 \\
+                        & $\bullet$ Implement the sensor fusion strategy & April 12 \\
+                        & $\bullet$ Implement some representation of the data & April 26 \\
+                        & $\bullet$ Testing of the proposed scheme or recording the necessary data & Week 16 and 17 \\
+                        & $\bullet$ Make changes and retest with recorded data, to get desired
+                        results & May 24 \\
+        \hline
+        \multirow{6}{*}{\textbf{4}}  &   
+                        \textbf{Discussion and Conclusion} This is the most important
+                        aspect of the project, which justifies the time used on the
+                        project. & \\
+                        & &  \\
+                        & $\bullet$ Discuss the test results & June 5 \\
+                        & $\bullet$ Identify error conditions and why the results are as they are &
+                                            June 5 \\
+                        & $\bullet$ Discuss improvements and further work & June 13 \\
+                        & $\bullet$ Finalize the report & June 13 \\
+    \hline
+\end{tabular}
 
 \end{document}
 

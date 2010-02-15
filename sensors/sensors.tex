@@ -1,0 +1,63 @@
+\documentclass[a4paper, 10pt]{article}
+
+\usepackage[utf8x, latin1]{inputenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[english]{babel}
+\usepackage{fullpage}
+\usepackage{multirow}
+
+
+\begin{document}
+
+\section{Possible laser scanners for robot navigations}
+A search on the internet revealed that there was a few sensors which was usually equipped
+for robot navigations.
+
+\begin{itemize}
+    \item SICK USA LMS-100
+    \item SICK USA LMS-200
+    \item Hokuyo UTM-30LX
+    \item Hokuyo URG-04LX-UG01
+    \item Hukoyo URG-04LX
+\end{itemize}
+
+The sensors are given in the table below. Included is also the Time-of-Flight camera
+SR3000, for comparison.
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+    \hline
+    Sensor & Range & Accuracy & FoV & Ang Res & Weight & Scan Freq & Power Cons &  Cost \\
+    \hline
+    LMS-100 & 20 m & 12 mm &  $270^{\circ}$ & $0.25-0.5^{\circ}$  & 1.1 kg    & 50 Hz & Not specified  & \$5500 \\
+    \hline
+    LMS-200 & 80 m & 30 mm &  $180^{\circ}$  & $0.25-1^{\circ}$  & 4.5 kg    & 75 Hz & Not specified &  \$5000 \\
+    \hline
+    UTM-30LX & 30 m & 30 mm & $270^{\circ}$ & $0.25^{\circ}$  & 210 g     & 40 Hz  &$<8$ W   &  \$5000 \\
+    \hline
+    URG-04LX & 4 m & 10 mm & $240^{\circ}$ & $0.36^{\circ}$ & 160 g  & 10 Hz & ca 2.5 W &  \$2400 \\
+    \hline
+    URG-04LX-URG01 & 5.6 m & 30 mm & $240^{\circ}$ & $0.36^{\circ}$ & 160 g & 10 Hz & ca 2.5 W & \$1100 \\
+    \hline
+    SR3000-ToF Camera & 7.5 m & 30 mm & $47.5$ x $ 39.6 ^\circ$ & 176 x 144 & -  & 25
+    fps & 18 W max & \$10000 \\
+    \hline
+\end{tabular}
+\end{center}
+
+\section{Data Outputs}
+The data output form the Time-of-Flight camera are Cartesian coordinates in $x,y,z$, and
+intensity.
+
+The laser scanner sensors Hokuyo URG-04LX and Hokuyo URG-04LX-URG01 samples the circle in 10 bits. 
+This means that the angular step size given by 
+\begin{equation}
+    \phi = \frac{360^\circ}{2^{10}} \approx 0.36^\circ
+\end{equation}
+The output consists of this sample number and the range which is reported at that sample. 
+Since not the full circle is not possible to measure, the step numbers are ranged from 0 to
+768, where 0, 384 and 768 implies $-135^\circ$, $0^\circ$ and $135^\circ$ where the front
+direction is the reference point. But because of of the field of view of the sensors are
+just $240^\circ$ the actual measurable area are from step numbers 44 to 725.
+
+
+\end{document}
