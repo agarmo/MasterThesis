@@ -15,7 +15,7 @@ making.
 
 \subsection{Distance Measurement Principles}
 There are several ways to measure distance. Most principles measures the distance
-indirectly, i.e. the distance is calculated using the travel time of either light- or
+indirectly, i.e. by processing the reflected signal of either light-, radio- or
 sound waves. Laser range finders (LRFs) and sonar are examples of this way to measure
 distance. 
 
@@ -24,11 +24,26 @@ When looking at Laser Range Finder, there are 3 techniques for determining the d
 continuous wave} (FMCW). \cite{laser-ranging-critical-review}
 
 \subsubsection{Optical Triangulation}
+Optical triangulation is performed by using a light source and a placed at known distance
+from each other. This distance is called the baseline. This is a triangulation setup which
+allows for the calculation of the intersection point between the lines. 
 
+\begin{figure}[htbp]
+    \caption{Optical Triangulation setup}
+    \label{fig:optical-triangulation}
+\end{figure}
+***Lag figur***
+
+This method has some fundamental limits. \cite{laser-ranging-critical-review} 
+
+This technique is mostly used when the measured distance is short and the need for
+extremely precise measurements. For example digitalization of 3D objects.
 
 
 \subsubsection{Pulsed Time-of-Flight}
-
+The laser light which is emitted are amplitude modulated, and the received signal is
+compared to the emitted signal and the phase delay is measured. This is then directly
+proportional to the distance the light traveled. 
 
 
 \subsubsection{Frequency Modulated Continuous Wave}
