@@ -14,6 +14,6 @@ thesis.aux:
 	$(PDF) thesis.tex
 
 clean:
-	rm *.aux *.toc *.log *.pdf *.glo *.nlo *.out *.blg *.brf *.lot *.lof
+	rm -f *.aux *.toc *.log *.pdf *.glo *.nlo *.out *.blg *.brf *.lot *.lof
 
 
