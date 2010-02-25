@@ -83,6 +83,15 @@ developed by Elfes and Moravec in the mid 1980s, \cite{elfes}, \cite{moravec}.
 
 
 \subsubsection{Topological Maps}
+Topological maps represents the sensed world in the form of predefined nodes and links
+between them. Each node has a set of attributes, like length, links to doors etc. This is
+a compact way to express the world and is much more computationally effective with larger
+maps than the occupancy grid maps might be.
+
+The problem with this representation is that it needs a lot of input a priori. The
+operator creates and inputs the map to the robot, which uses this map for navigation. The
+largest challenge with this is to make the robot aware of where it is. It needs in some
+way to recognize its surroundings, and match it to the a priori map.
 
 
 \subsubsection{Hybrid Approaches}
