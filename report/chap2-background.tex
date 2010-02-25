@@ -13,17 +13,16 @@ making.
 \section{State-of-the-Art Literature study}
 
 
-\subsection{Distance Measurement Principles}
-There are several ways to measure distance. Most principles measures the distance
-indirectly, i.e. by processing the reflected signal of either light-, radio- or
-sound waves. Laser range finders (LRFs) and sonar are examples of this way to measure
-distance. 
+\subsection{2D Sensors}
+
+\subsubsection{Laser Range Finders}
+
 
 When looking at Laser Range Finder, there are 3 techniques for determining the distance,
 \emph{optical triangulation}, \emph{pulse Time-of-Flight} and \emph{frequency modulated
 continuous wave} (FMCW). \cite{laser-ranging-critical-review}
 
-\subsubsection{Optical Triangulation}
+\paragraph{Optical Triangulation}
 Optical triangulation is performed by using a light source and a placed at known distance
 from each other. This distance is called the baseline. This is a triangulation setup which
 allows for the calculation of the intersection point between the lines. 
@@ -40,26 +39,25 @@ This technique is mostly used when the measured distance is short and the need f
 extremely precise measurements. For example digitalization of 3D objects.
 
 
-\subsubsection{Pulsed Time-of-Flight}
+\paragraph{Pulsed Time-of-Flight}
 The laser light which is emitted are amplitude modulated, and the received signal is
 compared to the emitted signal and the phase delay is measured. This is then directly
 proportional to the distance the light traveled. 
 
 
-\subsubsection{Frequency Modulated Continuous Wave}
+\paragraph{Frequency Modulated Continuous Wave}
 
 
 
-\subsection{2D/3D Sensors}
-
-
-
-\subsubsection{Laser Range Finders}
-
-
+\subsection{3D Sensors}
 
 
 \subsubsection{Time-of-Flight Cameras}
+
+
+
+
+\subsubsection{Stereo Vision}
 
 
 
@@ -77,21 +75,31 @@ sections.
 
 \subsubsection{Occupancy Grid Maps}
 Occupancy grid maps are widely used in robotic mapping, mostly because of it is simple to
-implement and use. This method assumes that the robots pose is known. This method was
-developed by Elfes and Moravec in the mid 1980s, \cite{elfes}, \cite{moravec}.
+implement and use. It was developed by Elfes and Moravec in the mid 1980s, \cite{elfes}, 
+\cite{moravec}. The methrod is quite robust and it is simple to implement with many
+kinds of sensors. This method assumes that the robots pose is known.
+
+This method divides the world into grids with probabilities that the grid is occupied. It
+starts with all grids at 50 \%, equal probability that the space is occupied or not. As
+the robot moves around it updates the grids according to its sensor readings. When for
+example employing laser range finders, the grid at the distance reported from the range
+finder are marked as occupied according to some uncertainty set by the accuracy of the
+range finder. The grids between the possible detected obstacle will then be decreased
+because the probability of obstacles are less. 
 
 
 
 \subsubsection{Topological Maps}
-Topological maps represents the sensed world in the form of predefined nodes and links
+Topological maps or object maps represents the sensed world in the form of predefined nodes and links
 between them. Each node has a set of attributes, like length, links to doors etc. This is
 a compact way to express the world and is much more computationally effective with larger
-maps than the occupancy grid maps might be.
+maps than the occupancy grid maps might be. Examples of such nodes are corridors,
+junctions and dead ends, but this nodes must be suited to the application of the robot. 
 
 The problem with this representation is that it needs a lot of input a priori. The
 operator creates and inputs the map to the robot, which uses this map for navigation. The
 largest challenge with this is to make the robot aware of where it is. It needs in some
-way to recognize its surroundings, and match it to the a priori map.
+way to recognize its surroundings, and match it to the \'a priori map.
 
 
 \subsubsection{Hybrid Approaches}
