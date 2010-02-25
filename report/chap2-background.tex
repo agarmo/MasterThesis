@@ -53,7 +53,8 @@ proportional to the distance the light traveled.
 
 
 \subsubsection{Time-of-Flight Cameras}
-
+This type of range devices are a relatively new development. Most time-of-flight cameras
+are able to capture 3D information in real time.
 
 
 
@@ -70,14 +71,28 @@ representation. There are a number of representations that are tried out, and ea
 bad abilities. 
 
 The major representation methods which is used in literature are summarized in the below
-sections.
+sections. There are two major ideas when it comes to map representation, and that is
+metric and topological.
+
+Metric representation uses the sensor data as we see it. It is the direct Cartesian
+representation of the way the world is. Examples of this are CAD drawings of floor plans
+and housing. This maps are often large and inexact, because of many kinds of
+uncertainties.
+
+Topological representations uses a more abstract way. The world are represented by graphs,
+which is nodes and links between them. This are a sparse and efficient way of representing
+the world, but need more processing when the map is built. This kind of maps are not
+exact, because they are not expected to be. They simply describe the connection between
+different kind of objects, and all objects might have attributes describing how it really
+looks. 
 
 
 \subsubsection{Occupancy Grid Maps}
-Occupancy grid maps are widely used in robotic mapping, mostly because of it is simple to
-implement and use. It was developed by Elfes and Moravec in the mid 1980s, \cite{elfes}, 
-\cite{moravec}. The methrod is quite robust and it is simple to implement with many
-kinds of sensors. This method assumes that the robots pose is known.
+Occupancy grid maps are a metric approach to the mapping problem and are widely used in 
+robotic mapping, mostly because of it is simple to implement and use. It was developed 
+by Elfes and Moravec in the mid 1980s, \cite{elfes}, \cite{moravec}. The method is quite 
+robust and it is simple to implement with many kinds of sensors. This method assumes that 
+the robots pose is known.
 
 This method divides the world into grids with probabilities that the grid is occupied. It
 starts with all grids at 50 \%, equal probability that the space is occupied or not. As
@@ -86,6 +101,11 @@ example employing laser range finders, the grid at the distance reported from th
 finder are marked as occupied according to some uncertainty set by the accuracy of the
 range finder. The grids between the possible detected obstacle will then be decreased
 because the probability of obstacles are less. 
+
+Occupancy maps are not the most computationally effective way to represent the world,
+especially when it is big. It is cumbersome and may lead to problems when dealing with
+cyclic environments. This because of the uncertainty in the sensor measurements and robots
+pose and odometry. 
 
 
 
