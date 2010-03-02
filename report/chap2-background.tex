@@ -88,7 +88,9 @@ which is nodes and links between them. This are a sparse and efficient way of re
 the world, but need more processing when the map is built. This kind of maps are not
 exact, because they are not expected to be. They simply describe the connection between
 different kind of objects, and all objects might have attributes describing how it really
-looks. 
+looks. This method is useful in highly structured environments, such as pipelines, sewers,
+and office landscapes. This because a series of junctions might tell you where you are
+than just the metric information, which might be quite erroneous. 
 
 
 \subsubsection{Occupancy Grid Maps}
@@ -120,7 +122,7 @@ a compact way to express the world and is much more computationally effective wi
 maps than the occupancy grid maps might be. Examples of such nodes are corridors,
 junctions and dead ends, but this nodes must be suited to the application of the robot. 
 
-The problem with this representation is that it needs a lot of input a priori. The
+The problem with this representation is that it needs a lot of input \'a priori. The
 operator creates and inputs the map to the robot, which uses this map for navigation. The
 largest challenge with this is to make the robot aware of where it is. It needs in some
 way to recognize its surroundings, and match it to the \'a priori map.
