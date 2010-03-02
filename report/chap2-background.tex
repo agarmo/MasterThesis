@@ -116,7 +116,7 @@ pose and odometry.
 
 
 \subsubsection{Topological Maps}
-Topological maps or object maps represents the sensed world in the form of predefined nodes and links
+Object maps are topological maps and represents the sensed world in the form of predefined nodes and links
 between them. Each node has a set of attributes, like length, links to doors etc. This is
 a compact way to express the world and is much more computationally effective with larger
 maps than the occupancy grid maps might be. Examples of such nodes are corridors,
@@ -128,9 +128,19 @@ largest challenge with this is to make the robot aware of where it is. It needs 
 way to recognize its surroundings, and match it to the \'a priori map.
 
 
-\subsubsection{Hybrid Approaches}
+\subsubsection{Mixed Approaches}
+This is when you take the best of both worlds. The easy and effective way of the metric
+maps, and mix them with the abstract topological maps. This will help reduce the size of
+the maps in the robots memory, and also make it more computationally effective because the
+maps are sparse. 
 
+******?????The mixed approaches are usually not computed on-line***???? (CHECK THIS). This utilizes
+the metric approach for the rooms that have a lot of details, chairs, desks etc. and for
+corridors and less detailed areas the topological approach, when the metric and
+geographical information are not that important. 
 
+This requires lots of processing of the sensor and map data, and should be done off-line
+after the robot's mission is finished. 
 
 
 \subsection{Sensor Fusion Techniques}
@@ -144,10 +154,28 @@ way to recognize its surroundings, and match it to the \'a priori map.
 \subsubsection{Probabilistic Techniques}
 
 
+\subsection{Feature Extraction}
+The need for feature extraction should be obvious when dealing with autonomous robot
+navigation. For the robot to know where it is it needs to recognize its surroundings. This
+is a difficult step, because computers are not known to be very good at this, as the human
+brain is. 
 
+By feature extraction it is meant to recognize one point or feature in one instant and
+find the same point at the next time instant. This can be imagined difficult in some
+surroundings where theres little individual detail. 
+
+This problem is relaxed a bit when the surroundings are confined to pipelines. The problem
+here is that the interior of the pipeline are not rich in detail, and is mostly the same
+everywhere the robot travels, except in the different kinds of junctions. By feature
+extraction in this report the meaning is to recognize the different types of junctions
+that the robot will travel through. 
+
+\cite{theilemann-breivik}
 
 
 \subsection{Real World Applications}
+
+Remember MAKRO! The German snake robot used for sewer inspections. 
 
 
 
