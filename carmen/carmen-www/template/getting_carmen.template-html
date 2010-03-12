@@ -1,0 +1,55 @@
+<!--AUTO_INSERT_HEADER-->
+
+<h3>Download</h3>
+
+Carmen is available undar a General Public License. As of yet, the documentation is this website, README files, and comments in the code. <p>
+
+<h3><a href="http://sourceforge.net/project/showfiles.php?group_id=121727"><font color=#ff0000>Click here to download the software.</font></h3></a>
+<p>
+Along with Carmen, you will get IPC, information on IPC is available at <a href="http://www-2.cs.cmu.edu/~ipc">http://www-2.cs.cmu.edu/~ipc</a>. There is an IPC reference manual in postcript format available at that site.
+
+<h3>Installation</h3>
+<p>
+1. Switch into the carmen/src directory<p>
+<pre>
+   cd carmen/src
+</pre><p>
+2. Configure the Makefiles - Answer any questions<p>
+<pre>
+   ./configure
+</pre>
+3. Make the software<p>
+<pre>
+   make
+</pre>
+
+<p> At this point, you want to set parameters for your robot. The key
+parameters at first are the communications between the computer and
+the robot hardware. Our robots have all used RS-232 serial
+communications, so Carmen is set up for that, and we've used RS-232 or
+USB to communicate with the SICK LMS devices. (Note that the use of
+USB requires the use of a special converter for RS-422 (laser) and USB
+(computer)).  
+
+<p>
+
+Make a note of the identity of the serial connections the computer
+uses to communicate with the robot (we usually use /dev/ttyS0) and to
+the laser if you have one. Find the robot described in the carmen.ini
+file which most closely resembles your robot, and adjust the
+parameters using a text editor to match your system.  <p>
+
+With the robot on blocks so that it doesn't actually move, you can
+start the programs and see if you get a laser display on robotgraph
+(if you have a laser), and response from the wheels when you instruct
+the robot to move. You can then adjust other parameters using the
+program <tt>param_edit</tt>. After you get the maximum speed and
+accelerations to a safe setting for your environment, you can take the
+robot off blocks and try moving it around. Don't forget to adjust the
+robot size and laser offsets, too!
+
+<center><img src=images/bnc1.jpg></center><p>
+
+
+
+<!--AUTO_INSERT_FOOTER-->

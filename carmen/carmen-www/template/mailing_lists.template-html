@@ -1,0 +1,33 @@
+<!--AUTO_INSERT_HEADER-->
+<h3>Carmen Mailing Lists</h3>
+
+This page needs to be updated!
+
+<!---
+<hr>
+<p>
+There are two Carmen mailing lists:
+<ul>
+<li>carmen-users<br>
+<li>carmen-announce<br>
+</ul>
+<p>
+Only CARMEN administrators may post to the carmen-announce list.
+<p>
+To subscribe to carmen-users send email to <a href="mailto:majordomo@lists.andrew.cmu.edu">majordomo@lists.andrew.cmu.edu</a>. with a body of: 
+<p><pre>
+     subscribe carmen-users
+</pre><p>
+To unsubscribe to carmen-announce send email to <a href="mailto:majordomo@lists.andrew.cmu.edu">majordomo@lists.andrew.cmu.edu</a>. with a body of: 
+<p><pre>
+     unsubscribe carmen-announce
+</pre><p>
+To subscribe or unsubscibe to any of the lists, simply replace the mailing list names in the approprate message.
+<p>
+Once you subscribe to the list, you can post messages to it by addressing an e-mail to carmen-users@lists.andrew.cmu.edu (or other list name, as appropriate).
+
+
+--->
+<p>
+
+<!--AUTO_INSERT_FOOTER-->

@@ -1,0 +1,49 @@
+<!--AUTO_INSERT_HEADER-->
+
+
+<p>
+<h3>Introduction - What's Carmen?</h3>
+<p>
+Welcome to CARMEN, the Carnegie Mellon Robot Navigation
+Toolkit. CARMEN is an open-source collection of software for mobile robot
+control. CARMEN is modular software designed to provide basic
+navigation primatives including: base and sensor control, logging,
+obstacle avoidance, localization, path planning, and mapping.
+<p>
+<!--
+The software is currently in alpha-release.  Expect to find bugs, and
+don't be surprised if the code changes significantly in the future.
+We welcome bug fixes, suggestions, and contributed code.
+<p>
+-->
+
+See our list showing the <a href="core_functionality.html">core functionalities</a> inside Carmen.
+<p>
+
+
+Communications between CARMEN programs is handled using a separate
+package called IPC, Copyright 1991 Christopher Fedor and Reid Simmons.
+IPC is distributed along with CARMEN, however it is a separate
+software development. In addition, the xr4000 module was based on
+GPLed code by <a href="http://robot.anu.edu.au/~david/">David
+Austin</a> for controlling the Nomadic Technologies XR4000. 
+
+<!--- Parts of
+the iRobot b21r driver is based on the code of Christian XXX and
+Horst-Michael Gross. --->
+<p>
+Any correspondence regarding CARMEN should be sent to
+<a href="mailto:mmde+carmen@cs.cmu.edu">mmde+carmen@cs.cmu.edu</a>.
+<p>
+CARMEN is licensed under the Gnu Public License (GPL).  See the file
+LICENSE.TXT for complete details on thte GPL.
+<p>
+<a href="contributers.html">Contributors</a> to CARMEN are listed here.
+CARMEN has been sponsored by <a href=http://www.darpa.mil>DARPA</a>'s MARS Program.
+<p>
+Here are some useful or interesting <a href="links.html">links</a>, and you can join 
+our <a href="mailing_lists.html">mailing lists</a>.
+
+
+
+<!--AUTO_INSERT_FOOTER-->

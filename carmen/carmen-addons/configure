@@ -1,0 +1,123 @@
+#!/usr/bin/perl
+
+print "\nSearching for CARMEN_HOME...\n";
+
+#$cur_path = $ENV{'PWD'} =~ m!(.*)/[^/]+!;
+$cur_path = $ENV{'PWD'};
+print "Current directory is $cur_path\n";
+
+if (exists $ENV{'CARMEN_HOME'}) {
+  $carmen_path = $ENV{'CARMEN_HOME'};
+}
+if (-d "$cur_path/../carmen/src") {
+  $carmen_path = "$cur_path/../carmen";
+}
+elsif (-d "$cur_path/../../carmen/src") {
+  $carmen_path = "$cur_path/../../carmen";
+}
+elsif (-d "$cur_path/../../../carmen/src") {
+  $carmen_path = "$cur_path/../../../carmen";
+}
+else {
+  $carmen_path = "none"
+}
+
+print "CARMEN_HOME [$carmen_path]: ";
+$usr_carmen_path = <STDIN>;
+chomp $usr_carmen_path;
+if (length($usr_carmen_path) > 0) {
+  $carmen_path = $usr_carmen_path;
+}
+
+while (($carmen_path eq "none") or (not -d "$carmen_path/src")) {
+  print <<EOF;
+
+Could not find CARMEN_HOME directory ($carmen_path).
+
+If CARMEN is installed, please type the full path
+of the carmen directory, or hit enter to cancel
+configuration of carmen-addons.
+
+EOF
+
+  print "CARMEN_HOME [$carmen_path]: ";
+  $usr_carmen_path = <STDIN>;
+  chomp $usr_carmen_path;
+  if (length($usr_carmen_path) > 0) {
+    $carmen_path = $usr_carmen_path;
+  }
+  else {
+    die "\n";
+  }
+}
+
+
+print "\nSearching for libusb...\n";
+
+$libusb_path = "/usr";
+
+if (`ls $libusb_path/include/usb.h | wc -l` + 0 and
+    `grep __USB_H__ $libusb_path/include/usb.h | wc -l` + 0 and
+    `ls $libusb_path/lib/libusb.a | wc -l` + 0) {
+  $no_libusb = 0;
+}
+else {
+  $no_libusb = 1;
+  $libusb_path = "none";
+}
+
+while ($no_libusb) {
+  print <<EOF;
+
+If libusb is installed, please type the full
+install path (e.g. "/usr/local"), or hit enter
+to disable libusb support.
+
+EOF
+
+  print "libusb path [$libusb_path]: ";
+  $libusb_path = <STDIN>;
+  chomp $libusb_path;
+  if (length($libusb_path) == 0) {
+    last;
+  }
+  if (`ls $libusb_path/usb.h | wc -l 2>/dev/null` + 0 and
+      `grep __USB_H__ $libusb_path/usb.h | wc -l 2>/dev/null` + 0 and
+      `ls $libusb_path/lib/libusb.a | wc -l` + 0) {
+    $no_libusb = 0;
+  }
+  else {
+    $libusb_path = "none";
+  }
+}
+
+open OUTPUT, "> Makefile.vars";
+
+print OUTPUT<<EOF;
+# This is an automatically generated file.
+# DO NOT MODIFY!
+
+CARMEN_HOME = $carmen_path
+EOF
+
+if ($no_libusb) {
+  print OUTPUT "NO_LIBUSB = 1\n";
+}
+else {
+  print OUTPUT "LIBUSB_INCLUDE_PATH = $libusb_path\n";
+  print "libusb found.\n";
+}
+
+print "\nSearching for AFS includes needed to compile xavier...";
+
+if (-d "/afs/cs/project/robocomp/xavier" and -d "/afs/cs/project/TCA/release/alpha") {
+  print "found.\n";
+}
+else {
+  print "not found.\n";
+  print OUTPUT "NO_AFS = 1";
+}
+
+close OUTPUT;
+
+print "\n";

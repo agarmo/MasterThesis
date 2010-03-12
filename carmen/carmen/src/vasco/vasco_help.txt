@@ -1,0 +1,120 @@
+*RUNNING VASCO
+
+Vasco is a tool to convert a log containing laser and odometry data
+into an evidence grid map for use in planning, localization, and
+navigation. 
+
+
+* Obtaining Log Data
+
+Before you can generate a map, you need to collect laser and odometry
+data. This is usually done by joysticking the robot through the area
+you want to map, while running the Carmen logging module
+("log_carmen", but just "logger" in previous versions of
+Carmen). Generally speaking, odometry data tends to skew the most when
+the robot makes point turns (e.g. coming to a complete stop and
+turning in place). Thus, the cleanest data can be obtained by moving
+the robot in straight lines and gentle curves. Overlapping data can be
+hard to deal with; if the area you're mapping has loops (such as
+office hallways), it's best not to drive around the loops more than
+once. 
+
+* Starting Vasco
+
+To start Vasco, run "vasco" from the carmen/bin directory. You can
+include a log file name on the command line, in which case Vasco will
+auto-load the file on startup. Alternately, you can select File->Open
+from the menu bar.
+
+Once a logfile is loaded, you will see a probably messy but hopefully
+vaguely discernable map based on the raw laser and odometry data. The
+laser data is shown in red. Ignore the blue and green spots for the
+moment. 
+
+* Scan Matching
+
+Assuming the data doesn't look too egregiously wrong initially, your
+best bet is to start out by pressing the "scan match" button at the
+top of the Vasco window. This will attempt to account for messy
+odometry data and realign the laser scans. Scan matching takes a long
+time, particularly for large maps, so be patient. The progress will
+show in the progress bar at the bottom of the window.
+
+When scan matching completes, likely one of two things will
+happen. Either the map will align itself better, or it will twist
+itself horribly. In the former case, continue on to the next step. If
+the latter is the case, your best bet is to reload the log file and
+NOT rerun scan matching before continuing on to the next step.
+
+* Manual Tweaking
+
+In most cases, the map will still not be completely accurate after an
+initial scan matching. What you need to do now is attempt to fix any
+obvious errors manually. This is where the "Shift", "Rotate",
+"Stretch", and "Bend" buttons, as well as the three mysterious slider
+bars, come into play.
+
+At any time during this procedure, you can zoom in (or out) of the map
+by selecting the appropriate button and clicking on the spot of the
+map you want to zoom in to (or out of). You can also use the
+Edit->Undo and Edit->Redo menu options as necessary.
+
+The three slider bars (and their associated selection boxes) allow you
+to select what section of laser scans interest you. The topmost and
+bottommost bars select the extremes of the range you wish to
+highlight. As you move the bars around, the laser scans outside of the
+range will turn black. Black scans are not affected by the various
+manipulation buttons. The laser scans at each extreme of the selected
+range (along with the robot's position for those scans) are shown in
+green; the scan selected by the middle slider will appear in blue.
+
+For all manipulation options, once you have selected your desired
+range, click and drag on the map to manipulate the data. All of the
+manipulation buttons are toggle buttons; once you select e.g. "Shift"
+you will perform shifts until you either re-click on the "Shift"
+button or select a different manipulation option.
+
+       * Shift
+       Shifting performs a simple translation of the selected laser
+scans. The scan selecte by the middle slider is ignored.
+
+       * Rotate
+       To rotate a range of laser data, select the desired center of
+rotation using the middle slider (point shown in blue). Click and hold
+on any spot of the map, and drag the data into position.
+
+       * Stretch
+       The stretch tool performs a relative shift; points closer to
+the end of the range are shifted further than points near the
+beginning of the range. The numerical difference between the selected
+minimum scan and the middle scan is used as a scaling factor to
+determine how much to shift each scan (e.g. if the lowest selected
+scan is scan number 100 and the selected middle scan is number 200,
+each shift will be scaled by 1/100).
+
+       * Bend
+       The bend tool operates in a similar manner as the stretch tool,
+but performs a relative rotation, rather than a relative shift. Rather
+than rotate about a single center of rotation, each scan is
+progressively rotated relative to the previous scan. As with
+stretching, the difference between the minimum and middle scans is
+used as a scaling factor.
+
+During your manipulations, you can re-run "Scan Match" at any
+time. Note that scan matching only operates on the selected range of
+laser scans. Once you have a fairly accurate-looking map, select "Make
+Evidence Grid" to generate a Carmen map.
+
+* Make Evidence Grid
+
+The evidence grid is what Carmen uses for planning, localization, and
+navigation, and represents the probability of any particular grid cell
+being occupied (by a wall or other immobile obstacle). When you select
+the "Make Evidence Grid" button, a new window will appear, in which a
+map will slowly be built. This can take a long time, so be patient.
+
+If you've tweaked the raw data appropriately, your evidence grid will
+be a nice clean map that you can use with a robot. Congratulations,
+and make sure to save your map! If the evidence grid still looks
+messy, close it and go back to manipulating the laser data until you
+have something that works.

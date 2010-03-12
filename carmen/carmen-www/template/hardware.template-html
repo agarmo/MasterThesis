@@ -1,0 +1,48 @@
+<!--AUTO_INSERT_HEADER-->
+
+<h3>Carmen Hardware Requirements</h3>
+
+
+<p>
+Carmen has been tested on computers running the following Linux versions:
+<ul>
+<li>Red Hat (string from version 5.2)
+<li>SuSE Linux (starting from version 8.0)
+</ul>
+
+<p>
+If you are running the simulator, no extra hardware is required.
+
+<p>
+Carmen currently supports the following mobile robot bases:
+<ul>
+<li>iRobot ATRV
+<li>iRobot ATRVjr
+<li>iRobot B21R
+<li>ActivMedia Pioneer I
+<li>ActivMedia Pioneer II
+<li>Nomadic Technologies Scout
+<li>Nomadic Technologies XR4000
+<li>OrcBoard
+<li>Segway
+</ul>
+<p>We can in principle support any iRobot RFLEX-based device; however, the
+current CARMEN release only contains appropriate parameters for ATRV and B21R
+devices. More bases can be supported as needed.
+
+
+<p>
+Carmen currently supports the following sensors:
+<ul>
+<li>SICK LMS laser measurment system
+<li>SICK PLS proximity laser scanner
+<li>GPS device using the NMEA protocol: e.g. Garmin, Sirf, ... (most
+consumer GPS)
+<li>Sonar (preliminary support)
+<li>Hokuyo IR Support (PB9)
+</ul>
+
+<p>You <b>must</b> have a laser range finder to build a map, and currently,
+localization and navigation are not supported using sonars only. 
+
+<!--AUTO_INSERT_FOOTER-->

@@ -1,0 +1,20 @@
+for f in [^m][^o][^c]*.h
+do moc $f -o moc-$f 2> moc-tmp
+if [ -s moc-tmp ] ; then rm moc-$f ; fi
+rm moc-tmp
+done
+progen -o imp_gui.pro
+echo "INCLUDEPATH += \$(QTDIR)/library /home/jrod/carmen/include" >> imp_gui.pro
+echo "DEPENDPATH += \$(QTDIR)/library/qpe /home/jrod/carmen/lib" >> imp_gui.pro
+echo "TARGET = imp_gui" >> imp_gui.pro
+echo "LIBS += -lqpe -L/home/jrod/carmen/lib -lglobal -lipc \
+		-llocalize_interface -limp_gui_interface \
+		-lparam_interface" >> imp_gui.pro
+tmake -o Makefile imp_gui.pro
+echo ".PHONY:	clean" >> Makefile
+head -n 22 Makefile > make-tmp
+echo "" >> make-tmp
+echo "CFLAGS += -DNO_ZLIB" >> make-tmp
+echo "CXXFLAGS += -DNO_ZLIB" >> make-tmp
+tail -n 81 Makefile >> make-tmp
+mv make-tmp Makefile

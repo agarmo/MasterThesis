@@ -1,0 +1,17 @@
+It's very simple -- it reads a script from standard input of the form:
+x1 y1
+x2 y2
+pause seconds
+...
+
+where each line is either and x and y coordinate separated by spaces
+(in meteres) or "pause" followed by a floating point number specifying
+how many seconds.
+
+you can interact with it from the command line or just redirect it's
+input from a file.  if you are interacting with it on the command line
+to quit you need to type C-d (which is EOF).
+
+for files it just dies when the file ends.  You can also just do:
+echo "3.2 5.1\n2.5 4.2\npause 20\n3.2 5.1" | actor
+in a shell script for example.

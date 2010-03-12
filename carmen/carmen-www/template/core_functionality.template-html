@@ -1,0 +1,21 @@
+<!--AUTO_INSERT_HEADER-->
+
+<h3>Core Functionalities</h3>
+<p>
+<ul>
+<li>Carmen is a modular robot control software</li>
+<li>Carmen uses the inter-process communication plattform IPC</li>
+<li>Process monitoring</li>
+<li>Robot hardware support for different plattforms (see <a href="hardware.html">here</a>)</li>
+<li>Hardware support for SICK laser range finder and GPS receiver</li>
+<li>Robot/sensor simulator (in 2d)</li>
+<li>Path planning module</li>
+<li>Localization module</li>
+<li>Scan-matching and mapping module</li>
+<li>Message logging and playback functionality</li>
+<li>Centralized parameter server</li>
+<li>Several useful functions when working/programming with robots</li>
+<li>Carmen is written in C, but provides Java support</li>
+<li>Carmen runs under Linux and is available under GPL</li>
+
+<!--AUTO_INSERT_FOOTER-->

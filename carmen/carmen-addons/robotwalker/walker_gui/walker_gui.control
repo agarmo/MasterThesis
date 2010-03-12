@@ -1,0 +1,10 @@
+Files: bin/walker_gui apps/Applications/walker_gui.desktop
+Priority: optional
+Section: qpe/applications
+Maintainer: Jared Glover <jrod@andrew.cmu.edu>
+Architecture: arm
+Version: 1.0.0
+Depends: qpe-base ($QPE_VERSION)
+License: Public Domain
+Description: Walker Gui
+  Graphical user interface for the Robotic Walker project.

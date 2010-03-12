@@ -1,0 +1,38 @@
+<!--AUTO_INSERT_HEADER-->
+
+
+<h3>Papers</h3>
+<p>
+This section is designed to give the users of CARMEN more of the theory behind the CARMEN programs. The papers listed here are downloadable in PDF format.
+<p>
+<h3><a name="localize">Papers on Localization</a></h3>
+<p>
+<b><a name="mcl">Robust Monte Carlo Localization for Mobile Robots</a></b>
+<p>
+Sebastian Thrun, Dieter Fox, Wolfram Burgard, and Frank Dellaert
+<p>
+Mobile robot localization is the problem of determining a robot's pose from sensor data. Monte Carlo Localization is a family of algorithms for localization based on particle filters, which are approximate Bayes filters that use random samples for posterior estimation. Recently, they have been applied with great success for robot localization. Unfortunately, regular particle filters perform poorly in certain situations. Mixture-MCL, the algorithm described here, overcomes these problems by using a "dual" sampler, integrating two complimentary ways of generating samples in the estimation. To apply this algorithm for mobile robot localization, a kd-tree is learned from data that permits fast dual sampling. Systematic empirical results obtained using data collected in crowded public places illustrate superior performance, robustness, and efficiency, when compared to other state-of-the-art localization algorithms. 
+<p>
+This paper was published in the journal <b>Artificial Intelligence</b>, volume 128, numbers 1-2, in 2000.
+<p>
+Download this paper <a href="papers/thrun.robust-mcl.pdf">here</a>.
+<p>
+<h3><a name="mapping">Papers on Mapping</a></h3>
+<p>
+<b><a name="survey">Robotic Mapping: A Survey</a></b>
+<p>
+Sebastian Thrun
+<p>
+This article provides a comprehensive introduction into the field of
+robotic mapping, with a focus on indoor mapping. It describes and
+compares various probabilistic techniques, as they are presently being
+applied to a vast array of mobile robot mapping problems. The history
+of robotic mapping is also described, along with an extensive list of
+open research problems.
+<p>
+This article was published in <a href=http://www.amazon.com/exec/obidos/tg/detail/-/1558608117/qid=1049320544/sr=1-2/ref=sr_1_2/103-3248270-0862263?v=glance&s=books">Exploring Artificial Intelligence in the New Millenium</a>, editted G. Lakemeyer and B. Nebel.
+<p>
+Download this paper <a href="papers/thrun.mapping-tr.pdf">here</a>.
+<p>
+
+<!--AUTO_INSERT_FOOTER-->

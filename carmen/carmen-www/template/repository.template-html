@@ -1,0 +1,13 @@
+<!--AUTO_INSERT_HEADER-->
+
+<h3>Carmen-Repository</h3>
+
+<li>How to get the latest development version of carmen?</li>
+
+<ul>
+	<li> svn co https://carmen.svn.sourceforge.net/svnroot/carmen --username anonymous</li>
+</ul>
+
+
+<!--AUTO_INSERT_FOOTER-->
+

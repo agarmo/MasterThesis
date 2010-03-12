@@ -1,0 +1,18 @@
+#!/bin/tcsh
+
+mkdir -p www
+
+\cp -rpf styles www/
+
+\cp -rpf images www/
+
+foreach i (template/*.template-html)
+  echo creating: $i  to  www/$i:t:r.html
+  perl template/insert-tags.pl $i > www/$i:t:r.html
+end
+
+cd www
+chmod g+rw -R *
+chmod u+rw -R *
+chmod o+r -R *
+cd ..

@@ -1,0 +1,2 @@
+#!/bin/tcsh
+scp -rp www/* web.sourceforge.net:/home/groups/c/ca/carmen/htdocs/

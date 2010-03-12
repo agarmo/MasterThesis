@@ -1,0 +1,85 @@
+<!--AUTO_INSERT_HEADER-->
+
+<h3>Let Us Know Who Uses This Software</h3>
+
+<p>
+Before downloading Carmen, we ask that you please give us a small amount of information by completing our survey. We'd like to know who uses our software.
+<p>
+<FORM METHOD=POST ENCTYPE="text/plain"
+ACTION="mailto:mmde+carmen@cs.cmu.edu?subject=Carmen Survey"> 
+<INPUT TYPE="hidden" NAME="subject" VALUE="Carmen Survey">
+
+<b>What is your name?</b>
+<p>
+<TEXTAREA NAME="name" ROWS=1 COLS=50></TEXTAREA>
+<p>
+<b>What is your e-mail address?</b>
+<p>
+<TEXTAREA NAME="e-mail" ROWS=1 COLS=50></TEXTAREA><br>
+You will only recieve e-mail if you join our <a href="mailing_lists.html">Carmen Mailing Lists</a>.
+<p>
+<b>What is your Institution (if applicable)?</b>
+<p>
+<TEXTAREA NAME="institute" ROWS=1 COLS=50></TEXTAREA>
+<p>
+<b>Any comments?</b>
+<p>
+<TEXTAREA NAME="COMMENTS" ROWS=5 COLS=50></TEXTAREA>
+<P>
+<INPUT TYPE="submit" VALUE="Please Submit Survey"> 
+<INPUT TYPE="reset" VALUE="Reset Form">
+<p>
+</FORM>
+<p>
+Note: When the phrase "Document Done" appears in the lower left-hand
+margin of your browser, the form has been successfully E-mailed. 
+<p>
+<font color=#ff0000>Click <a href="releases/carmen.0.4.6.ii.tar.gz">here</a> to download the software</font>. The latest release is carmen.0.4.6.ii, updated 14 January, 2004.
+
+<p>
+The chief changes from Carmen 0.4.61 to 0.4.6.ii are:
+<ul>
+<li>Added support for multiple robots
+</ul>
+
+<p>
+The chief changes from Carmen 0.4.6 to 0.4.6.i are:
+<ul>
+<li>IPC upgraded to 3.7.6 
+<li>serious navigator memory leak fixed
+<li>navigator CPU usage bug fixed
+<li>command line argument bugs fixed in param_server, install_params
+<li>the navigator window can be arbitrarily resized now
+<li>all interface libraries now define the IPC messages each interface function
+uses, the first time the function is called. this way, if modules come up in
+different orders, you don't get a stream of IPC error messages any more.
+</ul>
+
+<p>
+The chief changes from Carmen 0.4.5 to 0.4.6 are:
+<ul>
+<li>There is no more people tracking in localize. This functionality will be in a separate module in the future.
+<li>All quantities are reported in world coordinates.  Nothing,
+including the particle message, is reported in anything other than world
+coordinates.
+<li>The guts of localize have a library interface, called
+liblocalizecore.a.
+<li>Localize now emits a weighted sample mean in response to every laser
+reading.  By incorporating the weights given the current observation,
+(whether or not it is actually incorporated), the resulting mean scans
+are SUBSTANTIALLY more accurate than before.
+<li>Global localization is potentially faster and more accurate.
+<li>There is a new option called use_scanmatching, which uses
+gradient descent to fine-tune the output of localize.
+<li>Localizegraph is no more.  navigatorgui does everything you might
+need.
+</ul>
+
+<p>
+See the <a href="update.html">CARMEN Update List</a> for a history of previous changes.
+<p>
+Return to the <a href="index.html">Carmen Home Page</a>.<br>
+Return to the <a href="getting_carmen.html">Downloading and Installing Carmen Page</a> for instructions on installing your software.<br>
+
+
+<!--AUTO_INSERT_FOOTER-->

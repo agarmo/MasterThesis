@@ -1,0 +1,10 @@
+Files: bin/imp_gui apps/Applications/imp_gui.desktop
+Priority: optional
+Section: qpe/applications
+Maintainer: Jared Glover <jrod@andrew.cmu.edu>
+Architecture: arm
+Version: 1.0.0
+Depends: qpe-base ($QPE_VERSION)
+License: Public Domain
+Description: Imp GUI
+  Graphical user interface for the Robotic Walker project.

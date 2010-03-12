@@ -1,0 +1,130 @@
+<!--AUTO_INSERT_HEADER-->
+
+<h1>Carmen Parameters</h1>
+<p>
+
+This is a summary of all the parameters used by the various programs of Carmen. Normally, parameters do not change for the same robot, so the param_server will read them from the <a href="carmen_ini.html">carmen.ini</a> file (by default) or from another file specified in the command line when starting param_server. If a change to the robot you are using requires a change to the parameter, the easiest way to this is by simply changing the parameter (.ini) file before you start the param_server. 
+
+<p>
+If you wish to make temporary changes to parameters, this can be accomplished in three ways:
+<ul>
+<li><a href="other_programs.html">param_edit</a> provides a graphic interface that facilitates changes to any parameters used in Carmen. 
+<li>You can change parameters from within the param_server program using the <b>set</b> command as in this example:
+<p>
+<pre>
+PARAMETER: set laser_sick_type LMS_TYPE
+</pre>
+
+<li>Parameters can be changed as command line options in the programs that access them. This change will not effect the param_server or any other programs which the param_server serves, so these options should be used with care as it can cause conflicts between programs.
+</ul>
+
+<p>
+<h3>Parameter Listing</h3>
+<p>
+<b>Localize</b>
+<p>
+Parameter Options are:
+<ul>
+    <li><b>frontlaser_offset</b> is the distance in meters forward of robot center the front laser scans.
+    <li><b>rearlaser_offset</b> is the distance in meters behind robot center the rear laser scans.
+    <li><b>robot_particles</b> is number of particles to be used for localization. More particles results in more robust localization, but more computation
+    <li><b>max_range</b> is maximum range to incorporate laser readings.
+    <li><b>min_wall_prob</b> Laser range values are either incorporated into every particle in the particle filter, or they are thrown out as outliers. If a laser reading receives a probability of less than min_wall_prob in at least outlier_fraction percent of the particles, the reading is called an outlier and disregarded by all particles.
+    <li><b>outlier_fraction</b> see min_wall_prob.
+    <li><b>update_distance</b> If the robot does not move, successively resampling the particle filter would result in only the single most-likely particle surviving. In order to insure that the observations incorporated into the filter are reasonably independent, resampling is only done if the robot translates by an amount update_distance, or rotates by an amount update_angle.
+    <li><b>update_angle</b> see update_distance.
+    <li><b>laser_skip</b> The localizer will only process every nth laser reading. This is to increase the likelihood of independent readings and to decrease the computational requirement of the localizer.
+    <li><b>use_rear_laser</b> sets whether data from the rear laser should be incorporated. The lasers must be relatively well aligned. Use at your own risk.
+    <p>
+The following four parameters describe the robot's motion model. Start with non-zero a1 and a3, and add some a2 and a4 if you have trouble localizing.
+    <p>
+    <li><b>odom_a1</b> controls the contribution of rotational motion to rotational error.
+    <li><b>odom_a2</b> controls the contribution of translational motion to rotational error.
+    <li><b>odom_a3</b> controls the contribution of translational motion to
+translational error.
+    <li><b>odom_a4</b> controls the contribution of rotational motion to
+translational error.
+    <li><b>occupied_prob</b> probability of a map cell to be considered occupied.
+    <li><b>lmap_std</b> standard deviation of map likelihood function.  This can be thought of as the "fuzziness" of the map.  The higher the value, the more tolerant the localizer will be to map errors, and the higher the pose variance will be.
+    <li><b>global_lmap_std</b> This is the same as lmap_std, but for when the robot is in global localization mode.  In general, this should be higher than lmap_std.
+    <li><b>global_evidence_weight</b> During global localization, evidence is counted less heavily than normal.  This weight specifies what the fraction of a normal reading that a global localization reading should be considered as.
+    <li><b>global_distance_threshold</b> The localizer uses the global localization parameters if there is a large spread of particles.  If any particle is
+farther than global_distance_threshold from the mean, than global
+localization is used.
+<p>
+The following parameters control integrated localization and people tracking. They are somewhat difficult to use. Email mmde+carmen@cs.cmu.edu if you need help tuning them.
+<p>
+    <li><b>people_tracking</b> turns people tracking on or off.
+    <li><b>person_particles</b>
+    <li><b>max_people_range</b>
+    <li><b>max_people_std</b>
+    <li><b>person_average_width</b> This parameter is not in any standard units.
+    <li><b>person_average_prob</b>
+    <li><b>person_distance_std</b>
+    <li><b>person_distance_std</b>
+</ul>
+
+<p>
+<b>Navigator</b>
+<p>
+Parameter Options are:
+<ul>
+    <li><b>max_t_vel</b> sets maximum translational (forward or backward) velocity in meters per second.
+    <li><b>max_r_vel</b> sets maximum rotational (turning) velocity in radians per second
+    <li><b>min_approach_dist</b> sets how close to subgoals the robot much reach before proceding to the next subgoal or how close to the final goal before deciding it has been reached.  
+    <li><b>min_side_dist</b> sets the minimum distance the robot side will approach a stationary object.
+    <li><b>length</b> is the length of the robot in meters.
+    <li><b>width</b> is the width of the robot in meters.
+    <li><b>acceleration</b> sets the accelleration rate of the robot in meters per second squared.
+    <li><b>reaction_time</b> is how long it takes for the base to react to a command, in seconds. If you want to know how quickly the robot can stop, you have to know how far it will travel while it is reacting to the command.
+    <li><b>curvature</b> sets how much the robot will curve while moving forward during turns in radians per meter.
+    <li><b>planner</b> chooses one of two path planners available in Carmen.
+    <li><b>ant</b> chooses to use an ANT server.
+    <li><b>port</b> specifies a port for an ANT server.
+    <li><b>num_lasers</b> specifies how many lasers are being used.
+    <li><b>update_map</b> If this is on, laser data is integrated into the map (based on the current estimate of the position provided by localize and odometry), and the planner replans in the new map.
+    <li><b>max_laser_range</b> If update_map is on, then laser_data is integrated into the map only up to max_laser_range, in metres. Changes to the map further than max_laser_range are ignored. If update_map is off, this parameter has no effect.
+    <li><b>max_collision_range</b> specifies the distance an obstical should be before replanning a path to avoid it.
+    <li><b>replan_frequency</b> specifies how often the planner will replan the robot path based on its current position
+    <li><b>smooth_path</b> If this parameter is off, then the conventional planner generates plans that consist of sequences of adjacent grid cells that the robot should travel through. If this smooth_path is on, then the sequences of grid cells are smoothed into sequences of waypoints joined by straight lines. This parameter should almost always be on for the conventional planner.
+
+</ul>
+
+<p>
+<b>Robot-type Parameters</b> used in the pioneer, rflex, scout, and other programs based on the type of robot used.
+<p>
+Parameter Options:
+<ul>
+    <li><b>dev</b> sets the serial port used by the computer to communicate with the robot hardware.
+    <li><b>version</b> sets the type of Pioneer in the Pioneer program. This should be the integer 1 or 2.
+    <li><b>wheel_diameter</b> is the wheel diameter, used to calculate distance a robot moves.
+    <li><b>use_sonar</b> sets sonar to be on or off. Carmen has not fully integrated sonar at this time, so this should be set to zero for off.
+    <li><b>sensor_angle</b> The angle subtended by one sonar transducer, in radians. This is not used if use_sonar is off.
+    <li><b>sonar_offsets</b> sets the position of each sonar relative to the center of the robot, and its facing relative to forward. Each sonar has three numbers associated: distance forward of center in meters, distance right of center in meters, and facing in radians measuring clockwise from forward. This is not used of use_sonar is off.
+    <li><b>num_sonars</b> sets the number of sonar detectors on the robot. This is not used of use_sonar is off.
+</ul>
+
+<p>
+<b>Robot</b>
+<p>
+Parameter Options are:
+<ul>
+    <li><b>max_t_vel</b> sets the maximum translational (forward-backward) speed of the robot in meters per second. If this is set higher than the maximum allowable speed the base can support, then the behaviour is undefined.
+    <li><b>max_r_vel</b> sets the maximum rotational (spinning) speed in radians per second. If this is set higher than the maximum allowable speed the base can support, or, if the base is differential drive and this is set higher than the translation speed can support, then the behaviour is undefined.
+    <li><b>min_approach_dist</b> sets the closest the robot should get to a stationary object toward which it is moving. Current speed and programmed accelerations are taken into account, so the actual distance between the robot and object should be the same if the robot is moving fast or slow. The value is in meters.
+    <li><b>min_side_dist</b> sets the closest the robot will approach a stationary object as it passes the object. The value is in meters.
+    <li><b>length</b> is the front-to-back measure of the robot in meters.
+    <li><b>width</b> is the side-to-side measure of the robot in meters. Even is the robot is round, this parameter should be set.
+    <li><b>acceleration</b> and <b>deceleration</b> sets how fast the robot should accelerate and decelerate, in m/s^2. If the base does not support different acceleration and deceleration parameters (e.g., nomadic technologies bases), then base_services tries to mimic this support by changing the acceleration value to the deceleration value once the robot is moving and no commands are pending.
+    <li><b>reaction_time</b> is how long it takes for the base to react to a command, in seconds. If you want to know how quickly the robot can stop, you have to know how far it will travel while it is reacting to the command.
+    <li><b>curvature</b> is how much the robot will veer to the right or left as it is travelling in a straight line. Nominally used by the conventional planner, but mostly ignored.
+    <li><b>theta_gain</b> is used to control the p-term of the bearing part of a pd control loop that can be used to drive the robot to an arbitrary point at range d and bearing theta. The correct value of this term is related to the dynamic characteristics of particular bases, and can be altered if the robot is oscillating widely, or not turning fast enough, etc. Determing the correct value is usually done experimentally.
+    <li><b>theta_d_gain</b> controls the d-term of bearing part of the control loop. Again, determined experimentally for each base.
+    <li><b>displacement_gain</b> controls the p-term of the range part of the control loop. Determined experimentally for each base. There is no parameters for the d-term of the range part -- the current value is set to 0.5. A displacement_d_gain parameter should probably be added.
+    <li><b>allow_rear_motion</b> sets whether or not to allow the robot to back up.
+    <li><b>converge</b> determines whether or not robot should start publishing robot_laser/robot_sonar messages immediately, or wait until enough messages have been received that the timestamp offset between the odometry and the laser_laser/base_sonar messages can be reliably estimated, for good timestamp-based interpolation of the laser odometry.
+    <li><b>use_laser</b> sets whether or not to use a laser device (Sick LMS or PLS). This affects robot only, in terms of whether it will subscribe to laser_laser messages, and then publish robot_laser messages.
+    <li><b>timeout</b> sets the maximum time the robot program will continue moving the physical robot without receiving a command. This value is in seconds.
+</ul>
+
+<!--AUTO_INSERT_FOOTER-->

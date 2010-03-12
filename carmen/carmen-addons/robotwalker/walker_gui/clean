@@ -1,0 +1,4 @@
+make clean
+rm Makefile
+rm *.pro
+rm moc*

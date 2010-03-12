@@ -1,0 +1,37 @@
+<!--AUTO_INSERT_HEADER-->
+
+
+<h3>Contents</h3>
+<p><ul>
+<li>Introduction
+<li><a href="avoid">Collision Avoidance</a>
+   <ul>
+   <li><a href="robo">Robot</a>
+   <li><a href="navi">Navigator</a>
+   </ul>
+</ul>
+<p>
+<h3>1&nbsp;&nbsp;Introduction</h3>
+<p>
+This page is for things the WebMaster has decided should be available, but for which he hasn't found a proper place.
+<p>
+<h3><a name="avoid">2&nbsp;&nbsp;Collision Avoidance</a></h3>
+<p>
+We were asked; "Where is the code that handles collision avoidance?" Collision avoidance is done in two places in CARMEN.
+<p>
+<b><a name="robo">2.1&nbsp;&nbsp;Robot</b>
+<p>
+First, there is a module called robot which handles emergency stopping.  If something walks into the safety zone in front of the robot, it will stop the robot.  This is in carmen/src/robot.
+<p>
+<b><a name="navi">2.2&nbsp;&nbsp;Navigator</b>
+<p>
+However, the majority of obstacle avoidance happens in the planner,
+called "navigator" The planner is constantly planning a global route
+from point A to point B in the map.  If obstacles are detected along
+the way, they are added to the map temporarily.  When the robot next
+replans, it will plan to avoid these obstacles.  This code to
+accomplish this is substantial, and you can find it in
+carmen/src/navigator.
+<p>
+
+<!--AUTO_INSERT_FOOTER-->

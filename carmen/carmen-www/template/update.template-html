@@ -1,0 +1,42 @@
+<!--AUTO_INSERT_HEADER-->
+<h3>Chief Changes between Releases</h3>
+<p>
+The chief changes from Carmen 0.4.5 to 0.4.6 are:
+<ul>
+<li>There is no more people tracking in localize. This functionality will be in a separate module in the future.
+<li>All quantities are reported in world coordinates.  Nothing,
+including the particle message, is reported in anything other than world
+coordinates.
+<li>The guts of localize have a library interface, called
+liblocalizecore.a.
+<li>Localize now emits a weighted sample mean in response to every laser
+reading.  By incorporating the weights given the current observation,
+(whether or not it is actually incorporated), the resulting mean scans
+are SUBSTANTIALLY more accurate than before.
+<li>Global localization is potentially faster and more accurate.
+<li>There is a new option called use_scanmatching, which uses
+gradient descent to fine-tune the output of localize.
+<li>Localizegraph is no more.  navigatorgui does everything you might
+need.
+</ul>
+
+<p>
+The chief changes from Carmen 0.4.4 to 0.4.5 are:<ul>
+   <li>map_gridmap and navigator_map messages have been changed
+   <li>a bug in the zlib support is fixed. 
+   <li>param_server now has the ability to change maps without restarting. Of course, navigator, localize, etc still have to be restarted when maps change
+</ul>
+
+
+<p>
+The chief changes from Carmen 0.4.3 to 0.4.4 are:<ul>
+   <li> lots of bug fixes <br>
+   <li> added navigator support for driving to positions *and* orientations<br>
+   <li> added ability to turn off collision prevention at run-time.<br>
+   <li> better control of driving the robot backwards<br>
+   <li> zlib support for log files<br>
+   <li> param_edit indicates uncommitted variable changes.<br>
+</ul>
+
+
+<!--AUTO_INSERT_FOOTER-->

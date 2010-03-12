@@ -1,0 +1,94 @@
+Control flow for the simulator
+
+Basicly just all the functions in simulator.c
+
+main
+  bzero
+  init_graphics
+    gtk_init
+  strncpy
+  initialize_ipc
+  signal
+  malloc
+  GLOBAL_update_ipc_callbacks
+  gtk_timeout_add
+  subscribe_clicks
+  map_subscribe_gridmap_message
+    IPC_subscribe
+  map_get_gridmap_message
+    get_tenchar_host_name
+    strcpy
+    strlen
+    malloc
+    strcpy
+    get_time_ms
+    IPC_queryNotifyData
+    free
+  while
+    sleep_ipc
+
+
+/* updateIPC does not seem to get called */
+
+updateIPC
+  sleep_ipc
+  GLOBAL_update_ipc_callbacks
+
+
+/* publish_readings is called every 172 milliseconds by gtk_main
+because it was added as a timeout by gtk_timeout_add in main */
+
+publish_readings
+  publish_frontlaser_message
+    get_time_ms
+    get_tenchar_host_name
+    strcpy
+    IPC_publishData
+  publish_odometry_message
+    get_tenchar_host_name
+    strcpy
+    get_time_ms
+    IPC_publishData
+
+
+/* shutdown_module is called whenever a SIGNINT signal is 
+recieved. */
+
+shutdown_module
+  close_ipc
+  exit
+
+
+/* map_handler is called by map_interface_handler in map_interface.c
+when it recieves a map. (Established as such by the call to 
+map_subscribe_gridmap_message in main) This will be the map requested by
+map_get_gridmap_message in main. The map will probably be recieved
+when IPC_publishData is called withing publish_frontlaser_message or
+publish_odometry_message  or within sleep_ipc */
+
+map_handler
+  displayMap
+    gtk*
+    gtk_signal_connect
+    gtk_widget_set_events
+    gtk_main
+  free
+  close_ipc
+  exit
+
+/* click_handler is called by button_press_event in map_graphics.c
+which is called by gtk_main when it recieves a button press on the 
+window. button_press_event was connected to the button press signal
+by the call to gtk_signal_connect in displayMap. click_handler
+was established as the handler for such a button press by the call
+to subscribe_clicks in main. */
+
+click_handler
+  calc_theta
+    hypot
+    asin
+  calc_mesg
+    malloc
+    generate_laser_data   //in geometry.h
+    free
+
