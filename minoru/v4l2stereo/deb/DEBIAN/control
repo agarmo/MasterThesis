@@ -1,0 +1,12 @@
+Package: v4l2stereo
+Version: 1.042
+Section: utils
+Maintainer: Bob Mottram <fuzzgun@gmail.com>
+Architecture: all
+Depends: libgtk2.0-dev, libavcodec-dev, libavformat-dev, libjpeg62-dev, libtiff4-dev, libcv-dev, libcv1, libcvaux1, libcvaux-dev, libhighgui1, libhighgui-dev, opencv, libgstreamer-plugins-base0.10-0, libgst7
+Recommends: 
+Suggests: 
+Essential: no
+Priority: optional
+Homepage: http://code.google.com/p/libv4l2cam/
+Description: A utility for stereoscopic vision using either a pair of webcams or a stereo webcam such as Minoru

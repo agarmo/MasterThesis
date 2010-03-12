@@ -1,0 +1,22 @@
+libv4l2cam is a simple wrapper class handling lower level v4l2 management, and providing an easy interface to v4l2 hardware.
+
+
+AUTHOR:
+  Giacomo Spigler, adapting code from http://linux.bytesex.org/v4l2/ and building a wrapper class.
+
+VERSION:
+  Version 1.0
+
+COMPILING:
+  $Make
+
+LIBRARY:
+  To use the library, link to libcam.a and include libcam.h; if libcam is compiled with `USE_OPENCV` flag (default) apps must be linked with opencv, as well
+
+EXAMPLE:
+  `test.cpp` is a quick example to test basic functionality; it's not compiled.
+
+  `ocv` contains 2 examples:
+    `two` features access to 2 cameras simultaneously (designed to test Minoru 3D stereo webcam) (to modify device name and specs modify source code and recompile)
+    `test` is a simple video preview app, accepting command line configuration parameters
+
