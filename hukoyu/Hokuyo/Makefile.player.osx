@@ -1,0 +1,25 @@
+PREFIX ?= /opt/player
+INSTALL = /usr/bin/install
+EXT = so
+
+CPPFLAGS = -O2 -Wall `pkg-config --cflags playercore` -fPIC -dynamiclib
+LDFLAGS = -L. `pkg-config --libs playercore` -flat_namespace -undefined suppress
+
+all: hokuyodrivernew
+
+hokuyodrivernew: Hokuyo.o SerialDevice.o HokuyoDriverNew.cc
+	$(CXX) $(CPPFLAGS) $(LDFLAGS) -o $@.so $^
+
+Hokuyo.o : Hokuyo.cc
+	$(CXX) -O2 -Wall -c Hokuyo.cc -fPIC
+
+SerialDevice.o : SerialDevice.cc
+	$(CXX) -O2 -Wall -c -DSERIAL_DEVICE_DEBUG SerialDevice.cc -fPIC
+
+
+install:
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/lib
+	$(INSTALL) *.$(EXT) $(DESTDIR)$(PREFIX)/lib
+
+clean:
+	rm -f *.so *.o *~
