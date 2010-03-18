@@ -44,6 +44,8 @@
 #include <termios.h>
 #include <sys/time.h>
 #include <errno.h>
+#include <cstring>
+#include <cstdio>
 
 
 #define MAX_DEVICE_NAME_LENGTH 128

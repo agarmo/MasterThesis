@@ -1,5 +1,5 @@
 ifndef MATLAB_DIR
-	MATLAB_DIR=/opt/matlab
+	MATLAB_DIR=/usr/local/matlab2008b
 endif
 
 MEX=$(MATLAB_DIR)/bin/mex

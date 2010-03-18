@@ -58,6 +58,8 @@
 #include <ctype.h>
 #include <pthread.h>
 #include <math.h>
+#include <cstring>
+#include <cstdio>
 
 #include "SerialDevice.hh"
 
