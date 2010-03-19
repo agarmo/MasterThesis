@@ -41,21 +41,21 @@
 
 static void errno_exit (const char *           s)
 {
-        fprintf (stderr, "%s error %d, %s\n",
-                 s, errno, strerror (errno));
+    fprintf (stderr, "%s error %d, %s\n",
+            s, errno, strerror (errno));
 
-        exit (EXIT_FAILURE);
+    exit (EXIT_FAILURE);
 }
 
 
 static int xioctl(int fd, int request, void *arg)
 {
-        int r;
+    int r;
 
-        do r = ioctl (fd, request, arg);
-        while (-1 == r && EINTR == errno);
+    do r = ioctl (fd, request, arg);
+    while (-1 == r && EINTR == errno);
 
-        return r;
+    return r;
 }
 
 
@@ -73,132 +73,132 @@ static int xioctl(int fd, int request, void *arg)
 
 
 Camera::Camera(const char *n, int w, int h, int f) {
-  name=n;
-  width=w;
-  height=h;
-  fps=f;
+    name=n;
+    width=w;
+    height=h;
+    fps=f;
 
-  w2=w/2;
-
-
-  io=IO_METHOD_MMAP;
-
-  data=(unsigned char *)malloc(w*h*4);
+    w2=w/2;
 
 
-  this->Open();
-  this->Init();
-  this->Start();
+    io=IO_METHOD_MMAP;
+
+    data=(unsigned char *)malloc(w*h*4);
+
+
+    this->Open();
+    this->Init();
+    this->Start();
 
 }
 
 
 
 Camera::~Camera() {
-  this->Stop();
-  this->UnInit();
-  this->Close();
+    this->Stop();
+    this->UnInit();
+    this->Close();
 
-  free(data);
+    free(data);
 
 }
 
 
 
 void Camera::Open() {
-  struct stat st;
-  if(-1==stat(name, &st)) {
-    fprintf(stderr, "Cannot identify '%s' : %d, %s\n", name, errno, strerror(errno));
-    exit(1);
-  }
+    struct stat st;
+    if(-1==stat(name, &st)) {
+        fprintf(stderr, "Cannot identify '%s' : %d, %s\n", name, errno, strerror(errno));
+        exit(1);
+    }
 
-  if(!S_ISCHR(st.st_mode)) {
-    fprintf(stderr, "%s is no device\n", name);
-    exit(1);
-  }
+    if(!S_ISCHR(st.st_mode)) {
+        fprintf(stderr, "%s is no device\n", name);
+        exit(1);
+    }
 
-  fd=open(name, O_RDWR | O_NONBLOCK, 0);
+    fd=open(name, O_RDWR | O_NONBLOCK, 0);
 
-  if(-1 == fd) {
-    fprintf(stderr, "Canno open '%s': %d, %s\n", name, errno, strerror(errno));
-    exit(1);
-  }
+    if(-1 == fd) {
+        fprintf(stderr, "Canno open '%s': %d, %s\n", name, errno, strerror(errno));
+        exit(1);
+    }
 
 }
 
 
 
 void Camera::Close() {
-  if(-1==close(fd)) {
-    errno_exit("close");
-  }
-  fd=-1;
+    if(-1==close(fd)) {
+        errno_exit("close");
+    }
+    fd=-1;
 
 }
 
 
 
 void Camera::Init() {
-  struct v4l2_capability cap;
-  struct v4l2_cropcap cropcap;
-  struct v4l2_crop crop;
-  struct v4l2_format fmt;
-  unsigned int min;
+    struct v4l2_capability cap;
+    struct v4l2_cropcap cropcap;
+    struct v4l2_crop crop;
+    struct v4l2_format fmt;
+    unsigned int min;
 
-  if(-1 == xioctl (fd, VIDIOC_QUERYCAP, &cap)) {
-    if (EINVAL == errno) {
-      fprintf(stderr, "%s is no V4L2 device\n",name);
-      exit(1);
-    } else {
-       errno_exit("VIDIOC_QUERYCAP");
-    }
-  }
-
-  if(!(cap.capabilities & V4L2_CAP_VIDEO_CAPTURE)) {
-    fprintf(stderr, "%s is no video capture device\n", name);
-    exit(1);
-  }
-
-  switch(io) {
-    case IO_METHOD_READ:
-      if(!(cap.capabilities & V4L2_CAP_READWRITE)) {
-        fprintf(stderr, "%s does not support read i/o\n", name);
-        exit (1);
-      }
-
-      break;
-
-    case IO_METHOD_MMAP:
-    case IO_METHOD_USERPTR:
-    if(!(cap.capabilities & V4L2_CAP_STREAMING)) {
-      fprintf (stderr, "%s does not support streaming i/o\n", name);
-      exit(1);
-    }
-
-    break;
-  }
-
-
-  CLEAR (cropcap);
-
-  cropcap.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-
-  if(0 == xioctl (fd, VIDIOC_CROPCAP, &cropcap)) {
-    crop.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    crop.c = cropcap.defrect; /* reset to default */
-
-    if(-1 == xioctl (fd, VIDIOC_S_CROP, &crop)) {
-      switch (errno) {
-        case EINVAL:
-          /* Cropping not supported. */
-          break;
-        default:
-          /* Errors ignored. */
-          break;
+    if(-1 == xioctl (fd, VIDIOC_QUERYCAP, &cap)) {
+        if (EINVAL == errno) {
+            fprintf(stderr, "%s is no V4L2 device\n",name);
+            exit(1);
+        } else {
+            errno_exit("VIDIOC_QUERYCAP");
         }
-      }
+    }
+
+    if(!(cap.capabilities & V4L2_CAP_VIDEO_CAPTURE)) {
+        fprintf(stderr, "%s is no video capture device\n", name);
+        exit(1);
+    }
+
+    switch(io) {
+        case IO_METHOD_READ:
+            if(!(cap.capabilities & V4L2_CAP_READWRITE)) {
+                fprintf(stderr, "%s does not support read i/o\n", name);
+                exit (1);
+            }
+
+            break;
+
+        case IO_METHOD_MMAP:
+        case IO_METHOD_USERPTR:
+            if(!(cap.capabilities & V4L2_CAP_STREAMING)) {
+                fprintf (stderr, "%s does not support streaming i/o\n", name);
+                exit(1);
+            }
+
+            break;
+    }
+
+
+    CLEAR (cropcap);
+
+    cropcap.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+
+    if(0 == xioctl (fd, VIDIOC_CROPCAP, &cropcap)) {
+        crop.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        crop.c = cropcap.defrect; /* reset to default */
+
+        if(-1 == xioctl (fd, VIDIOC_S_CROP, &crop)) {
+            switch (errno) {
+                case EINVAL:
+                    /* Cropping not supported. */
+                    break;
+                default:
+                    /* Errors ignored. */
+                    break;
+            }
+        }
     } else {
-      /* Errors ignored. */
+        /* Errors ignored. */
     }
 
 
@@ -212,145 +212,145 @@ void Camera::Init() {
     fmt.fmt.pix.field       = V4L2_FIELD_INTERLACED;
 
 
-  if(-1 == xioctl (fd, VIDIOC_S_FMT, &fmt))
-    errno_exit ("VIDIOC_S_FMT");
+    if(-1 == xioctl (fd, VIDIOC_S_FMT, &fmt))
+        errno_exit ("VIDIOC_S_FMT");
 
 
 
-/*
-struct v4l2_standard s;
-s.name[0]='A';
-s.frameperiod.numerator=1;
-s.frameperiod.denominator=15;
+    /*
+       struct v4l2_standard s;
+       s.name[0]='A';
+       s.frameperiod.numerator=1;
+       s.frameperiod.denominator=15;
 
-if(-1==xioctl(fd, VIDIOC_S_STD, &s))
-  errno_exit("VIDIOC_S_STD");
-*/
-
-
-struct v4l2_streamparm p;
-p.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
-//p.parm.capture.capability=V4L2_CAP_TIMEPERFRAME;
-////p.parm.capture.capturemode=V4L2_MODE_HIGHQUALITY;
-p.parm.capture.timeperframe.numerator=1;
-p.parm.capture.timeperframe.denominator=fps;
-//p.parm.capture.extendedmode=0;
-//p.parm.capture.readbuffers=n_buffers;
+       if(-1==xioctl(fd, VIDIOC_S_STD, &s))
+       errno_exit("VIDIOC_S_STD");
+       */
 
 
-if(-1==xioctl(fd, VIDIOC_S_PARM, &p))
-  errno_exit("VIDIOC_S_PARM");
+    struct v4l2_streamparm p;
+    p.type=V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    //p.parm.capture.capability=V4L2_CAP_TIMEPERFRAME;
+    ////p.parm.capture.capturemode=V4L2_MODE_HIGHQUALITY;
+    p.parm.capture.timeperframe.numerator=1;
+    p.parm.capture.timeperframe.denominator=fps;
+    //p.parm.capture.extendedmode=0;
+    //p.parm.capture.readbuffers=n_buffers;
+
+
+    if(-1==xioctl(fd, VIDIOC_S_PARM, &p))
+        errno_exit("VIDIOC_S_PARM");
 
 
 
 
-  //default values, mins and maxes
-  struct v4l2_queryctrl queryctrl;
+    //default values, mins and maxes
+    struct v4l2_queryctrl queryctrl;
 
-  memset(&queryctrl, 0, sizeof(queryctrl));
-  queryctrl.id = V4L2_CID_BRIGHTNESS;
-  if(-1 == ioctl (fd, VIDIOC_QUERYCTRL, &queryctrl)) {
-    if(errno != EINVAL) {
-      //perror ("VIDIOC_QUERYCTRL");
-      //exit(EXIT_FAILURE);
-      printf("brightness error\n");
-    } else {
-      printf("brightness is not supported\n");
+    memset(&queryctrl, 0, sizeof(queryctrl));
+    queryctrl.id = V4L2_CID_BRIGHTNESS;
+    if(-1 == ioctl (fd, VIDIOC_QUERYCTRL, &queryctrl)) {
+        if(errno != EINVAL) {
+            //perror ("VIDIOC_QUERYCTRL");
+            //exit(EXIT_FAILURE);
+            printf("brightness error\n");
+        } else {
+            printf("brightness is not supported\n");
+        }
+    } else if(queryctrl.flags & V4L2_CTRL_FLAG_DISABLED) {
+        printf ("brightness is not supported\n");
     }
-  } else if(queryctrl.flags & V4L2_CTRL_FLAG_DISABLED) {
-    printf ("brightness is not supported\n");
-  }
-  mb=queryctrl.minimum;
-  Mb=queryctrl.maximum;
-  db=queryctrl.default_value;
+    mb=queryctrl.minimum;
+    Mb=queryctrl.maximum;
+    db=queryctrl.default_value;
 
 
-  memset(&queryctrl, 0, sizeof(queryctrl));
-  queryctrl.id = V4L2_CID_CONTRAST;
-  if(-1 == ioctl (fd, VIDIOC_QUERYCTRL, &queryctrl)) {
-    if(errno != EINVAL) {
-      //perror ("VIDIOC_QUERYCTRL");
-      //exit(EXIT_FAILURE);
-      printf("contrast error\n");
-    } else {
-      printf("contrast is not supported\n");
+    memset(&queryctrl, 0, sizeof(queryctrl));
+    queryctrl.id = V4L2_CID_CONTRAST;
+    if(-1 == ioctl (fd, VIDIOC_QUERYCTRL, &queryctrl)) {
+        if(errno != EINVAL) {
+            //perror ("VIDIOC_QUERYCTRL");
+            //exit(EXIT_FAILURE);
+            printf("contrast error\n");
+        } else {
+            printf("contrast is not supported\n");
+        }
+    } else if(queryctrl.flags & V4L2_CTRL_FLAG_DISABLED) {
+        printf ("contrast is not supported\n");
     }
-  } else if(queryctrl.flags & V4L2_CTRL_FLAG_DISABLED) {
-    printf ("contrast is not supported\n");
-  }
-  mc=queryctrl.minimum;
-  Mc=queryctrl.maximum;
-  dc=queryctrl.default_value;
+    mc=queryctrl.minimum;
+    Mc=queryctrl.maximum;
+    dc=queryctrl.default_value;
 
 
-  memset(&queryctrl, 0, sizeof(queryctrl));
-  queryctrl.id = V4L2_CID_SATURATION;
-  if(-1 == ioctl (fd, VIDIOC_QUERYCTRL, &queryctrl)) {
-    if(errno != EINVAL) {
-      //perror ("VIDIOC_QUERYCTRL");
-      //exit(EXIT_FAILURE);
-      printf("saturation error\n");
-    } else {
-      printf("saturation is not supported\n");
+    memset(&queryctrl, 0, sizeof(queryctrl));
+    queryctrl.id = V4L2_CID_SATURATION;
+    if(-1 == ioctl (fd, VIDIOC_QUERYCTRL, &queryctrl)) {
+        if(errno != EINVAL) {
+            //perror ("VIDIOC_QUERYCTRL");
+            //exit(EXIT_FAILURE);
+            printf("saturation error\n");
+        } else {
+            printf("saturation is not supported\n");
+        }
+    } else if(queryctrl.flags & V4L2_CTRL_FLAG_DISABLED) {
+        printf ("saturation is not supported\n");
     }
-  } else if(queryctrl.flags & V4L2_CTRL_FLAG_DISABLED) {
-    printf ("saturation is not supported\n");
-  }
-  ms=queryctrl.minimum;
-  Ms=queryctrl.maximum;
-  ds=queryctrl.default_value;
+    ms=queryctrl.minimum;
+    Ms=queryctrl.maximum;
+    ds=queryctrl.default_value;
 
 
-  memset(&queryctrl, 0, sizeof(queryctrl));
-  queryctrl.id = V4L2_CID_HUE;
-  if(-1 == ioctl (fd, VIDIOC_QUERYCTRL, &queryctrl)) {
-    if(errno != EINVAL) {
-      //perror ("VIDIOC_QUERYCTRL");
-      //exit(EXIT_FAILURE);
-      printf("hue error\n");
-    } else {
-      printf("hue is not supported\n");
+    memset(&queryctrl, 0, sizeof(queryctrl));
+    queryctrl.id = V4L2_CID_HUE;
+    if(-1 == ioctl (fd, VIDIOC_QUERYCTRL, &queryctrl)) {
+        if(errno != EINVAL) {
+            //perror ("VIDIOC_QUERYCTRL");
+            //exit(EXIT_FAILURE);
+            printf("hue error\n");
+        } else {
+            printf("hue is not supported\n");
+        }
+    } else if(queryctrl.flags & V4L2_CTRL_FLAG_DISABLED) {
+        printf ("hue is not supported\n");
     }
-  } else if(queryctrl.flags & V4L2_CTRL_FLAG_DISABLED) {
-    printf ("hue is not supported\n");
-  }
-  mh=queryctrl.minimum;
-  Mh=queryctrl.maximum;
-  dh=queryctrl.default_value;
+    mh=queryctrl.minimum;
+    Mh=queryctrl.maximum;
+    dh=queryctrl.default_value;
 
 
-  memset(&queryctrl, 0, sizeof(queryctrl));
-  queryctrl.id = V4L2_CID_HUE_AUTO;
-  if(-1 == ioctl (fd, VIDIOC_QUERYCTRL, &queryctrl)) {
-    if(errno != EINVAL) {
-      //perror ("VIDIOC_QUERYCTRL");
-      //exit(EXIT_FAILURE);
-      printf("hueauto error\n");
-    } else {
-      printf("hueauto is not supported\n");
+    memset(&queryctrl, 0, sizeof(queryctrl));
+    queryctrl.id = V4L2_CID_HUE_AUTO;
+    if(-1 == ioctl (fd, VIDIOC_QUERYCTRL, &queryctrl)) {
+        if(errno != EINVAL) {
+            //perror ("VIDIOC_QUERYCTRL");
+            //exit(EXIT_FAILURE);
+            printf("hueauto error\n");
+        } else {
+            printf("hueauto is not supported\n");
+        }
+    } else if(queryctrl.flags & V4L2_CTRL_FLAG_DISABLED) {
+        printf ("hueauto is not supported\n");
     }
-  } else if(queryctrl.flags & V4L2_CTRL_FLAG_DISABLED) {
-    printf ("hueauto is not supported\n");
-  }
-  ha=queryctrl.default_value;
+    ha=queryctrl.default_value;
 
 
-  memset(&queryctrl, 0, sizeof(queryctrl));
-  queryctrl.id = V4L2_CID_SHARPNESS;
-  if(-1 == ioctl (fd, VIDIOC_QUERYCTRL, &queryctrl)) {
-    if(errno != EINVAL) {
-      //perror ("VIDIOC_QUERYCTRL");
-      //exit(EXIT_FAILURE);
-      printf("sharpness error\n");
-    } else {
-      printf("sharpness is not supported\n");
+    memset(&queryctrl, 0, sizeof(queryctrl));
+    queryctrl.id = V4L2_CID_SHARPNESS;
+    if(-1 == ioctl (fd, VIDIOC_QUERYCTRL, &queryctrl)) {
+        if(errno != EINVAL) {
+            //perror ("VIDIOC_QUERYCTRL");
+            //exit(EXIT_FAILURE);
+            printf("sharpness error\n");
+        } else {
+            printf("sharpness is not supported\n");
+        }
+    } else if(queryctrl.flags & V4L2_CTRL_FLAG_DISABLED) {
+        printf ("sharpness is not supported\n");
     }
-  } else if(queryctrl.flags & V4L2_CTRL_FLAG_DISABLED) {
-    printf ("sharpness is not supported\n");
-  }
-  msh=queryctrl.minimum;
-  Msh=queryctrl.maximum;
-  dsh=queryctrl.default_value;
+    msh=queryctrl.minimum;
+    Msh=queryctrl.maximum;
+    dsh=queryctrl.default_value;
 
 
 
@@ -359,9 +359,8 @@ if(-1==xioctl(fd, VIDIOC_S_PARM, &p))
 
 
 
-//TODO: TO ADD SETTINGS
-//here should go custom calls to xioctl
-
+    //TODO: TO ADD SETTINGS
+    //here should go custom calls to xioctl
 
 
 
@@ -372,34 +371,35 @@ if(-1==xioctl(fd, VIDIOC_S_PARM, &p))
 
 
 
-//END TO ADD SETTINGS
+
+    //END TO ADD SETTINGS
 
 
 
 
 
-  /* Note VIDIOC_S_FMT may change width and height. */
+    /* Note VIDIOC_S_FMT may change width and height. */
 
-  /* Buggy driver paranoia. */
-  min = fmt.fmt.pix.width * 2;
-  if(fmt.fmt.pix.bytesperline < min)
-    fmt.fmt.pix.bytesperline = min;
-  min = fmt.fmt.pix.bytesperline * fmt.fmt.pix.height;
-  if(fmt.fmt.pix.sizeimage < min)
-    fmt.fmt.pix.sizeimage = min;
+    /* Buggy driver paranoia. */
+    min = fmt.fmt.pix.width * 2;
+    if(fmt.fmt.pix.bytesperline < min)
+        fmt.fmt.pix.bytesperline = min;
+    min = fmt.fmt.pix.bytesperline * fmt.fmt.pix.height;
+    if(fmt.fmt.pix.sizeimage < min)
+        fmt.fmt.pix.sizeimage = min;
 
-  switch(io) {
-    case IO_METHOD_READ:
-      init_read(fmt.fmt.pix.sizeimage);
-      break;
+    switch(io) {
+        case IO_METHOD_READ:
+            init_read(fmt.fmt.pix.sizeimage);
+            break;
 
-    case IO_METHOD_MMAP:
-      init_mmap();
-      break;
+        case IO_METHOD_MMAP:
+            init_mmap();
+            break;
 
-    case IO_METHOD_USERPTR:
-      init_userp(fmt.fmt.pix.sizeimage);
-      break;
+        case IO_METHOD_USERPTR:
+            init_userp(fmt.fmt.pix.sizeimage);
+            break;
     }
 
 }
@@ -407,45 +407,45 @@ if(-1==xioctl(fd, VIDIOC_S_PARM, &p))
 
 
 void Camera::init_userp(unsigned int buffer_size) {
-/*
-  struct v4l2_requestbuffers req;
-  unsigned int page_size;
+    /*
+       struct v4l2_requestbuffers req;
+       unsigned int page_size;
 
-  page_size = getpagesize();
-  buffer_size = (buffer_size + page_size - 1) & ~(page_size - 1);
+       page_size = getpagesize();
+       buffer_size = (buffer_size + page_size - 1) & ~(page_size - 1);
 
-  CLEAR (req);
+       CLEAR (req);
 
-  req.count               = 4;
-  req.type                = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-  req.memory              = V4L2_MEMORY_USERPTR;
+       req.count               = 4;
+       req.type                = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+       req.memory              = V4L2_MEMORY_USERPTR;
 
-  if (-1 == xioctl (fd, VIDIOC_REQBUFS, &req)) {
-    if (EINVAL == errno) {
-     fprintf (stderr, "%s does not support user pointer i/o\n", name);
-                        exit (EXIT_FAILURE);
-                } else {
-                        errno_exit ("VIDIOC_REQBUFS");
-                }
-        }
+       if (-1 == xioctl (fd, VIDIOC_REQBUFS, &req)) {
+       if (EINVAL == errno) {
+       fprintf (stderr, "%s does not support user pointer i/o\n", name);
+       exit (EXIT_FAILURE);
+       } else {
+       errno_exit ("VIDIOC_REQBUFS");
+       }
+       }
 
-        buffers = calloc (4, sizeof (*buffers));
+       buffers = calloc (4, sizeof (*buffers));
 
-        if (!buffers) {
-                fprintf (stderr, "Out of memory\n");
-                exit (EXIT_FAILURE);
-        }
+       if (!buffers) {
+       fprintf (stderr, "Out of memory\n");
+       exit (EXIT_FAILURE);
+       }
 
-        for (n_buffers = 0; n_buffers < 4; ++n_buffers) {
-                buffers[n_buffers].length = buffer_size;
-                buffers[n_buffers].start = memalign (page_size,
-                                                     buffer_size);
+       for (n_buffers = 0; n_buffers < 4; ++n_buffers) {
+       buffers[n_buffers].length = buffer_size;
+       buffers[n_buffers].start = memalign (page_size,
+       buffer_size);
 
-                if (!buffers[n_buffers].start) {
-    			fprintf (stderr, "Out of memory\n");
-            		exit (EXIT_FAILURE);
-		}
-        }
+       if (!buffers[n_buffers].start) {
+       fprintf (stderr, "Out of memory\n");
+       exit (EXIT_FAILURE);
+       }
+       }
 
 
 */
@@ -454,161 +454,161 @@ void Camera::init_userp(unsigned int buffer_size) {
 
 
 void Camera::init_mmap() {
-  struct v4l2_requestbuffers req;
+    struct v4l2_requestbuffers req;
 
-  CLEAR (req);
+    CLEAR (req);
 
-  req.count               = 4;
-  req.type                = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-  req.memory              = V4L2_MEMORY_MMAP;
+    req.count               = 4;
+    req.type                = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    req.memory              = V4L2_MEMORY_MMAP;
 
-  if(-1 == xioctl (fd, VIDIOC_REQBUFS, &req)) {
-    if(EINVAL == errno) {
-      fprintf (stderr, "%s does not support memory mapping\n", name);
-      exit (1);
-    } else {
-      errno_exit ("VIDIOC_REQBUFS");
-    }
-  }
-
-  if(req.count < 2) {
-    fprintf (stderr, "Insufficient buffer memory on %s\n", name);
-    exit(1);
-  }
-
-  buffers = (buffer *)calloc(req.count, sizeof (*buffers));
-
-  if(!buffers) {
-    fprintf(stderr, "Out of memory\n");
-    exit(1);
-  }
-
-  for(n_buffers = 0; n_buffers < req.count; ++n_buffers) {
-    struct v4l2_buffer buf;
-
-    CLEAR (buf);
-
-    buf.type        = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    buf.memory      = V4L2_MEMORY_MMAP;
-    buf.index       = n_buffers;
-
-    if(-1 == xioctl (fd, VIDIOC_QUERYBUF, &buf))
-      errno_exit ("VIDIOC_QUERYBUF");
-
-    buffers[n_buffers].length = buf.length;
-    buffers[n_buffers].start = mmap (NULL /* start anywhere */,
-                              buf.length,
-                              PROT_READ | PROT_WRITE /* required */,
-                              MAP_SHARED /* recommended */,
-                              fd, buf.m.offset);
-
-    if(MAP_FAILED == buffers[n_buffers].start)
-      errno_exit ("mmap");
-  }
-
-}
-
-
-
-void Camera::init_read (unsigned int buffer_size) {
-/*
-        buffers = calloc (1, sizeof (*buffers));
-
-        if (!buffers) {
-                fprintf (stderr, "Out of memory\n");
-                exit (EXIT_FAILURE);
+    if(-1 == xioctl (fd, VIDIOC_REQBUFS, &req)) {
+        if(EINVAL == errno) {
+            fprintf (stderr, "%s does not support memory mapping\n", name);
+            exit (1);
+        } else {
+            errno_exit ("VIDIOC_REQBUFS");
         }
+    }
 
-	buffers[0].length = buffer_size;
-	buffers[0].start = malloc (buffer_size);
+    if(req.count < 2) {
+        fprintf (stderr, "Insufficient buffer memory on %s\n", name);
+        exit(1);
+    }
 
-	if (!buffers[0].start) {
-    		fprintf (stderr, "Out of memory\n");
-            	exit (EXIT_FAILURE);
-	}
-*/
-}
+    buffers = (buffer *)calloc(req.count, sizeof (*buffers));
 
+    if(!buffers) {
+        fprintf(stderr, "Out of memory\n");
+        exit(1);
+    }
 
-
-void Camera::UnInit() {
-  unsigned int i;
-
-  switch(io) {
-    case IO_METHOD_READ:
-      free (buffers[0].start);
-      break;
-
-    case IO_METHOD_MMAP:
-      for(i = 0; i < n_buffers; ++i)
-        if(-1 == munmap (buffers[i].start, buffers[i].length))
-          errno_exit ("munmap");
-      break;
-
-    case IO_METHOD_USERPTR:
-      for (i = 0; i < n_buffers; ++i)
-        free (buffers[i].start);
-      break;
-  }
-
-  free (buffers);
-
-}
-
-
-
-void Camera::Start() {
-  unsigned int i;
-  enum v4l2_buf_type type;
-
-  switch(io) {
-    case IO_METHOD_READ:
-      /* Nothing to do. */
-      break;
-
-    case IO_METHOD_MMAP:
-      for(i = 0; i < n_buffers; ++i) {
+    for(n_buffers = 0; n_buffers < req.count; ++n_buffers) {
         struct v4l2_buffer buf;
 
         CLEAR (buf);
 
         buf.type        = V4L2_BUF_TYPE_VIDEO_CAPTURE;
         buf.memory      = V4L2_MEMORY_MMAP;
-        buf.index       = i;
+        buf.index       = n_buffers;
 
-        if(-1 == xioctl (fd, VIDIOC_QBUF, &buf))
-          errno_exit ("VIDIOC_QBUF");
-      }
+        if(-1 == xioctl (fd, VIDIOC_QUERYBUF, &buf))
+            errno_exit ("VIDIOC_QUERYBUF");
 
-      type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        buffers[n_buffers].length = buf.length;
+        buffers[n_buffers].start = mmap (NULL /* start anywhere */,
+                buf.length,
+                PROT_READ | PROT_WRITE /* required */,
+                MAP_SHARED /* recommended */,
+                fd, buf.m.offset);
 
-      if(-1 == xioctl (fd, VIDIOC_STREAMON, &type))
-        errno_exit ("VIDIOC_STREAMON");
+        if(MAP_FAILED == buffers[n_buffers].start)
+            errno_exit ("mmap");
+    }
 
-      break;
+}
 
-    case IO_METHOD_USERPTR:
-      for(i = 0; i < n_buffers; ++i) {
-        struct v4l2_buffer buf;
 
-        CLEAR (buf);
 
-        buf.type        = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-        buf.memory      = V4L2_MEMORY_USERPTR;
-        buf.index       = i;
-        buf.m.userptr	= (unsigned long) buffers[i].start;
-        buf.length      = buffers[i].length;
+void Camera::init_read (unsigned int buffer_size) {
+    /*
+       buffers = calloc (1, sizeof (*buffers));
 
-        if(-1 == xioctl (fd, VIDIOC_QBUF, &buf))
-          errno_exit ("VIDIOC_QBUF");
-      }
+       if (!buffers) {
+       fprintf (stderr, "Out of memory\n");
+       exit (EXIT_FAILURE);
+       }
 
-      type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+       buffers[0].length = buffer_size;
+       buffers[0].start = malloc (buffer_size);
 
-      if(-1 == xioctl (fd, VIDIOC_STREAMON, &type))
-        errno_exit ("VIDIOC_STREAMON");
+       if (!buffers[0].start) {
+       fprintf (stderr, "Out of memory\n");
+       exit (EXIT_FAILURE);
+       }
+       */
+}
 
-      break;
+
+
+void Camera::UnInit() {
+    unsigned int i;
+
+    switch(io) {
+        case IO_METHOD_READ:
+            free (buffers[0].start);
+            break;
+
+        case IO_METHOD_MMAP:
+            for(i = 0; i < n_buffers; ++i)
+                if(-1 == munmap (buffers[i].start, buffers[i].length))
+                    errno_exit ("munmap");
+            break;
+
+        case IO_METHOD_USERPTR:
+            for (i = 0; i < n_buffers; ++i)
+                free (buffers[i].start);
+            break;
+    }
+
+    free (buffers);
+
+}
+
+
+
+void Camera::Start() {
+    unsigned int i;
+    enum v4l2_buf_type type;
+
+    switch(io) {
+        case IO_METHOD_READ:
+            /* Nothing to do. */
+            break;
+
+        case IO_METHOD_MMAP:
+            for(i = 0; i < n_buffers; ++i) {
+                struct v4l2_buffer buf;
+
+                CLEAR (buf);
+
+                buf.type        = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+                buf.memory      = V4L2_MEMORY_MMAP;
+                buf.index       = i;
+
+                if(-1 == xioctl (fd, VIDIOC_QBUF, &buf))
+                    errno_exit ("VIDIOC_QBUF");
+            }
+
+            type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+
+            if(-1 == xioctl (fd, VIDIOC_STREAMON, &type))
+                errno_exit ("VIDIOC_STREAMON");
+
+            break;
+
+        case IO_METHOD_USERPTR:
+            for(i = 0; i < n_buffers; ++i) {
+                struct v4l2_buffer buf;
+
+                CLEAR (buf);
+
+                buf.type        = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+                buf.memory      = V4L2_MEMORY_USERPTR;
+                buf.index       = i;
+                buf.m.userptr	= (unsigned long) buffers[i].start;
+                buf.length      = buffers[i].length;
+
+                if(-1 == xioctl (fd, VIDIOC_QBUF, &buf))
+                    errno_exit ("VIDIOC_QBUF");
+            }
+
+            type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+
+            if(-1 == xioctl (fd, VIDIOC_STREAMON, &type))
+                errno_exit ("VIDIOC_STREAMON");
+
+            break;
     }
 
 }
@@ -616,118 +616,118 @@ void Camera::Start() {
 
 
 void Camera::Stop() {
-  enum v4l2_buf_type type;
+    enum v4l2_buf_type type;
 
-  switch(io) {
-    case IO_METHOD_READ:
-      /* Nothing to do. */
-      break;
+    switch(io) {
+        case IO_METHOD_READ:
+            /* Nothing to do. */
+            break;
 
-    case IO_METHOD_MMAP:
-    case IO_METHOD_USERPTR:
-      type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        case IO_METHOD_MMAP:
+        case IO_METHOD_USERPTR:
+            type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
-      if(-1 == xioctl (fd, VIDIOC_STREAMOFF, &type))
-        errno_exit ("VIDIOC_STREAMOFF");
+            if(-1 == xioctl (fd, VIDIOC_STREAMOFF, &type))
+                errno_exit ("VIDIOC_STREAMOFF");
 
-      break;
-  }
+            break;
+    }
 
 }
 
 
 
 unsigned char *Camera::Get() {
-  struct v4l2_buffer buf;
-  unsigned int i;
+    struct v4l2_buffer buf;
+    unsigned int i;
 
 
-  switch(io) {
-    case IO_METHOD_READ:
-/*
-    		if (-1 == read (fd, buffers[0].start, buffers[0].length)) {
-            		switch (errno) {
-            		case EAGAIN:
-                    		return 0;
+    switch(io) {
+        case IO_METHOD_READ:
+            /*
+               if (-1 == read (fd, buffers[0].start, buffers[0].length)) {
+               switch (errno) {
+               case EAGAIN:
+               return 0;
 
-			case EIO:
-
-
-			default:
-				errno_exit ("read");
-			}
-		}
-
-    		process_image (buffers[0].start);
-*/
-      break;
-
-    case IO_METHOD_MMAP:
-      CLEAR(buf);
-
-      buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-      buf.memory = V4L2_MEMORY_MMAP;
-
-      if(-1 == xioctl (fd, VIDIOC_DQBUF, &buf)) {
-        switch (errno) {
-          case EAGAIN:
-            return 0;
-          case EIO:
-          default:
-            errno_exit ("VIDIOC_DQBUF");
-        }
-      }
-
-      assert(buf.index < n_buffers);
-
-//process_image(buffers[buf.index].start);
-
-//printf("** LENGHT ** : %d\n", buffers[buf.index].length);
-memcpy(data, (unsigned char *)buffers[buf.index].start, buffers[buf.index].length);
+               case EIO:
 
 
-      if(-1 == xioctl (fd, VIDIOC_QBUF, &buf))
-        errno_exit ("VIDIOC_QBUF");
+               default:
+               errno_exit ("read");
+               }
+               }
 
-return data;
+               process_image (buffers[0].start);
+               */
+            break;
+
+        case IO_METHOD_MMAP:
+            CLEAR(buf);
+
+            buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+            buf.memory = V4L2_MEMORY_MMAP;
+
+            if(-1 == xioctl (fd, VIDIOC_DQBUF, &buf)) {
+                switch (errno) {
+                    case EAGAIN:
+                        return 0;
+                    case EIO:
+                    default:
+                        errno_exit ("VIDIOC_DQBUF");
+                }
+            }
+
+            assert(buf.index < n_buffers);
+
+            //process_image(buffers[buf.index].start);
+
+            //printf("** LENGHT ** : %d\n", buffers[buf.index].length);
+            memcpy(data, (unsigned char *)buffers[buf.index].start, buffers[buf.index].length);
 
 
-      break;
+            if(-1 == xioctl (fd, VIDIOC_QBUF, &buf))
+                errno_exit ("VIDIOC_QBUF");
 
-    case IO_METHOD_USERPTR:
-/*
-		CLEAR (buf);
-
-    		buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    		buf.memory = V4L2_MEMORY_USERPTR;
-
-		if (-1 == xioctl (fd, VIDIOC_DQBUF, &buf)) {
-			switch (errno) {
-			case EAGAIN:
-				return 0;
-
-			case EIO:
+            return data;
 
 
-			default:
-				errno_exit ("VIDIOC_DQBUF");
-			}
-		}
+            break;
 
-		for (i = 0; i < n_buffers; ++i)
-			if (buf.m.userptr == (unsigned long) buffers[i].start
-			    && buf.length == buffers[i].length)
-				break;
+        case IO_METHOD_USERPTR:
+            /*
+               CLEAR (buf);
 
-		assert (i < n_buffers);
+               buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+               buf.memory = V4L2_MEMORY_USERPTR;
 
-    		process_image ((void *) buf.m.userptr);
+               if (-1 == xioctl (fd, VIDIOC_DQBUF, &buf)) {
+               switch (errno) {
+               case EAGAIN:
+               return 0;
 
-		if (-1 == xioctl (fd, VIDIOC_QBUF, &buf))
-			errno_exit ("VIDIOC_QBUF");
-*/
-      break;
-  }
+               case EIO:
+
+
+               default:
+               errno_exit ("VIDIOC_DQBUF");
+               }
+               }
+
+               for (i = 0; i < n_buffers; ++i)
+               if (buf.m.userptr == (unsigned long) buffers[i].start
+               && buf.length == buffers[i].length)
+               break;
+
+               assert (i < n_buffers);
+
+               process_image ((void *) buf.m.userptr);
+
+               if (-1 == xioctl (fd, VIDIOC_QBUF, &buf))
+               errno_exit ("VIDIOC_QBUF");
+               */
+            break;
+    }
 
 
 }
@@ -736,17 +736,17 @@ return data;
 
 
 unsigned char *Camera::Update(unsigned int t) {
-  while(this->Get()==0) {
-    usleep(t);
-  }
-  return this->data;
+    while(this->Get()==0) {
+        usleep(t);
+    }
+    return this->data;
 
 }
 
 
 unsigned char *Camera::Update(Camera *c2, unsigned int t) {
-  while(this->Get()==0 || c2->Get()==0) usleep(t);
-  return this->data;
+    while(this->Get()==0 || c2->Get()==0) usleep(t);
+    return this->data;
 
 }
 
@@ -754,54 +754,54 @@ unsigned char *Camera::Update(Camera *c2, unsigned int t) {
 
 #ifdef USE_OPENCV
 void Camera::toIplImage(IplImage *l) {
-  unsigned char *l_=(unsigned char *)l->imageData;
+    unsigned char *l_=(unsigned char *)l->imageData;
 
 
-  for(int x=0; x<w2; x++) {
-    for(int y=0; y<height; y++) {
-      int y0, y1, u, v; //y0 u y1 v
+    for(int x=0; x<w2; x++) {
+        for(int y=0; y<height; y++) {
+            int y0, y1, u, v; //y0 u y1 v
 
-      int i=(y*w2+x)*4;
-      y0=data[i];
-      u=data[i+1];
-      y1=data[i+2];
-      v=data[i+3];
+            int i=(y*w2+x)*4;
+            y0=data[i];
+            u=data[i+1];
+            y1=data[i+2];
+            v=data[i+3];
 
-      int r, g, b;
-      r = y0 + (1.370705 * (v-128));
-      g = y0 - (0.698001 * (v-128)) - (0.337633 * (u-128));
-      b = y0 + (1.732446 * (u-128));
+            int r, g, b;
+            r = y0 + (1.370705 * (v-128));
+            g = y0 - (0.698001 * (v-128)) - (0.337633 * (u-128));
+            b = y0 + (1.732446 * (u-128));
 
-      if(r > 255) r = 255;
-      if(g > 255) g = 255;
-      if(b > 255) b = 255;
-      if(r < 0) r = 0;
-      if(g < 0) g = 0;
-      if(b < 0) b = 0;
+            if(r > 255) r = 255;
+            if(g > 255) g = 255;
+            if(b > 255) b = 255;
+            if(r < 0) r = 0;
+            if(g < 0) g = 0;
+            if(b < 0) b = 0;
 
-      i=(y*l->width+2*x)*3;
-      l_[i] = (unsigned char)(b); //B
-      l_[i+1] = (unsigned char)(g); //G
-      l_[i+2] = (unsigned char)(r); //R
+            i=(y*l->width+2*x)*3;
+            l_[i] = (unsigned char)(b); //B
+            l_[i+1] = (unsigned char)(g); //G
+            l_[i+2] = (unsigned char)(r); //R
 
 
-      r = y0 + (1.370705 * (v-128));
-      g = y0 - (0.698001 * (v-128)) - (0.337633 * (u-128));
-      b = y0 + (1.732446 * (u-128));
+            r = y0 + (1.370705 * (v-128));
+            g = y0 - (0.698001 * (v-128)) - (0.337633 * (u-128));
+            b = y0 + (1.732446 * (u-128));
 
-      if(r > 255) r = 255;
-      if(g > 255) g = 255;
-      if(b > 255) b = 255;
-      if(r < 0) r = 0;
-      if(g < 0) g = 0;
-      if(b < 0) b = 0;
+            if(r > 255) r = 255;
+            if(g > 255) g = 255;
+            if(b > 255) b = 255;
+            if(r < 0) r = 0;
+            if(g < 0) g = 0;
+            if(b < 0) b = 0;
 
-      l_[i+3] = (unsigned char)(b); //B
-      l_[i+4] = (unsigned char)(g); //G
-      l_[i+5] = (unsigned char)(r); //R
+            l_[i+3] = (unsigned char)(b); //B
+            l_[i+4] = (unsigned char)(g); //G
+            l_[i+5] = (unsigned char)(r); //R
 
+        }
     }
-  }
 
 }
 #endif
@@ -810,180 +810,180 @@ void Camera::toIplImage(IplImage *l) {
 
 
 int Camera::minBrightness() {
-  return mb;
+    return mb;
 }
 
 
 int Camera::maxBrightness() {
-  return Mb;
+    return Mb;
 }
 
 
 int Camera::defaultBrightness() {
-  return db;
+    return db;
 }
 
 
 int Camera::minContrast() {
-  return mc;
+    return mc;
 }
 
 
 int Camera::maxContrast() {
-  return Mc;
+    return Mc;
 }
 
 
 int Camera::defaultContrast() {
-  return dc;
+    return dc;
 }
 
 
 int Camera::minSaturation() {
-  return ms;
+    return ms;
 }
 
 
 int Camera::maxSaturation() {
-  return Ms;
+    return Ms;
 }
 
 
 int Camera::defaultSaturation() {
-  return ds;
+    return ds;
 }
 
 
 int Camera::minHue() {
-  return mh;
+    return mh;
 }
 
 
 int Camera::maxHue() {
-  return Mh;
+    return Mh;
 }
 
 
 int Camera::defaultHue() {
-  return dh;
+    return dh;
 }
 
 
 bool Camera::isHueAuto() {
-  return ha;
+    return ha;
 }
 
 
 int Camera::minSharpness() {
-  return msh;
+    return msh;
 }
 
 
 int Camera::maxSharpness() {
-  return Msh;
+    return Msh;
 }
 
 
 int Camera::defaultSharpness() {
-  return dsh;
+    return dsh;
 }
 
 
 
 
 int Camera::setBrightness(int v) {
-  if(v<mb || v>Mb) return -1;
+    if(v<mb || v>Mb) return -1;
 
-  struct v4l2_control control;
-  control.id = V4L2_CID_BRIGHTNESS;
-  control.value = v;
+    struct v4l2_control control;
+    control.id = V4L2_CID_BRIGHTNESS;
+    control.value = v;
 
-  if(-1 == ioctl (fd, VIDIOC_S_CTRL, &control)) {
-    perror("error setting brightness");
-    return -1;
-  }
+    if(-1 == ioctl (fd, VIDIOC_S_CTRL, &control)) {
+        perror("error setting brightness");
+        return -1;
+    }
 
-  return 1;
+    return 1;
 }
 
 
 int Camera::setContrast(int v) {
-  if(v<mc || v>Mc) return -1;
+    if(v<mc || v>Mc) return -1;
 
-  struct v4l2_control control;
-  control.id = V4L2_CID_CONTRAST;
-  control.value = v;
+    struct v4l2_control control;
+    control.id = V4L2_CID_CONTRAST;
+    control.value = v;
 
-  if(-1 == ioctl (fd, VIDIOC_S_CTRL, &control)) {
-    perror("error setting contrast");
-    return -1;
-  }
+    if(-1 == ioctl (fd, VIDIOC_S_CTRL, &control)) {
+        perror("error setting contrast");
+        return -1;
+    }
 
-  return 1;
+    return 1;
 }
 
 
 int Camera::setSaturation(int v) {
-  if(v<ms || v>Ms) return -1;
+    if(v<ms || v>Ms) return -1;
 
-  struct v4l2_control control;
-  control.id = V4L2_CID_SATURATION;
-  control.value = v;
+    struct v4l2_control control;
+    control.id = V4L2_CID_SATURATION;
+    control.value = v;
 
-  if(-1 == ioctl (fd, VIDIOC_S_CTRL, &control)) {
-    perror("error setting saturation");
-    return -1;
-  }
+    if(-1 == ioctl (fd, VIDIOC_S_CTRL, &control)) {
+        perror("error setting saturation");
+        return -1;
+    }
 
-  return 1;
+    return 1;
 }
 
 
 int Camera::setHue(int v) {
-  if(v<mh || v>Mh) return -1;
+    if(v<mh || v>Mh) return -1;
 
-  struct v4l2_control control;
-  control.id = V4L2_CID_HUE;
-  control.value = v;
+    struct v4l2_control control;
+    control.id = V4L2_CID_HUE;
+    control.value = v;
 
-  if(-1 == ioctl (fd, VIDIOC_S_CTRL, &control)) {
-    perror("error setting hue");
-    return -1;
-  }
+    if(-1 == ioctl (fd, VIDIOC_S_CTRL, &control)) {
+        perror("error setting hue");
+        return -1;
+    }
 
-  return 1;
+    return 1;
 }
 
 
 int Camera::setHueAuto(bool v) {
-  if(v<mh || v>Mh) return -1;
+    if(v<mh || v>Mh) return -1;
 
-  struct v4l2_control control;
-  control.id = V4L2_CID_HUE_AUTO;
-  control.value = v;
+    struct v4l2_control control;
+    control.id = V4L2_CID_HUE_AUTO;
+    control.value = v;
 
-  if(-1 == ioctl (fd, VIDIOC_S_CTRL, &control)) {
-    perror("error setting hue auto");
-    return -1;
-  }
+    if(-1 == ioctl (fd, VIDIOC_S_CTRL, &control)) {
+        perror("error setting hue auto");
+        return -1;
+    }
 
-  return 1;
+    return 1;
 }
 
 
 int Camera::setSharpness(int v) {
-  if(v<mh || v>Mh) return -1;
+    if(v<mh || v>Mh) return -1;
 
-  struct v4l2_control control;
-  control.id = V4L2_CID_SHARPNESS;
-  control.value = v;
+    struct v4l2_control control;
+    control.id = V4L2_CID_SHARPNESS;
+    control.value = v;
 
-  if(-1 == ioctl (fd, VIDIOC_S_CTRL, &control)) {
-    perror("error setting sharpness");
-    return -1;
-  }
+    if(-1 == ioctl (fd, VIDIOC_S_CTRL, &control)) {
+        perror("error setting sharpness");
+        return -1;
+    }
 
-  return 1;
+    return 1;
 }
 
 
