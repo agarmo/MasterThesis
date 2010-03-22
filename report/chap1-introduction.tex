@@ -5,9 +5,53 @@ Robot navigation is a topic which have been researched heavily the last 4 decade
 interest of making a machine which can navigate its surroundings and reason what to do
 next have always been a dream for many researchers. 
 
-Making a robot which can do dull, dirty or dangerous work have always been seen on as a
-good use of robots. 
+Making a robot which can do dull, dirty  or dangerous work have always been seen on as a
+good use of robots. This because the do not tier as a human would do performing the same
+task over and over again. A robot is expendable, a human is not, allowing it to go into
+dangerous places and investigate. Imagine a robot go into a disaster area and search for
+survivors and map the area in advance for the rescue team. The third of the ``Ds'' are the
+dirty aspect, which can both be dull and dangerous, and a human might not be able to go
+into such an area. 
 
+The Pipe Inspection Konda (PiKo) is a seven-segment robot with active wheels developed by
+SINTEF Applied Cybernetics. This is one of the numerous generations of snakelike robots
+developed by SINTEF, starting with Anna Konda, which originally was designed to be a fire
+hose and assist firemen in areas where explosion danger are imminent, or the smoke is too
+thick for the fire men to enter, like tunnel fires and so on. 
+
+Some of PiKos joints have 2 degrees of freedom, which makes it able to climb vertical ducts. This
+because it can span itself as an S, and the friction from the wheels keeps it in place.
+This makes it a unique tool for pipe and duct inspection, in full 3D movement. 
+For this to work properly there are a number of obstacles which have to be overcome. 
+
+First, theres the navigation in the duct or pipe network. How to keep track of where the robot
+are, and even more important, where it has been. This is a difficult problem, since there
+are no absolute navigation system available to the robot, i.e. GPS or other beacon based
+navigation, available to the robot. This means that the robot must rely on some kind of
+dead reckoning navigation. This means that the position is integrated from acceleration or
+speed measurements, which gives a very more and more uncertain position estimate as time
+goes by. This means as the mission time progresses the uncertainty of the map increases,
+which might give very erroneous results at the end of the mission.
+
+Second, which is derived form the first obstacle, is that the robot need to tag pipe
+defects and other anomalies in the pipeline. This anomalies should be marked as accurate
+as possible. This demands a great deal from the navigation system with regard to accuracy. 
+
+Third, since this is a robot, which are designed to be autonomous and optimized for long
+missions, the computational abilities and resources in the robot are limited. This calls
+for that the navigation and mapping step should not be too computationally intensive.
+Especially the mapping of areas in 3D might be very computationally intensive, and demand
+much storage. This calls for a sparse and representation of the environment, even though
+the computer capacity are increasing with the years, the robot are served with having as
+sparse representation as possible. 
+
+The problem with sparse representation is that it requires much more reasoning from the 
+robot. This means that the robot has to interpret the environment into more abstract form,
+i.e. it has to recognize a junction as a Y-junction and a turn as a L-bend. This demand a
+great deal from the control system and the sensors. 
+
+The sensors of the robot are important. This represents the way the robot senses the world
+and influences a great deal on how it will map it's surroundings. 
 
 
 \section{Motivation}
@@ -15,5 +59,18 @@ good use of robots.
 
 
 \section{Structure of this report}
+This report is divided into 9 chapters, whereas Chapter 1 is the introduction, Chapter 2
+treats the mathematical background of the measurements principles involved. It describes
+the sensors, different map representations and sensor fusion schemes. Last theres a
+mapping on similar applications around the world.
 
+Chapter 3 describes the sensors which are used in this project, and discusses the pro's
+and con's of the sensors. Chapter 4 describes the sensor fusion approach chosen for the
+project while Chapter 5 treats the map representation. 
+
+The implemented solution are described in detail in Chapter 6, while the test setup are
+shown in Chapter 7. The results are discussed in Chapter 8, and conclusions are drawn in
+Chapter 9. Future work and solutions are also plotted in Chapter 9.
+
+TODO: fiks labels og referanser. 
 

@@ -119,7 +119,6 @@ cyclic environments. This because of the uncertainty in the sensor measurements 
 pose and odometry. 
 
 
-
 \subsubsection{Topological Maps}
 Object maps are topological maps and represents the sensed world in the form of predefined nodes and links
 between them. Each node has a set of attributes, like length, links to doors etc. This is
@@ -179,6 +178,15 @@ to use different measurement principles which have different capabilities.
 
 
 \subsubsection{Low-level Fusion}
+The term low-level fusion is often used when the sensor data is directly integrated
+resulting in parameters and state estimates of the model. This methods are mostly purely
+mathematical. This method involves the Kalman Filter, and other Bayesian approaches. In
+many cases the use of \'a priori information are utilized to verify or improve the
+estimates from the sensors.
+
+This methods are probabilistic and requires that you know something about the
+statistical properties of the sensors and the \'a priori model. 
+
 
 
 \subsubsection{High-level Fusion}
