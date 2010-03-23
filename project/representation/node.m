@@ -1,5 +1,4 @@
-%% This is the class definition for the genreal node in the world
-%% representation. 
+%% Class definition for the genreal node in the world representation. 
 % The plan is to make this class a super class and let the different types
 % of nodes inherit form this one.
 % Description of the properties:
