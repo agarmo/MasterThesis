@@ -15,18 +15,16 @@
 %           
 classdef node
     properties
-        type = 'Super Node';
-        number = 0;
+        type;
+        number;
         prev_node;
         discovered;
         diameter;
         dist_prev_node;
         anomalies;
     end
-    methods
-        function isDiscovered(this)
-            
-        end
+    methods           
     end 
 end
+
 
