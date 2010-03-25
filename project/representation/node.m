@@ -22,8 +22,18 @@ classdef node
         diameter;
         dist_prev_node;
         anomalies;
+        color;
     end
-    methods           
+    methods
+        
+        function [] = draw(object, pos_x, pos_y) % Draws the node at pos x, y using fill
+            x = [pos_x-1; pos_x-1; pos_x+1; pos_x+1];
+            y = [pos_y-1; pos_y+1; pos_y+1; pos_y-1];
+            hold on; % 
+            fill(x, y, object.color);
+            hold off;
+        end
+        
     end 
 end
 
