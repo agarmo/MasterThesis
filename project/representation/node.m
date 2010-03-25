@@ -33,7 +33,11 @@ classdef node
             fill(x, y, object.color);
             hold off;
         end
-        
+        % need some error check to see that the anomaly is put into the 
+        % table correctly.
+        function [object] = addAnomaly(object, anomaly)            
+            object.anomalies = [object.anomalies; anomaly];
+        end
     end 
 end
 

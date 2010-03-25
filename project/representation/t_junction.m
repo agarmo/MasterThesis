@@ -8,7 +8,6 @@ classdef t_junction < node
         function [t] = t_junction(t)
             t.color = 'green';
             t.type = 'T Junction';
-%             t.diameter = constant_pipe_diameter;
         end
          %constructor which is run when a new node is recognized
 %         function [t] = t_junction(t, time, prev_node)
