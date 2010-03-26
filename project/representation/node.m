@@ -25,11 +25,13 @@ classdef node
         dist_prev_node;
         anomalies;
         color;
-    end
+%     end
     
-    properties(GetAccess = protected, SetAccess = protected) % Drawing properties
+%     properties(GetAccess = protected, SetAccess = protected) % Drawing properties
         number_of_edges; % The number of edges connecting to the node
         angles_of_edges; % array with the angles of the connected edges. Relative to NED
+        x; % x position of the node when drawing
+        y; % y position of the node when drawing
     end
     
     
@@ -57,18 +59,10 @@ classdef node
                     object.dist_prev_node = dist_prev_node;
                 end
             end 
-            object.discovered = datevec(datestr(now,0));
+            object.discovered = datevec(datestr(now, 0));
         end
         
         
-        %% display function
-        function [] = draw(object, pos_x, pos_y) % Draws the node at pos x, y using fill
-            x = [pos_x-1; pos_x-1; pos_x+1; pos_x+1];
-            y = [pos_y-1; pos_y+1; pos_y+1; pos_y-1];
-            hold on; % 
-            fill(x, y, object.color);
-            hold off;
-        end
         
         %% Adding anomalies which have been observed during the travel
         
@@ -77,6 +71,42 @@ classdef node
         function [object] = addAnomaly(object, anomaly)
             object.anomalies = [object.anomalies; anomaly];
         end
+        
+        function [object] = setPostition(object, x, y)
+            object.x = x;
+            object.y = y;
+        end
        
+        %% display functions
+        
+        function [object] = draw_at_position(object, pos_x, pos_y) % Draws the node at pos x, y using fill
+            x = [pos_x-1; pos_x-1; pos_x+1; pos_x+1];
+            y = [pos_y-1; pos_y+1; pos_y+1; pos_y-1];
+            
+            hold on; % 
+            fill(x, y, object.color);
+            hold off;
+            object.x = pos_x;
+            object.y = pos_y;
+        end
+        
+        function [] = draw_edges(object)
+            r = 10; %set defualt lenght of edges
+            for i = 1:object.number_of_edges
+                angle = deg2rad(object.angles_of_edges(i) + object.orientation);
+                
+                x = r*cos(angle) + object.x;
+                y = r*sin(angle) + object.y;
+             
+                hold on;
+                plot([object.x, x], [object.y, y]);
+                hold off;
+            end
+        
+        end
+        
+        
+        
     end 
 end
+
