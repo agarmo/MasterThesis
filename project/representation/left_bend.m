@@ -33,6 +33,11 @@ classdef left_bend < node
             
             t.color = 'black';
             t.type = 'Left Bend';           
+            
+            t.number_of_edges = 2;
+            t.angles_of_edges = [0, 270];
+         
+            
         end
     end
 end

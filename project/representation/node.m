@@ -71,6 +71,8 @@ classdef node
             object.anomalies = [object.anomalies; anomaly];
         end
         
+        %% Set functions
+
         function [object] = setPostition(object, x, y)
             object.x = x;
             object.y = y;
@@ -79,8 +81,25 @@ classdef node
         %% display functions
         
         function [object] = draw_at_position(object, pos_x, pos_y) % Draws the node at pos x, y using fill
-            x = [pos_x-1; pos_x-1; pos_x+1; pos_x+1];
-            y = [pos_y-1; pos_y+1; pos_y+1; pos_y-1];
+            orientation = deg2rad(object.orientation);
+            
+            r = [cos(orientation), -sin(orientation);
+                 sin(orientation), cos(orientation)];
+
+            posb = r'*[pos_x; pos_y]; % transform to body coords
+            
+            x = [posb(1)-1; posb(1)-1; posb(1)+1; posb(1)+1];
+            y = [posb(2)-1; posb(2)+1; posb(2)+1; posb(2)-1];
+            
+            % need to rotate the box with regard to the orientation
+            % transform to global coords
+            pos1 = r*[x(1); y(1)];
+            pos2 = r*[x(2); y(2)];
+            pos3 = r*[x(3); y(3)];
+            pos4 = r*[x(4); y(4)];
+            
+            x = [pos1(1), pos2(1), pos3(1), pos4(1)];
+            y = [pos1(2), pos2(2), pos3(2), pos4(2)];
             
             hold on; % 
             fill(x, y, object.color);
@@ -104,6 +123,8 @@ classdef node
             end
         
         end
+        
+        
         
         
         
