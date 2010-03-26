@@ -37,9 +37,8 @@ classdef node
     
     methods
         
-        
+        %% constructor
         function [object] = node(number, orientation, prev_node, diameter, dist_prev_node)
-            %% default constructor
             if nargin == 0 
                 % do nothing, because the felds are empty.
             else
@@ -92,6 +91,7 @@ classdef node
         
         function [] = draw_edges(object)
             r = 10; %set defualt lenght of edges
+            
             for i = 1:object.number_of_edges
                 angle = deg2rad(object.angles_of_edges(i) + object.orientation);
                 
