@@ -25,10 +25,12 @@ classdef node
         color;
     end
     methods
+        
+        
         function [object] = node(number, prev_node, diameter, dist_prev_node)
             %% default constructor
             if nargin == 0 
-                
+                % do nothing, because the felds are empty.
             else
                 if ~isempty(number)
                     object.number = number;
@@ -46,6 +48,8 @@ classdef node
             object.discovered = datevec(datestr(now,0));
         end
         
+        
+        %% display function
         function [] = draw(object, pos_x, pos_y) % Draws the node at pos x, y using fill
             x = [pos_x-1; pos_x-1; pos_x+1; pos_x+1];
             y = [pos_y-1; pos_y+1; pos_y+1; pos_y-1];
@@ -54,10 +58,11 @@ classdef node
             hold off;
         end
         
+        %% Adding anomalies which have been observed during the travel
         
-        % need some error check to see that the anomaly is put into the 
+        % TODO need some error check to see that the anomaly is put into the 
         % table correctly.
-        function [object] = addAnomaly(object, anomaly)            
+        function [object] = addAnomaly(object, anomaly)
             object.anomalies = [object.anomalies; anomaly];
         end
         
