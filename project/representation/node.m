@@ -25,6 +25,26 @@ classdef node
         color;
     end
     methods
+        function [object] = node(number, prev_node, diameter, dist_prev_node)
+            %% default constructor
+            if nargin == 0 
+                
+            else
+                if ~isempty(number)
+                    object.number = number;
+                end            
+                if ~isempty(diameter)
+                    object.diameter = diameter;
+                end
+                if ~isempty(prev_node)
+                    object.prev_node = prev_node;
+                end
+                if ~isempty(dist_prev_node)
+                    object.dist_prev_node = dist_prev_node;
+                end
+            end 
+            object.discovered = datevec(datestr(now,0));
+        end
         
         function [] = draw(object, pos_x, pos_y) % Draws the node at pos x, y using fill
             x = [pos_x-1; pos_x-1; pos_x+1; pos_x+1];
@@ -33,12 +53,14 @@ classdef node
             fill(x, y, object.color);
             hold off;
         end
+        
+        
         % need some error check to see that the anomaly is put into the 
         % table correctly.
         function [object] = addAnomaly(object, anomaly)            
             object.anomalies = [object.anomalies; anomaly];
         end
+        
+        
     end 
 end
-
-
