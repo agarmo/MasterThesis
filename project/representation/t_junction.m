@@ -5,7 +5,7 @@ classdef t_junction < node
     end
     methods
         
-        function [t] = t_junction(number, prev_node, diameter, dist_prev_node)
+        function [t] = t_junction(number, orientation, prev_node, diameter, dist_prev_node)
             
             %% Default constuctor
             if nargin == 0
@@ -14,14 +14,17 @@ classdef t_junction < node
                 if ~isempty(number)
                     args{1} = number;
                 end
+                if ~isempty(orientation)
+                    args{2} = orientation;
+                end
                 if ~isempty(prev_node)
-                    args{2} = prev_node;
+                    args{3} = prev_node;
                 end
                 if ~isempty(diameter)
-                    args{3} = diameter;
+                    args{4} = diameter;
                 end
                 if ~isempty(dist_prev_node)
-                    args{4} = dist_prev_node;
+                    args{5} = dist_prev_node;
                 end
             end
             
@@ -31,7 +34,10 @@ classdef t_junction < node
             %% class specific
             
             t.color = 'green';
-            t.type = 'T Junction';          
+            t.type = 'T Junction';
+            
+            t.number_of_edges = 3;
+            t.angles_of_edges = [0, 180, 270]; %standard  
         end
        
         function [t] = setType(obj, nodetype)

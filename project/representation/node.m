@@ -11,12 +11,14 @@
 %           dist_prev_node: is the estimated distance to the previous node.
 %           anomalies: A list of anomalies discovered between this node and
 %                      the previous one,
+%           orientation: The orientation of the node, relative to NED
 % List of methods:
 %           
 classdef node
     properties
         type;
         number;
+        orientation;
         prev_node;
         discovered;
         diameter;
@@ -24,17 +26,27 @@ classdef node
         anomalies;
         color;
     end
+    
+    properties(GetAccess = protected, SetAccess = protected) % Drawing properties
+        number_of_edges; % The number of edges connecting to the node
+        angles_of_edges; % array with the angles of the connected edges. Relative to NED
+    end
+    
+    
     methods
         
         
-        function [object] = node(number, prev_node, diameter, dist_prev_node)
+        function [object] = node(number, orientation, prev_node, diameter, dist_prev_node)
             %% default constructor
             if nargin == 0 
                 % do nothing, because the felds are empty.
             else
                 if ~isempty(number)
                     object.number = number;
-                end            
+                end
+                if ~isempty(orientation)
+                    object.orientation = orientation;
+                end
                 if ~isempty(diameter)
                     object.diameter = diameter;
                 end
@@ -65,7 +77,6 @@ classdef node
         function [object] = addAnomaly(object, anomaly)
             object.anomalies = [object.anomalies; anomaly];
         end
-        
-        
+       
     end 
 end
