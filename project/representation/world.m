@@ -31,12 +31,21 @@ classdef world
         
         %% Othre functions
         % add node function for adding nodes to the world
+        % 
+        % When adding nodes, they need to be of the same type. Then it
+        % should be easiest to convert them to the super class, node to
+        % fit all the nodes into the same array.
         
         function [object] = addNode(object, node, x, y)
             
-            object.nodes = [object.nodes; node]; % add the node to the list
-            object.nodes(end) = object.nodes(end).draw_at_position(x, y);
-            
+            if class(node) != 'node
+                % convert the node to super node and put into array
+            else           
+                % is of type node.
+                
+                object.nodes = [object.nodes; node]; % add the node to the list
+                object.nodes(end) = object.nodes(end).draw_at_position(x, y);
+            end
         end
         
     end
