@@ -24,7 +24,7 @@ classdef world
             
             start = start_node(0, 10); % create a start node
             
-            object.nodes = [start];
+            object.nodes = [node(start)];
             object.nodes(1) = object.nodes(1).draw_at_position([0;0]);
                                     
         end
