@@ -30,8 +30,7 @@ classdef node
 %     properties(GetAccess = protected, SetAccess = protected) % Drawing properties
         number_of_edges; % The number of edges connecting to the node
         angles_of_edges; % array with the angles of the connected edges. Relative to NED
-        x; % x position of the node when drawing
-        y; % y position of the node when drawing
+        position;
     end
     
     
@@ -83,20 +82,26 @@ classdef node
         
         %% Set functions
 
-        function [object] = setPostition(object, x, y)
-            object.x = x;
-            object.y = y;
+        function [object] = setPostition(object, pos)
+            
+            if nargin == 1
+                object.position = pos;
+            else
+                disp('Too few arguments');
+            end
+            
         end
        
         %% display functions
         
-        function [object] = draw_at_position(object, pos_x, pos_y) % Draws the node at pos x, y using fill
+        function [object] = draw_at_position(object, pos) % Draws the node at pos x, y using fill
             orientation = deg2rad(object.orientation);
             
             r = [cos(orientation), -sin(orientation);
                  sin(orientation), cos(orientation)];
-
-            posb = r'*[pos_x; pos_y]; % transform to body coords
+    
+            
+            posb = r'*pos; % transform to body coords
             
             x = [posb(1)-1; posb(1)-1; posb(1)+1; posb(1)+1];
             y = [posb(2)-1; posb(2)+1; posb(2)+1; posb(2)-1];
