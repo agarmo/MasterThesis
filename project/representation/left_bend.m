@@ -39,6 +39,22 @@ classdef left_bend < node
          
             
         end
+        function [lhs] = node(rhs)
+            %% converting function
+            lhs.number = rhs.number;
+            lhs.type = rhs.type;
+            lhs.orientation = rhs.orientation;
+            lhs.prev_node = rhs.prev_node;
+            lhs.discovered = rhs.discovered;
+            lhs.diameter = rhs.diamtere;
+            lhs.dist_prev_node = rhs.dist_prev_node;
+            lhs.anomalies = rhs.anmoalies;
+            lhs.color = rhs.color;
+
+            lhs.number_of_edges = rhs.number_of_edges;
+            lhs.angles_of_edges = rhs.angles_of_edges;            
+        end
+
     end
 end
 

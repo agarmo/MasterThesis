@@ -38,8 +38,13 @@ classdef world
         
         function [object] = addNode(object, node, x, y)
             
-            if class(node) != 'node
+            if ~strcmp(class(node), 'node')
                 % convert the node to super node and put into array
+                
+                node = node(node); %convert the node to the super class node
+                
+                object.nodes = [object.nodes; node]; % add the node to the list
+                object.nodes(end) = object.nodes(end).draw_at_position(x, y);
             else           
                 % is of type node.
                 

@@ -44,18 +44,28 @@ classdef node
             else
                 if ~isempty(number)
                     object.number = number;
+                else
+                    object.number = [];
                 end
                 if ~isempty(orientation)
                     object.orientation = orientation;
+                else
+                    object.orientation = [];
                 end
                 if ~isempty(diameter)
                     object.diameter = diameter;
+                else
+                    object.diameter = [];
                 end
                 if ~isempty(prev_node)
                     object.prev_node = prev_node;
+                else
+                    object.prev_node = [];
                 end
                 if ~isempty(dist_prev_node)
                     object.dist_prev_node = dist_prev_node;
+                else
+                    object.dist_prev_node = [];
                 end
             end 
             object.discovered = datevec(datestr(now, 0));
