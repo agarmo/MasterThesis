@@ -99,19 +99,21 @@ classdef node
             
             r = [cos(orientation), -sin(orientation);
                  sin(orientation), cos(orientation)];
-    
+        
+            % Need to check that it is a column vector
+            if size(pos) == 2 
+                posb = r'*pos'; % transform to body coords
+            else
+                posb = r'*pos;
+            end
             
-            posb = r'*pos; % transform to body coords
-            
-            x = [posb(1)-1; posb(1)-1; posb(1)+1; posb(1)+1];
-            y = [posb(2)-1; posb(2)+1; posb(2)+1; posb(2)-1];
             
             % need to rotate the box with regard to the orientation
             % transform to global coords
-            pos1 = r*[x(1); y(1)];
-            pos2 = r*[x(2); y(2)];
-            pos3 = r*[x(3); y(3)];
-            pos4 = r*[x(4); y(4)];
+            pos1 = r*(posb + [-1; -1]);
+            pos2 = r*(posb + [-1; 1]);
+            pos3 = r*(posb + [1; 1]) ;
+            pos4 = r*(posb + [1; -1]);
             
             x = [pos1(1), pos2(1), pos3(1), pos4(1)];
             y = [pos1(2), pos2(2), pos3(2), pos4(2)];
@@ -119,8 +121,8 @@ classdef node
             hold on; % 
             fill(x, y, object.color);
             hold off;
-            object.x = pos_x;
-            object.y = pos_y;
+            
+            object.position = pos;
         end
         
         function [] = draw_edges(object)

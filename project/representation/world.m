@@ -25,7 +25,7 @@ classdef world
             start = start_node(0, 10); % create a start node
             
             object.nodes = [start];
-            object.nodes(1) = object.nodes(1).draw_at_position(0,0);
+            object.nodes(1) = object.nodes(1).draw_at_position([0;0]);
                                     
         end
         
@@ -36,7 +36,7 @@ classdef world
         % should be easiest to convert them to the super class, node to
         % fit all the nodes into the same array.
         
-        function [object] = addNode(object, node, x, y)
+        function [object] = addNode(object, node, position)
             
             if ~strcmp(class(node), 'node')
                 % convert the node to super node and put into array
@@ -44,12 +44,12 @@ classdef world
                 node = node(node); %convert the node to the super class node
                 
                 object.nodes = [object.nodes; node]; % add the node to the list
-                object.nodes(end) = object.nodes(end).draw_at_position(x, y);
+                object.nodes(end) = object.nodes(end).draw_at_position(position);
             else           
                 % is of type node.
                 
                 object.nodes = [object.nodes; node]; % add the node to the list
-                object.nodes(end) = object.nodes(end).draw_at_position(x, y);
+                object.nodes(end) = object.nodes(end).draw_at_position(position);
             end
         end
         
