@@ -56,7 +56,8 @@ classdef start_node < super_node
             
             lhs = super_node(lhs);            
         end
-
+        
+ 
        
         function [t] = setType(obj, nodetype)
             obj.type = nodetype;

@@ -1,7 +1,6 @@
 %% test script
-clear all;
-clear classes;
 close all;
+clear all;
 % create the nodes
 
 verden = world(10);
@@ -21,3 +20,4 @@ verden = verden.addNode(t3, [20; 20]);
 % t3.draw_edges();
 
 
+verden.draw();

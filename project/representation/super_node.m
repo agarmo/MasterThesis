@@ -161,6 +161,11 @@ classdef super_node
         
         
         
+        function [object] = setPosition(object, position)
+            object.position = position;
+        end
+
+        
         
         
     end 
