@@ -63,16 +63,40 @@ classdef world
                 end
             end
         end
-        
-        
-        
-        
+              
+                
         function [] = draw(object)
             
             for i = 1:length(object.nodes)
                 object.nodes(i) = object.nodes(i).draw_at_position(object.nodes(i).position);
             end
         end
+        
+        
+        function [] = draw_edges(object)
+            % algorithm: 1. find which nodes is connected to who.
+            %            2. draw the edges between them, with according
+            %            distances
+            %            3. Draw the edges which are not connected to any
+            %            4. finished
+            
+            
+            for i = 1:length(object.nodes) % Assumes that the nodes array are sorted 
+           
+                if i ~= length(object.nodes)
+                    distance = object.nodes(i+1).dist_prev_node;
+                    
+                else
+                    distance = 0; 
+                end
+                
+                
+                
+            end
+            
+            
+        end
+        
         
     end
 end
