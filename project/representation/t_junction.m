@@ -55,7 +55,8 @@ classdef t_junction < super_node
             lhs.angles_of_edges = rhs.angles_of_edges;
             lhs.position = rhs.position;
             
-            lhs = super_node(lhs);            
+            lhs = super_node(lhs);
+            
         end
         
         function [t] = setType(obj, nodetype)

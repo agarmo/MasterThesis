@@ -1,20 +1,23 @@
 %% test script
 clear all;
-clear;
+clear classes;
 close all;
 % create the nodes
 
-t1 = t_junction(0, 0, [], 10, 10);
-t2 = left_bend(1, 180, 0, 10, 10);
-t3 = t_junction(2, 90, 1, 10, 10);
+verden = world(10);
 
 
-t1 = t1.draw_at_position(0,0);
-t2 = t2.draw_at_position(20, 0);
-t3 = t3.draw_at_position(20, 20);
+t1 = t_junction(2, 32, 1, 10, 10);
+t2 = left_bend(3, 180, 2, 10, 10);
+t3 = t_junction(4, 90, 3, 10, 10);
 
-t1.draw_edges();
-t2.draw_edges();
-t3.draw_edges();
+
+verden = verden.addNode(t1, [-10;2]);
+verden = verden.addNode(t2, [20; 0]);
+verden = verden.addNode(t3, [20; 20]);
+
+% t1.draw_edges();
+% t2.draw_edges();
+% t3.draw_edges();
 
 

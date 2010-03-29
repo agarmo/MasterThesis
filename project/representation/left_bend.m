@@ -41,6 +41,9 @@ classdef left_bend < super_node
         end
         function [lhs] = super_node(rhs)
             %% converting function
+            %transforming to a struct first, then running the super class
+            %consturctor on the sturct
+            
             lhs.number = rhs.number;
             lhs.type = rhs.type;
             lhs.orientation = rhs.orientation;

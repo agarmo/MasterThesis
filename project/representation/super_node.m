@@ -46,6 +46,7 @@ classdef super_node
                     object.orientation = number.orientation;
                     object.prev_node = number.prev_node;
                     object.diameter = number.diameter;
+                    object.discovered = number.discovered;
                     object.dist_prev_node = number.dist_prev_node;
                     object.type = number.type;
                     object.anomalies = number.anomalies;
@@ -82,7 +83,9 @@ classdef super_node
                     object.dist_prev_node = [];
                 end
             end 
-            object.discovered = datevec(datestr(now, 0));
+            if isempty(object.discovered)
+                object.discovered = datevec(datestr(now, 0));
+            end
         end
         
         
