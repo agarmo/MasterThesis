@@ -1,6 +1,6 @@
 %% Class defs for the start node
 
-classdef start_node < node
+classdef start_node < super_node
     properties
     end
     methods
@@ -28,7 +28,7 @@ classdef start_node < node
             end
             
             %% calling super constructor.
-            t = t@node(args{:});
+            t = t@super_node(args{:});
             
             %% class specific
             
@@ -39,7 +39,7 @@ classdef start_node < node
             t.angles_of_edges = 180; %standard  
         end
         
-        function [lhs] = node(rhs)
+        function [lhs] = super_node(rhs)
             %% converting function
             lhs.number = rhs.number;
             lhs.type = rhs.type;
@@ -52,9 +52,9 @@ classdef start_node < node
             lhs.color = rhs.color;
             lhs.number_of_edges = rhs.number_of_edges;
             lhs.angles_of_edges = rhs.angles_of_edges;
+            lhs.position = rhs.position;
             
-            lhs = rhs;
-            
+            lhs = super_node(lhs);            
         end
 
        

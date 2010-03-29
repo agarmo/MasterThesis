@@ -1,6 +1,6 @@
 %% Class defs of T-junction
 
-classdef t_junction < node
+classdef t_junction < super_node
     properties    
     end
     methods
@@ -29,7 +29,7 @@ classdef t_junction < node
             end
             
             %% calling super constructor.
-            t = t@node(args{:});
+            t = t@super_node(args{:});
             
             %% class specific
             
@@ -40,22 +40,24 @@ classdef t_junction < node
             t.angles_of_edges = [0, 180, 270]; %standard  
         end
         
-        function [lhs] = node(rhs)
-        %% converting function
+        function [lhs] = super_node(rhs)
+            %% converting function
             lhs.number = rhs.number;
             lhs.type = rhs.type;
             lhs.orientation = rhs.orientation;
             lhs.prev_node = rhs.prev_node;
             lhs.discovered = rhs.discovered;
-            lhs.diameter = rhs.diamtere;
+            lhs.diameter = rhs.diameter;
             lhs.dist_prev_node = rhs.dist_prev_node;
-            lhs.anomalies = rhs.anmoalies;
+            lhs.anomalies = rhs.anomalies;
             lhs.color = rhs.color;
-
             lhs.number_of_edges = rhs.number_of_edges;
-            lhs.angles_of_edges = rhs.angles_of_edges;        
+            lhs.angles_of_edges = rhs.angles_of_edges;
+            lhs.position = rhs.position;
+            
+            lhs = super_node(lhs);            
         end
-       
+        
         function [t] = setType(obj, nodetype)
             obj.type = nodetype;
             t = obj;

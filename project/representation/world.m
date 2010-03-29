@@ -24,9 +24,10 @@ classdef world
             
             start = start_node(0, 10); % create a start node
             
-            object.nodes = [node(start)];
-            object.nodes(1) = object.nodes(1).draw_at_position([0;0]);
-                                    
+%             object.nodes = [start];
+%             object.nodes(1) = object.nodes(1).draw_at_position([0;0]);
+%                                     
+            object = object.addNode(start, [0; 0]);
         end
         
         %% Othre functions
@@ -38,10 +39,10 @@ classdef world
         
         function [object] = addNode(object, node, position)
             
-            if ~strcmp(class(node), 'node')
+            if ~strcmp(class(node), 'super_node')
                 % convert the node to super node and put into array
                 
-                node = node(node); %convert the node to the super class node
+                node = node.super_node(); %convert the node to the super class node
                 
                 object.nodes = [object.nodes; node]; % add the node to the list
                 object.nodes(end) = object.nodes(end).draw_at_position(position);
