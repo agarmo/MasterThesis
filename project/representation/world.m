@@ -40,13 +40,13 @@ classdef world
         % add node function for adding nodes to the world
         % 
         
-        function [object] = addNode(object, node, position)        
+        function [object] = addNode(object, node, position, distance, orientation)        
             % When adding nodes, they need to be of the same type. Then it
             % should be easiest to convert them to the super class, node to
             % fit all the nodes into the same array.
             if nargin < 3
                 disp('Too few arguments');
-            else
+            elseif nargin == 3
                 if ~strcmp(class(node), 'super_node')
                     % convert the node to super node and put into array
                     
@@ -61,6 +61,19 @@ classdef world
                     object.nodes = [object.nodes; node]; % add the node to the list
                     %object.nodes(end) = object.nodes(end).draw_at_position(position);
                 end
+                
+            elseif nargin == 5 %% supplied the distance and orientation instead
+                if ~strcmp(class(node), 'super_node')
+                    % convert the node to super node and put into array
+                    node = node.super_node(); %convert the node to the super class node
+                    
+                                    
+                else
+                    % is of type node.
+%                     node = node.setPosition(position);
+                    object.nodes = [object.nodes; node]; % add the node to the list
+                    %object.nodes(end) = object.nodes(end).draw_at_position(position);
+                end 
             end
         end
               
@@ -100,7 +113,7 @@ classdef world
                 else
                     distance = 0; %no noeds after this one.
                     
-                    disp('Last node in array');
+                    disp('Last node in list');
                 end
                 
                 
