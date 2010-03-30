@@ -144,16 +144,16 @@ classdef super_node
         end
         
         function [] = draw_edges(object)
-            r = 10; %set defualt lenght of edges
+            r = 1; %set defualt lenght of edges
             
             for i = 1:object.number_of_edges
                 angle = deg2rad(object.angles_of_edges(i) + object.orientation);
                 
-                x = r*cos(angle) + object.x;
-                y = r*sin(angle) + object.y;
+                x = r*cos(angle) + object.position(1);
+                y = r*sin(angle) + object.position(2);
              
                 hold on;
-                plot([object.x, x], [object.y, y]);
+                plot([object.position(1), x], [object.position(2), y], 'white', 'LineWidth', 3);
                 hold off;
             end
         

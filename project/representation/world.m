@@ -69,6 +69,7 @@ classdef world
             
             for i = 1:length(object.nodes)
                 object.nodes(i) = object.nodes(i).draw_at_position(object.nodes(i).position);
+                object.nodes(i).draw_edges(); % indicate what kind of junction it is.
             end
         end
         
@@ -79,15 +80,26 @@ classdef world
             %            distances
             %            3. Draw the edges which are not connected to any
             %            4. finished
-            
+            % extra: Need to handle faults and errors, check if the
+            % distance is correct. Check if there really is an edge at the
+            % exiting at the bearing allowed by the node in question.
             
             for i = 1:length(object.nodes) % Assumes that the nodes array are sorted 
            
                 if i ~= length(object.nodes)
                     distance = object.nodes(i+1).dist_prev_node;
                     
+                    % draw the edges
+                    
+                    hold on
+                    plot([object.nodes(i).position(1), object.nodes(i+1).position(1)],...
+                        [object.nodes(i).position(2), object.nodes(i+1).position(2)]);
+                    hold off;
+                                        
                 else
-                    distance = 0; 
+                    distance = 0; %no noeds after this one.
+                    
+                    disp('Last node in array');
                 end
                 
                 
