@@ -162,10 +162,13 @@ classdef super_node
         
         
         function [object] = setPosition(object, position)
-            object.position = position;
+                    object.position = position;
         end
-
         
+        function [object] = setOrientattion(object, orient)
+                object.orientation = orient;
+            
+        end
         
         
     end 

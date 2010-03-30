@@ -80,6 +80,7 @@ classdef world
             %            distances
             %            3. Draw the edges which are not connected to any
             %            4. finished
+            
             % extra: Need to handle faults and errors, check if the
             % distance is correct. Check if there really is an edge at the
             % exiting at the bearing allowed by the node in question.
