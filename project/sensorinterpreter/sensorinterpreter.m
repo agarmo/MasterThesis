@@ -14,9 +14,9 @@ classdef sensorinterpreter
    
     properties(GetAccess = public, SetAccess = protected)
         %% The sensor readings.
-        LR_data;
-        ToF_data;
-        Stereo_data;
+        LR_data; % input: sample number and range in mm
+        ToF_data; % input: point cloud, x,y,z and intensity
+        Stereo_data; % input: x,y,z of features
     
         %% Output data Whenever recognized
         recognized_node_struct; % A struct containing the data needed for the world object to draw the node.
@@ -29,7 +29,7 @@ classdef sensorinterpreter
     
     properties(GetAccess = private, SetAccess = private)
         %% Internal properties
-        
+        pipeline_profiles; % The profiles to match the sensor data to
         
     end
     
@@ -54,6 +54,15 @@ classdef sensorinterpreter
         
         
         %% Internal Calculation Function
+        
+        function [] = fuseSensors(object, LRF, ToF)
+            
+        end
+        
+        
+        function type = matchPipeProfile(object)
+            
+        end
         
         
         
