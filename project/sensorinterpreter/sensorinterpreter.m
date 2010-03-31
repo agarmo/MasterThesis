@@ -64,10 +64,33 @@ classdef sensorinterpreter
             
         end
         
+        % This function should try to fit a cylinder to the acquired data
+        % from the sensors, to match the pipe. Anomalies are large
+        % deviations from this ideal cylinder.
+        function [radius, certainty] = curveFitCylinder(object, LRF, ToF)
+            
+        end
+        
+        
+        function [radius, certanty] = curveFitCone(object, LRF, ToF)
+            
+        end
+        
         
         
         %% Output function
         
+        % This shows what the view should be like with the previous sensor
+        % readings. This should open a plot with the the given view.
+        function [] = showSynthesizedView(object)
+            
+        end
+        
+        % this creates the real view from the sensors at the given moment.
+        function [] = showRealView(object)
+            
+            
+        end
         
         
         %% Other functions
