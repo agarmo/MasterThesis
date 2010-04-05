@@ -25,6 +25,8 @@ classdef sensorinterpreter
         %% Continous output data
         velocities; % size 3, 1 
         dist_to_walls; % size 2, 1 
+        
+        verden;
     end
     
     properties(GetAccess = private, SetAccess = private)
@@ -84,6 +86,23 @@ classdef sensorinterpreter
         % readings. This should open a plot with the the given view.
         function [] = showSynthesizedView(object)
             
+            % create a cylinder with default radius.
+            if nargin > 1
+                [X, Y, Z] = cylinder(sqrt(object.verden.pipe_diameter));
+                figure(1);
+                cylinder(sqrt(object.verden.pipe_diameter), 64)
+%                 axes('Projection', 'perspective');
+            else
+                [X, Y, Z] = cylinder(sqrt(10));
+                figure(1)
+                cylinder(sqrt(10), 64)
+%                 axes('Projection', 'perspective');
+                
+            end
+            
+            % Set the view from the current position.
+            
+                        
         end
         
         % this creates the real view from the sensors at the given moment.
@@ -95,7 +114,9 @@ classdef sensorinterpreter
         
         %% Other functions
         
-        
+        function verden = setWorld(object, world)
+           verden = world; 
+        end
         
         
     end
