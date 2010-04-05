@@ -1,9 +1,9 @@
 Package: v4l2stereo
-Version: 1.042
+Version: 1.046
 Section: utils
 Maintainer: Bob Mottram <fuzzgun@gmail.com>
 Architecture: all
-Depends: libgtk2.0-dev, libavcodec-dev, libavformat-dev, libjpeg62-dev, libtiff4-dev, libcv-dev, libcv1, libcvaux1, libcvaux-dev, libhighgui1, libhighgui-dev, opencv, libgstreamer-plugins-base0.10-0, libgst7
+Depends: libcv4, libhighgui4, libcvaux4, libgtk2.0-dev, libavcodec-dev, libavformat-dev, libjpeg62-dev, libtiff4-dev, libgstreamer-plugins-base0.10-0, libgst7
 Recommends: 
 Suggests: 
 Essential: no
