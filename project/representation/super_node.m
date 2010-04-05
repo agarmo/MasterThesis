@@ -113,10 +113,10 @@ classdef super_node
         %% display functions
         
         function [object] = draw_at_position(object, pos) % Draws the node at pos x, y using fill
-            orientation = deg2rad(object.orientation);
+            or = (object.orientation);
             
-            r = [cos(orientation), -sin(orientation);
-                 sin(orientation), cos(orientation)];
+            r = [cosd(or), -sind(or);
+                 sind(or), cosd(or)];
         
             % Need to check that it is a column vector
             if size(pos) == 2 
@@ -147,10 +147,10 @@ classdef super_node
             r = 1; %set defualt lenght of edges
             
             for i = 1:object.number_of_edges
-                angle = deg2rad(object.angles_of_edges(i) + object.orientation);
+                angle = (object.angles_of_edges(i) + object.orientation);
                 
-                x = r*cos(angle) + object.position(1);
-                y = r*sin(angle) + object.position(2);
+                x = r*cosd(angle) + object.position(1);
+                y = r*sind(angle) + object.position(2);
              
                 hold on;
                 plot([object.position(1), x], [object.position(2), y], 'white', 'LineWidth', 3);
