@@ -163,11 +163,13 @@ object.
 	\end{equation}
 	where $O(t)$ is the origin of the camera frame. This means that the point in the camera view is
 	described by the equation
-	\begin{align}
+	\begin{equation}
 		\label{eq:ch1-P_c}
+        \begin{aligned}
 		P_c &= \mathbf{R}^T (P_w - O(t)) \\
 		\mathbf{R}^T &= \mathbf{R}^{-1} 
-	\end{align}
+        \end{aligned}
+	\end{equation}
 
 	A pinhole camera model are used to capture $P_c$ to image coordinates, $P_i \in
 	\mathbb{R}^2$. 
