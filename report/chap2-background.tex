@@ -1,7 +1,7 @@
 %included in thesis.tex,
 
 
-\chapter{Background}
+\chapter{Background and Literature Study}
 This chapter will try to outline the basics needed to understand this report. Mathematical
 knowledge are crucial to understand the principles used in robot navigation and decision
 making. 
@@ -54,13 +54,34 @@ Some use triangulation to determine the distance, some measure the time-of-fligh
 emitted signal, and some measures the phase-delay of the emitted signal, which actually
 just is another way of measuring the time-of-flight. 
 
+This section will first outline the usual range determination techniques then go into the
+more specific sensor characteristics in later sections. 
+
+
 \subsection{Triangulation}
 The principle of triangulation is to have two known locations, where the intersection
 between two lines from the known locations are the point one wishes to calculate the
 location to. 
 
+\begin{figure}[htbp]
+    \caption{Triangulation setup}
+    \label{fig:triangulation}
+\end{figure}
 
-\section{State-of-the-Art Literature study}
+
+\subsection{Time-of-Flight Measurement}
+This is the most widely used range measurement technique. This measures the time taken
+when a signal is transmitted to the reflected signal is detected at the receiver. The
+signal might be everything from light, to sound, to radio waves. What kind of medium or
+signal which is utilized greatly affect the accuracy and errors of the range measurement. 
+
+
+
+
+\section{Project-specific Sensors}
+In this section the sensors which have been used in various robot applications will be
+discussed and mapped out. The different abilities of the sensors are mapped out, major
+error sources are mapped out.
 
 
 \subsection{2D Sensors}
@@ -74,19 +95,17 @@ continuous wave} (FMCW). \cite{laser-ranging-critical-review}
 
 \paragraph{Optical Triangulation}
 Optical triangulation is performed by using a light source and a placed at known distance
-from each other. This distance is called the baseline. This is a triangulation setup which
+from each other, called the baseline. This is a triangulation setup which
 allows for the calculation of the intersection point between the lines. 
 
-\begin{figure}[htbp]
-    \caption{Optical Triangulation setup}
-    \label{fig:optical-triangulation}
-\end{figure}
-***Lag figur*** TRENGER JEG DETTE?*****
+
 
 This method has some fundamental limits. \cite{laser-ranging-critical-review} 
 
 This technique is mostly used when the measured distance is short and the need for
-extremely precise measurements. For example digitalization of 3D objects.
+extremely precise measurements. For example digitalization of 3D objects. 
+
+Not applicable to the project in question
 
 
 \paragraph{Pulsed Time-of-Flight}
@@ -96,6 +115,8 @@ proportional to the distance the light traveled.
 
 
 \paragraph{Frequency Modulated Continuous Wave}
+
+
 
 
 \subsubsection{Sonar}
@@ -179,12 +200,12 @@ object.
 	The Equation \eqref{eq:ch1-perspective} are the perspective equations, which transforms the observed 
 	point into image coordinates. 
 
-
-
 ----------------------
 
 
-\subsection{Map Data Representation}
+
+
+\section{Map Data Representation}
 The representation of sensor data is important for the functionality of the robot. This is
 dependant on the amount of processing power and capacity that is available at the robot.
 The area which the robot is to map is also of great importance when choosing the
@@ -210,7 +231,7 @@ and office landscapes. This because a series of junctions might tell you where y
 than just the metric information, which might be quite erroneous. 
 
 
-\subsubsection{Occupancy Grid Maps}
+\subsection{Occupancy Grid Maps}
 Occupancy grid maps are a metric approach to the mapping problem and are widely used in 
 robotic mapping, mostly because of it is simple to implement and use. It was developed 
 by Elfes and Moravec in the mid 1980s, \cite{elfes}, \cite{moravec}. The method is quite 
@@ -231,7 +252,7 @@ cyclic environments. This because of the uncertainty in the sensor measurements 
 pose and odometry. 
 
 
-\subsubsection{Topological Maps}
+\subsection{Topological Maps}
 Object maps are topological maps and represents the sensed world in the form of predefined nodes and links
 between them. Each node has a set of attributes, like length, links to doors etc. This is
 a compact way to express the world and is much more computationally effective with larger
@@ -244,7 +265,7 @@ largest challenge with this is to make the robot aware of where it is. It needs 
 way to recognize its surroundings, and match it to the \'a priori map.
 
 
-\subsubsection{Mixed Approaches}
+\subsection{Mixed Approaches}
 This is when you take the best of both worlds. The easy and effective way of the metric
 maps, and mix them with the abstract topological maps. This will help reduce the size of
 the maps in the robots memory, and also make it more computationally effective because the
@@ -259,7 +280,7 @@ This requires lots of processing of the sensor and map data, and should be done 
 after the robot's mission is finished. 
 
 
-\subsection{Sensor Fusion Techniques}
+\section{Sensor Fusion Techniques}
 According to \cite{sensor-fusion-mobile-robots} theres a lot of ways to achieve sensor
 fusion in mobile robotics. The use of multiple sensors are favorable because the readings
 can be fused to make a better estimate of the current situation. 
@@ -289,7 +310,7 @@ to use different measurement principles which have different capabilities.
 \end{itemize}
 
 
-\subsubsection{Low-level Fusion}
+\subsection{Low-level Fusion}
 The term low-level fusion is often used when the sensor data is directly integrated
 resulting in parameters and state estimates of the model. This methods are mostly purely
 mathematical. This method involves the Kalman Filter, and other Bayesian approaches. In
@@ -300,18 +321,19 @@ This methods are probabilistic and requires that you know something about the
 statistical properties of the sensors and the \'a priori model. 
 
 
-\subsubsection{High-level Fusion}
+\subsection{High-level Fusion}
 
 
 
-\subsubsection{Interpolation Techniques}
+\subsection{Interpolation Techniques}
 
 
 
-\subsubsection{Probabilistic Techniques}
+\subsection{Probabilistic Techniques}
 
 
-\subsection{Feature Extraction}
+
+\section{Feature Extraction}
 The need for feature extraction should be obvious when dealing with autonomous robot
 navigation. For the robot to know where it is it needs to recognize its surroundings. This
 is a difficult step, because computers are not known to be very good at this, as the human
@@ -330,7 +352,9 @@ that the robot will travel through.
 \cite{theilemann-breivik}
 
 
-\subsection{Real World Applications}
+
+
+\section{Real World Applications}
 
 Remember MAKRO! The German snake robot used for sewer inspections. 
 
