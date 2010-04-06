@@ -82,6 +82,71 @@ to triangulate the common reference point and then find the distance to the obse
 object. 
 
 
+------------------------
+
+	The camera properties or parameters can be divided into two categories; \textit{intrinsic} parameters and
+	\textit{extrinsic} parameters. The intrinsic parameters are constant parameters and vary from camera to
+	camera, and represent the focus distance and image distortion of the pixels located away from the centre of the
+	camera image. 
+	The extrinsic parameters relate the position of the point relative to camera coordinates. 
+	These parameters are of course dependant on the position of the camera and change with time. 	This imply that 
+	coordinates of a 2D point in the camera have to be transformed into a 3D point which can be used 
+	by the control system on board the AUV. Since 
+	we are going from less knowledge about a point to more knowledge about a point, some things are needed to be 
+	estimated or measured to gain the ability to solve the 2D to 3D problem exactly.\cite{robotbok}
+
+	Suppose a point in the world reference system, denoted by, $P_w \in \mathbb{R}^3$. The same point
+	represented in the camera frame, $P_c$ are related to $P_w$ by a rotation matrix, $\mathbf{R} \in
+	SO(3)$. This gives the following equation: 
+	\begin{equation}
+		P_w = \mathbf{R} P_c + O(t)
+	\end{equation}
+	where $O(t)$ is the origin of the camera frame. This means that the point in the camera view is
+	described by the equation
+	\begin{equation}
+		\label{eq:ch1-P_c}
+		\begin{aligned}
+			P_c &= \mathbf{R}^T (P_w - O(t)) \\
+			\mathbf{R}^T &= \mathbf{R}^{-1} 
+		\end{aligned}
+	\end{equation}
+
+	A pinhole camera model are used to capture $P_c$ to image coordinates, $P_i \in
+	\mathbb{R}^2$. 
+	The principle behind a pinehole camera is that all lightbeams passes through a
+	infinitesmall hole, or point, located in the origin of the camera frame.   
+	\begin{figure}[hbtp]
+		\centering
+		\includegraphics[width=0.6\textwidth]{pics/pinhole_model}
+		\caption{Pinhole Camera Model showing two dimensions}
+		\label{fig:ch1-pinhole}
+	\end{figure}
+			
+	As seen from Figure \ref{fig:ch1-pinhole} the image plane is located a distance $f$ from the image plane. 
+	The point is projected through the hole, and onto the image plane. The principal axis, i.e. the z-axis of the
+	camere is pointing
+	in the direction of the observed point. For simplicity the image plane is located in the front of the
+	pinhole (this is only possible in theoretical case, and would not be possible in a real camera application).
+From	this the
+	perspective equations are derived. \cite{robotbok}
+	\begin{equation}
+		\label{eq:ch1-perspective}
+		P_i = \left[ \begin{array}{cc}
+					\frac{f}{z_c} & 0 \\
+					0	& \frac{f}{z_c} 
+				\end{array} \right] 
+				\left[ \begin{array}{c}
+					x_c \\
+					y_c
+					\end{array} \right]
+	\end{equation}
+	The Equation \eqref{eq:ch1-perspective} are the perspective equations, which transforms the observed 
+	point into image coordinates. 
+
+
+
+----------------------
+
 
 \subsection{Map Data Representation}
 The representation of sensor data is important for the functionality of the robot. This is
