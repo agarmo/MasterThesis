@@ -1,27 +1,87 @@
 %included in thesis.tex,
 
 
-\chapter{Background}
+\chapter{Background and Literature Study}
 This chapter will try to outline the basics needed to understand this report. Mathematical
 knowledge are crucial to understand the principles used in robot navigation and decision
 making. 
 
 
-\section{Outline}
+\section{Basics}
 
 \subsection{Reference Frames}
-There are a number of reference frames associated with this project. The global reference
-frame are the NED frame (North, East, Down). This is defined as the tangential plane
-defined where the object in question is, and defined to move with the object.
+	Movement must be described relative to something. This is the task of the reference systems. There are
+	4 important reference system. The ECI (Earth Centre Inertial) which is a truly inertial reference
+	frame, i.e. it is not accelerating. Its axis are pointing through the north pole and through the
+	equatorial line of the Earth, fixed toward stationary points in space. The centre is as the name
+	suggests in the centre of the Earth. 
+	
+	ECEF (Earth-Centre Earth-Fixed) is another reference frame. It is defined same as the ECI coordinate
+	system, but the axis are rotating with the same rate as the Earths rotation rate. This means that this frame
+	is not
+	strictly inertial, but the angular velocity of the Earths rotation are considered very small, and can
+	be neglected compared to other velocities in the same frame. Position on the earth are described by
+	\textit{longitude} and \textit{latitude}.
 
-The other frame in this project is the local \emph{Body-frame}. This frame is defined
-relative to the NED frame. Velocities and forces are usually defined in the body-frame. 
+	An important reference frame when considering local motion are the NED (North East Down) frame. This
+	frame is defined as the tangent plane on the current position, and moving with the object. The axis
+	are pointing towards north, east and down. This frame can be used in local, and small areas, but are
+	not valid for intercontinental travel. This frame will primarily be used in this report. 
 
-The last frame which is important is the \emph{Sensor-frames}. This is the frames which
-the sensor output are defined. 
+	The last but important frame are the Body frame, which is the local frame of the object of interest.
+	The body frame are defined as the x-axis along its forward movement, y-axis to the right of the
+	movement direction, and the last pointing downward, to complete the right-hand system. The
+	origin are defined in the Centre of Gravity of the object. This frame are convenient when
+	defining velocities, forces and moments. More on reference frames in \cite{fossen} and
+    \cite{forsell}.
+
+    The ones which are important in this report is the NED frame, which will be used for
+    the global reference frame. The body frame will describe velocities of the robot. But
+    theres this last frame which also are very important, that is the \emph{sensor} frame.
+    This is where the sensor data are described. Since the sensors are not mounted in the
+    centre of gravity of the robot, the sensor data need to be projected into the body
+    frame. 
+
+    The dimension of the sensor frame are dependant on the kind of sensor, if its a 2D
+    sensor, 3D sensor, or what kind of measurement it gives. This will be described in
+    detail later.
+	
+
+\section{Ranging Techniques}
+To determine range to objects are based on some common mathematical principles. They emit
+some kind of signal, either light, sound or radio waves, and process the reflected signal.
+Some use triangulation to determine the distance, some measure the time-of-flight of the
+emitted signal, and some measures the phase-delay of the emitted signal, which actually
+just is another way of measuring the time-of-flight. 
+
+This section will first outline the usual range determination techniques then go into the
+more specific sensor characteristics in later sections. 
 
 
-\section{State-of-the-Art Literature study}
+\subsection{Triangulation}
+The principle of triangulation is to have two known locations, where the intersection
+between two lines from the known locations are the point one wishes to calculate the
+location to. 
+
+\begin{figure}[htbp]
+    \caption{Triangulation setup}
+    \label{fig:triangulation}
+\end{figure}
+
+
+\subsection{Time-of-Flight Measurement}
+This is the most widely used range measurement technique. This measures the time taken
+when a signal is transmitted to the reflected signal is detected at the receiver. The
+signal might be everything from light, to sound, to radio waves. What kind of medium or
+signal which is utilized greatly affect the accuracy and errors of the range measurement. 
+
+
+
+
+\section{Project-specific Sensors}
+In this section the sensors which have been used in various robot applications will be
+discussed and mapped out. The different abilities of the sensors are mapped out, major
+error sources are mapped out.
 
 
 \subsection{2D Sensors}
@@ -35,19 +95,17 @@ continuous wave} (FMCW). \cite{laser-ranging-critical-review}
 
 \paragraph{Optical Triangulation}
 Optical triangulation is performed by using a light source and a placed at known distance
-from each other. This distance is called the baseline. This is a triangulation setup which
+from each other, called the baseline. This is a triangulation setup which
 allows for the calculation of the intersection point between the lines. 
 
-\begin{figure}[htbp]
-    \caption{Optical Triangulation setup}
-    \label{fig:optical-triangulation}
-\end{figure}
-***Lag figur*** TRENGER JEG DETTE?*****
+
 
 This method has some fundamental limits. \cite{laser-ranging-critical-review} 
 
 This technique is mostly used when the measured distance is short and the need for
-extremely precise measurements. For example digitalization of 3D objects.
+extremely precise measurements. For example digitalization of 3D objects. 
+
+Not applicable to the project in question
 
 
 \paragraph{Pulsed Time-of-Flight}
@@ -57,6 +115,8 @@ proportional to the distance the light traveled.
 
 
 \paragraph{Frequency Modulated Continuous Wave}
+
+
 
 
 \subsubsection{Sonar}
@@ -82,8 +142,70 @@ to triangulate the common reference point and then find the distance to the obse
 object. 
 
 
+------------------------
 
-\subsection{Map Data Representation}
+	The camera properties or parameters can be divided into two categories; \textit{intrinsic} parameters and
+	\textit{extrinsic} parameters. The intrinsic parameters are constant parameters and vary from camera to
+	camera, and represent the focus distance and image distortion of the pixels located away from the centre of the
+	camera image. 
+	The extrinsic parameters relate the position of the point relative to camera coordinates. 
+	These parameters are of course dependant on the position of the camera and change with time. 	This imply that 
+	coordinates of a 2D point in the camera have to be transformed into a 3D point which can be used 
+	by the control system on board the AUV. Since 
+	we are going from less knowledge about a point to more knowledge about a point, some things are needed to be 
+	estimated or measured to gain the ability to solve the 2D to 3D problem exactly.\cite{robotbok}
+
+	Suppose a point in the world reference system, denoted by, $P_w \in \mathbb{R}^3$. The same point
+	represented in the camera frame, $P_c$ are related to $P_w$ by a rotation matrix, $\mathbf{R} \in
+	SO(3)$. This gives the following equation: 
+	\begin{equation}
+		P_w = \mathbf{R} P_c + O(t)
+	\end{equation}
+	where $O(t)$ is the origin of the camera frame. This means that the point in the camera view is
+	described by the equation
+	\begin{align}
+		\label{eq:ch1-P_c}
+		P_c &= \mathbf{R}^T (P_w - O(t)) \\
+		\mathbf{R}^T &= \mathbf{R}^{-1} 
+	\end{align}
+
+	A pinhole camera model are used to capture $P_c$ to image coordinates, $P_i \in
+	\mathbb{R}^2$. 
+	The principle behind a pinehole camera is that all lightbeams passes through a
+	infinitesmall hole, or point, located in the origin of the camera frame.   
+	\begin{figure}[hbtp]
+		\centering
+		\includegraphics[width=0.6\textwidth]{pics/pinhole_model}
+		\caption{Pinhole Camera Model showing two dimensions}
+		\label{fig:ch1-pinhole}
+	\end{figure}
+			
+	As seen from Figure \ref{fig:ch1-pinhole} the image plane is located a distance $f$ from the image plane. 
+	The point is projected through the hole, and onto the image plane. The principal axis, i.e. the z-axis of the
+	camera is pointing
+	in the direction of the observed point. For simplicity the image plane is located in the front of the
+	pinhole (this is only possible in theoretical case, and would not be possible in a real camera application).
+    From this the perspective equations are derived. \cite{robotbok}
+	\begin{equation}
+		\label{eq:ch1-perspective}
+		P_i = \left[ \begin{array}{cc}
+					\frac{f}{z_c} & 0 \\
+					0	& \frac{f}{z_c} 
+				\end{array} \right] 
+				\left[ \begin{array}{c}
+					x_c \\
+					y_c
+					\end{array} \right]
+	\end{equation}
+	The Equation \eqref{eq:ch1-perspective} are the perspective equations, which transforms the observed 
+	point into image coordinates. 
+
+----------------------
+
+
+
+
+\section{Map Data Representation}
 The representation of sensor data is important for the functionality of the robot. This is
 dependant on the amount of processing power and capacity that is available at the robot.
 The area which the robot is to map is also of great importance when choosing the
@@ -109,7 +231,7 @@ and office landscapes. This because a series of junctions might tell you where y
 than just the metric information, which might be quite erroneous. 
 
 
-\subsubsection{Occupancy Grid Maps}
+\subsection{Occupancy Grid Maps}
 Occupancy grid maps are a metric approach to the mapping problem and are widely used in 
 robotic mapping, mostly because of it is simple to implement and use. It was developed 
 by Elfes and Moravec in the mid 1980s, \cite{elfes}, \cite{moravec}. The method is quite 
@@ -130,7 +252,7 @@ cyclic environments. This because of the uncertainty in the sensor measurements 
 pose and odometry. 
 
 
-\subsubsection{Topological Maps}
+\subsection{Topological Maps}
 Object maps are topological maps and represents the sensed world in the form of predefined nodes and links
 between them. Each node has a set of attributes, like length, links to doors etc. This is
 a compact way to express the world and is much more computationally effective with larger
@@ -143,7 +265,7 @@ largest challenge with this is to make the robot aware of where it is. It needs 
 way to recognize its surroundings, and match it to the \'a priori map.
 
 
-\subsubsection{Mixed Approaches}
+\subsection{Mixed Approaches}
 This is when you take the best of both worlds. The easy and effective way of the metric
 maps, and mix them with the abstract topological maps. This will help reduce the size of
 the maps in the robots memory, and also make it more computationally effective because the
@@ -158,7 +280,7 @@ This requires lots of processing of the sensor and map data, and should be done 
 after the robot's mission is finished. 
 
 
-\subsection{Sensor Fusion Techniques}
+\section{Sensor Fusion Techniques}
 According to \cite{sensor-fusion-mobile-robots} theres a lot of ways to achieve sensor
 fusion in mobile robotics. The use of multiple sensors are favorable because the readings
 can be fused to make a better estimate of the current situation. 
@@ -188,7 +310,7 @@ to use different measurement principles which have different capabilities.
 \end{itemize}
 
 
-\subsubsection{Low-level Fusion}
+\subsection{Low-level Fusion}
 The term low-level fusion is often used when the sensor data is directly integrated
 resulting in parameters and state estimates of the model. This methods are mostly purely
 mathematical. This method involves the Kalman Filter, and other Bayesian approaches. In
@@ -199,18 +321,19 @@ This methods are probabilistic and requires that you know something about the
 statistical properties of the sensors and the \'a priori model. 
 
 
-\subsubsection{High-level Fusion}
+\subsection{High-level Fusion}
 
 
 
-\subsubsection{Interpolation Techniques}
+\subsection{Interpolation Techniques}
 
 
 
-\subsubsection{Probabilistic Techniques}
+\subsection{Probabilistic Techniques}
 
 
-\subsection{Feature Extraction}
+
+\section{Feature Extraction}
 The need for feature extraction should be obvious when dealing with autonomous robot
 navigation. For the robot to know where it is it needs to recognize its surroundings. This
 is a difficult step, because computers are not known to be very good at this, as the human
@@ -229,7 +352,9 @@ that the robot will travel through.
 \cite{theilemann-breivik}
 
 
-\subsection{Real World Applications}
+
+
+\section{Real World Applications}
 
 Remember MAKRO! The German snake robot used for sewer inspections. 
 
