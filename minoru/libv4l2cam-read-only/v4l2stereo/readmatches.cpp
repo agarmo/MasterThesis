@@ -15,10 +15,10 @@ struct MatchData {
 };
 
 struct MatchDataColour {
-    unsigned short int probability;
-    unsigned short int x;
-    unsigned short int y;
-    unsigned short int disparity;
+    unsigned short  probability;
+    unsigned short  x;
+    unsigned short  y;
+    unsigned short  disparity;
     unsigned char r, g, b;
     unsigned char pack;
 };
@@ -92,7 +92,7 @@ int main(){
 
         cout << "Element nr " << i << endl;
         cout << "Probability " << m[i].probability << "\t x position " << m[i].x << " \t y position " << m[i].y << " \t Disparity " << m[i].disparity;
-        cout << "\t Red Green Blue" << (m[i].r) << " " << (m[i].g) << " " << m[i].b << " \t Pack " << m[i].pack << endl;
+        cout << "\t Red Green Blue " << int(m[i].r) << " " << int(m[i].g) << " " << int(m[i].b) << " \t Pack " << int( m[i].pack) << endl;
    }
        
 
