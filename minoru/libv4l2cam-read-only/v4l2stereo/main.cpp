@@ -1162,18 +1162,31 @@ int main(int argc, char* argv[]) {
 		drawing::drawLine(r_, ww, hh, 0, hh/2, ww-1, hh/2, 0,255,0,1,false);
 	}
 
-	/* show disparity as spots */
-	if (show_matches) {
-		for (int i = 0; i < matches; i++) {
-			if ((lcam->svs_matches[i*5] > 0) &&
-			   (lcam->svs_matches[i*5+4] != 9999)) {
-			    int x = lcam->svs_matches[i*5 + 1]/SVS_SUB_PIXEL;
-			    int y = lcam->svs_matches[i*5 + 2];
-			    int disp = lcam->svs_matches[i*5 + 3]/SVS_SUB_PIXEL;
-	            if (disp < ww/2) drawing::drawBlendedSpot(l_, ww, hh, x, y, 1 + (disp/6), 0, 255, 0);
-			}
-		}
-	}
+    /* show disparity as spots */
+    if (show_matches) {
+        float baseline = 60.0f;
+        float focal = 5.44f;
+        for (int i = 0; i < matches; i++) {
+            if ((lcam->svs_matches[i*5] > 0) &&
+                    (lcam->svs_matches[i*5+4] != 9999)) {
+                int x = lcam->svs_matches[i*5 + 1]/SVS_SUB_PIXEL;
+                int y = lcam->svs_matches[i*5 + 2];
+                int disp = lcam->svs_matches[i*5 + 3]/SVS_SUB_PIXEL;
+                if (disp < ww/2) drawing::drawBlendedSpot(l_, ww, hh, x, y, 1 + (disp/6), 0, 255, 0);
+
+                /* Calculate the cooridnates of all the matches */
+                if (1) {
+
+                   float distance = focal*(baseline/(float)disp -1.0);
+                   std::cout << "Distance of feature nr " << i << " at pos " << x << "," << y << " is " << distance << std::endl;
+
+                }
+
+            }
+        }
+    }
+    //For each mathc calculate the distance, dependant on the disparity
+    
 
 	if (show_disparity_map) {
 
