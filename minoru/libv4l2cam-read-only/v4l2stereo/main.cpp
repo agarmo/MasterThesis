@@ -1176,7 +1176,6 @@ int main(int argc, char* argv[]) {
 
                 /* Calculate the cooridnates of all the matches */
                 if (1) {
-<<<<<<< HEAD:minoru/libv4l2cam-read-only/v4l2stereo/main.cpp
                     float distance = 0;
                     if (disp != 0) {
                         distance = focal*(baseline/(float)disp -1.0);
@@ -1185,12 +1184,6 @@ int main(int argc, char* argv[]) {
                     }
 
                     std::cout << "Distance of feature nr " << i << " at pos (x,y) " << x << "," << y << " is " << distance << std::endl;
-=======
-
-                   float distance = focal*((float)((baseline_mm/disp) - 1));
-                   std::cout << "Distance of feature nr " << i << " at pos " << x << "," << y << " is " << distance << std::endl;
->>>>>>> 8b9bd3ac574ae6badcc76ff174d3e71b80601dfd:minoru/libv4l2cam-read-only/v4l2stereo/main.cpp
-
                 }
 
             }
