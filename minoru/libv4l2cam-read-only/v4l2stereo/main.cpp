@@ -1164,8 +1164,8 @@ int main(int argc, char* argv[]) {
 
     /* show disparity as spots */
     if (show_matches) {
-        float baseline = 60.0f;
         float focal = 5.44f;
+
         for (int i = 0; i < matches; i++) {
             if ((lcam->svs_matches[i*5] > 0) &&
                     (lcam->svs_matches[i*5+4] != 9999)) {
@@ -1177,7 +1177,7 @@ int main(int argc, char* argv[]) {
                 /* Calculate the cooridnates of all the matches */
                 if (1) {
 
-                   float distance = focal*(baseline/(float)disp -1.0);
+                   float distance = focal*((float)((baseline_mm/disp) - 1));
                    std::cout << "Distance of feature nr " << i << " at pos " << x << "," << y << " is " << distance << std::endl;
 
                 }
