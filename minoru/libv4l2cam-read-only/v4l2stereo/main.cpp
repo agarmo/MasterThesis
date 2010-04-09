@@ -1176,13 +1176,13 @@ int main(int argc, char* argv[]) {
 
                 /* Calculate the cooridnates of all the matches */
                 if (1) {
-                    float distance = 0;
+                    float distance = 0.0f;
                     if (disp != 0) {
-                        distance = focal*(baseline/(float)disp -1.0);
+                        distance = focal*((float)(baseline_mm/disp - 1));
                     } else{
                          distance = 0.0f;
                     }
-
+                    std::cout << "The disparity of feature nr " << i << " is: " << disp << std::endl;
                     std::cout << "Distance of feature nr " << i << " at pos (x,y) " << x << "," << y << " is " << distance << std::endl;
                 }
 
