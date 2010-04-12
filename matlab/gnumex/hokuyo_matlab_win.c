@@ -151,7 +151,6 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
     int encoding = HOKUYO_3DIGITS;
 
     int com_baudrate = 115200 ;
-    char * com_port = "COM3";
 
 
     // Get input arguments
@@ -167,7 +166,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
     if (strcasecmp(buf, "open") == 0) {
 
-        if (nrhs != 3) mexErrMsgTxt("hokuyoAPI: Please enter correct arguments: 'open', <device>, <baud rate>\n");
+        if (nrhs != 3) 
+            mexErrMsgTxt("hokuyoAPI: Please enter correct arguments: 'open', <device>, <baud rate>\n");
 
         switch ((int)mxGetPr(prhs[2])[0]){
             case 19200:
@@ -186,8 +186,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
             if (mxGetString(prhs[1], buf, BUFLEN) != 0) {
                 mexErrMsgTxt("hokuyoAPI: Could not read string while reading the device name");
             }
+
             // Connect with URG 
-            int ret = urg_connect(&urg_state, com_port, com_baudrate);
+            int ret = urg_connect(&urg_state, buf, com_baudrate);
             if (ret < 0) {
                 // Show error message and end
                 printf("hokuyoAPI: return urg_connect is < 0, Error Message: %s\n", ErrorMessage);
