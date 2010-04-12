@@ -1,0 +1,156 @@
+*** dlltool.c	Thu Jan  3 13:21:42 2002
+--- dlltool_orig.c	Fri Dec 28 14:57:20 2001
+*************** extern char * program_name;
+*** 383,389 ****
+  static int machine;
+  static int killat;
+  static int add_stdcall_alias;
+- static int atless_lib_symbol;
+  static int verbose;
+  static FILE *output_def;
+  static FILE *base_file;
+--- 383,388 ----
+*************** make_one_lib_file (exp, i)
+*** 2289,2295 ****
+  #ifndef EXTRA
+  #define EXTRA    0
+  #endif
+!       asymbol *  ptrs[NSECS + 4 + EXTRA + 2];
+        flagword   applicable;
+  
+        char *     outname = xmalloc (10);
+--- 2288,2294 ----
+  #ifndef EXTRA
+  #define EXTRA    0
+  #endif
+!       asymbol *  ptrs[NSECS + 4 + EXTRA + 1];
+        flagword   applicable;
+  
+        char *     outname = xmalloc (10);
+*************** make_one_lib_file (exp, i)
+*** 2345,2387 ****
+  
+        if (! exp->data)
+  	{
+! 	  /* function name; add atless lib symbol if required */
+! 	  char * atsym, * libsyms[2];
+! 	  int at1, i, symno = 1;
+! 	  libsyms[0] = (char *) (exp->name);
+! 	  at1 = (*exp->name == '@');
+! 	  if (atless_lib_symbol && strchr(exp->name + at1, '@')) 
+! 	    {
+! 	      libsyms[1] = xstrdup (exp->name);
+! 	      atsym = strchr(libsyms[1] + at1, '@');
+! 	      *atsym = '\0';
+! 	      symno++;
+! 	    }
+! 	  for (i=0;i<symno;i++)
+! 	    {
+! 	      exp_label = bfd_make_empty_symbol (abfd);
+! 	      exp_label->name = make_imp_label ("", libsyms[i]);
+! 	      
+! 	      /* On PowerPC, the function name points to a descriptor in
+! 		 the rdata section, the first element of which is a
+! 		 pointer to the code (..function_name), and the second
+! 		 points to the .toc */
+  #ifdef DLLTOOL_PPC
+! 	      if (machine == MPPC)
+! 		exp_label->section = secdata[RDATA].sec;
+! 	      else
+  #endif
+! 		exp_label->section = secdata[TEXT].sec;
+! 	      
+! 	      exp_label->flags = BSF_GLOBAL;
+! 	      exp_label->value = 0;
+! 	      
+  #ifdef DLLTOOL_ARM
+! 	      if (machine == MTHUMB)
+! 		bfd_coff_set_symbol_class (abfd, exp_label, C_THUMBEXTFUNC);
+  #endif
+! 	      ptrs[oidx++] = exp_label;
+! 	    }
+  	}
+  
+        /* Generate imp symbols with one underscore for Microsoft
+--- 2344,2371 ----
+  
+        if (! exp->data)
+  	{
+! 	  exp_label = bfd_make_empty_symbol (abfd);
+! 	  exp_label->name = make_imp_label ("", exp->name);
+! 
+! 	  /* On PowerPC, the function name points to a descriptor in
+! 	     the rdata section, the first element of which is a
+! 	     pointer to the code (..function_name), and the second
+! 	     points to the .toc */
+  #ifdef DLLTOOL_PPC
+! 	  if (machine == MPPC)
+! 	    exp_label->section = secdata[RDATA].sec;
+! 	  else
+  #endif
+! 	    exp_label->section = secdata[TEXT].sec;
+! 
+! 	  exp_label->flags = BSF_GLOBAL;
+! 	  exp_label->value = 0;
+! 
+  #ifdef DLLTOOL_ARM
+! 	  if (machine == MTHUMB)
+! 	    bfd_coff_set_symbol_class (abfd, exp_label, C_THUMBEXTFUNC);
+  #endif
+! 	  ptrs[oidx++] = exp_label;
+  	}
+  
+        /* Generate imp symbols with one underscore for Microsoft
+*************** usage (file, status)
+*** 3209,3215 ****
+    fprintf (file, _("   -U --add-underscore       Add underscores to symbols in interface library.\n"));
+    fprintf (file, _("   -k --kill-at              Kill @<n> from exported names.\n"));
+    fprintf (file, _("   -A --add-stdcall-alias    Add aliases without @<n>.\n"));
+-   fprintf (file, _("   -E --atless-lib-symbol    Add symbol to library to link without @<n>.\n"));
+    fprintf (file, _("   -S --as <name>            Use <name> for assembler.\n"));
+    fprintf (file, _("   -f --as-flags <flags>     Pass <flags> to the assembler.\n"));
+    fprintf (file, _("   -C --compat-implib        Create backward compatible import library.\n"));
+--- 3193,3198 ----
+*************** static const struct option long_options[
+*** 3248,3254 ****
+    {"add-underscore", no_argument, NULL, 'U'},
+    {"kill-at", no_argument, NULL, 'k'},
+    {"add-stdcall-alias", no_argument, NULL, 'A'},
+-   {"atless-lib-symbol", no_argument, NULL, 'E'},
+    {"verbose", no_argument, NULL, 'v'},
+    {"version", no_argument, NULL, 'V'},
+    {"help", no_argument, NULL, 'h'},
+--- 3231,3236 ----
+*************** main (ac, av)
+*** 3284,3292 ****
+  
+    while ((c = getopt_long (ac, av,
+  #ifdef DLLTOOL_MCORE_ELF			   
+! 			   "m:e:l:aD:d:z:b:xcCuUkAES:f:nvVhM:L:F:",
+  #else
+! 			   "m:e:l:aD:d:z:b:xcCuUkAES:f:nvVh",
+  #endif
+  			   long_options, 0))
+  	 != EOF)
+--- 3266,3274 ----
+  
+    while ((c = getopt_long (ac, av,
+  #ifdef DLLTOOL_MCORE_ELF			   
+! 			   "m:e:l:aD:d:z:b:xcCuUkAS:f:nvVhM:L:F:",
+  #else
+! 			   "m:e:l:aD:d:z:b:xcCuUkAS:f:nvVh",
+  #endif
+  			   long_options, 0))
+  	 != EOF)
+*************** main (ac, av)
+*** 3356,3364 ****
+  	  break;
+  	case 'A':
+  	  add_stdcall_alias = 1;
+- 	  break;
+- 	case 'E':
+- 	  atless_lib_symbol = 1;
+  	  break;
+  	case 'd':
+  	  def_file = optarg;
+--- 3338,3343 ----

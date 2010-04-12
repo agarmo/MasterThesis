@@ -1,0 +1,126 @@
+CHANGES TO GNUMEX BETWEEN VERSIONS 1.11 AND 1.12.
+
+1. The mex-files uigetpath and shortpath have been recompiled and the new
+   versions are compatible with, and called if, the Matlab version is >= 7.4.
+   Comments at the start of uigetpath.c and shortpath.c have been modified
+   (but otherwise these files are unchanged).
+
+2. Gnumex now creates .def-files if needed. Starting with Matlab 7.4 there are
+   no libmex.def, libmx.def and libmat.def that come with Matlab. In earlier
+   Matlab versions these reside in <matlabroot>\extern\include. The .def files
+   are written in the directory where gnumex.m is located.
+
+3. The gcc option -mcpu=pentium has been deprecated (from gcc version 3.4.0
+   according to "Google"), and instead one Gnumex uses -march=pentium which is 
+   also comptible with older gcc versions
+
+4. The -mrtd flag has been removed for Fortran compilation (KJ had a nasty
+   crash with a Fortran program using large arrays and could not resolve it
+   until the -mrtd flag was dropped).
+
+5. The mex file extension was changed from .dll to .mexw32 in Matlab version
+   7.1 and the new Gnumex honours this.
+
+6. A bug was fixed on line 733 of version 1.11 gnumex.m. When directories were
+   nonexistent fp was used without being defined.
+
+7. The switch -funroll-all-loops has been added to Fortran compilation.
+
+8. A potential "year-2000" problem with mlv was fixed. The old definition
+   would fail if and when Matlab reaches version 10.
+
+9. The switch -fleading-underscore was removed from Fortran compilation (it
+   is the default anyway, and just causes confusion with the switch
+   -fno-underscoring, which is necessary)
+
+10. Gnumex now locates both the Cygwin and Mingw folders (or does its best to
+    locate them), instead of setting the Mingw folder always to c:\Mingw.
+
+11. Gnumex now defaults to using Mingw instead of Cygwin, unless it finds
+    Cygwin and not Mingw, for reasons explained in the README.TXT file.
+
+12. A g77-compatible example mex Fortran program accompanies Gnumex 1.12. An
+    engine demo Fortran program is also included now.
+
+13. A new README file has been written.
+
+14. Changes were made to "gnumex test" (possibly all due to changes in Matlab
+    Mingw and Cygwin since it was written). On my machine it now runs with
+    everything OK (cygwin engine does not work and is not tested).
+
+Except for no. 1, 2, 13 and 14 these changes all only affect gnumex.m.
+
+Kristjan Jonasson (jonasson@hi.is)
+
+
+CHANGES BETWEEN VERSION 1.12 AND 1.13
+
+The changes are mostly cosmetic. Comments at the start of gnumex.m were updated
+slightly (and version number corrected). An extraneous file (mexopts.bat) was
+removed and rccompile.pl was added again (it was somehow lost between v1.11 and 
+v1.12). K.J.
+
+
+CHANGES BETWEEEN VERSION 1.13 AND 2.00
+1. Support for Fortran 90/95 has been added (both g95 and gfortran). Two new
+   Fortran 95 example programs have been written, one in the file yprime95.f90
+   which copies the usual yprime example, and the other more comprehensive in
+   the file powerit.f90.
+
+2. The Gnumex main window has been redesigned for improved readability. The font
+   is larger, colors agree with Windows standard and a help-button has been
+   added. The size of the box with the options file name has been increased to
+   be able to show the name of the default file in full.
+
+3. Creation of a "stub" file fixup.c has been made optional. This file is
+   probably only needed by Windows 95.
+
+4. With the -v switch mex now displays both the compile and the link commands
+   that are used. This can be useful for writing makefiles to do mexing.
+
+5. Instead of offering compilation for different processors (pentium 1-4) there
+   is a choice of optimization level. This is more portable (new processors keep
+   being developed), and recent gcc versions offer a plethora of options which
+   is impossible to keep up with. However the options -O0, -O1, -O2 and -O3 are
+   stable and -O3 includes most or all available speed-up options. 
+
+6. There is a new default value of "precompath", the location for the .def and
+   .lib files, in a subdirectory "gnumex" of Matlab's prefdir (for example:
+   C:\Documents and Settings\jonasson\Application Data\MathWorks\MATLAB\R2007a).
+   In version 1.13 the .def files were put in the directory were gnumex.m was
+   located, and the .lib files in the current directory. This would cause
+   multiple (identical) versions of the .lib files to be created (in each
+   directory where Gnumex was run). An advantage of using Matlab's prefdir is
+   that it is guaranteed to be writable, and it allows having multiple Matlab
+   versions with Gnumex installed without conflicts.
+
+7. The option of "safe" creation of libraries has been removed. The only reason
+   for this possibility seems to have been to allow new Matlab versions to be
+   installed without having to run Gnumex again, but the history of recent
+   Matlab versions shows this to be an unrealistic goal. With the lack of .def
+   of Matlab >= 7.4 there is no reason to carry out .lib from .def creation on
+   every run of mex (it would slow down mexing considerably with no benefit).
+
+8. The files mex.def and fmex.def (files containing commands to the linker to
+   export mexFunction were previously constructed on the fly by linkmex.pl but 
+   are now created with Gnumex.
+
+9. The example programs have been moved to a separate directory, "examples"
+   under the Gnumex install directory.
+
+10. Corrected a bug in linkmex.pl. Linking would fail if the TEMP environment
+    variable contained spaces (unless compiling was done separately).
+
+Kristjan Jonasson (jonasson@hi.is)
+
+
+CHANGES FROM VERSION 2.00 TO 2.01
+
+1. Corrected a bug that caused gnumex to fail when loading gnumexcfg.mat if 
+   an older gnumex version was installed on top of a newer one.
+2. Added -mrtd switch again for Matlab versions before 7.4 (the old .lib 
+   files seem require this switch). (See 1.11-->1.12 change no. 4 above).
+3. Corrected a bug in mexinterface_c.f90 that made it incompatible with g95.
+4. Corrected description in readme-fortran.txt of how to call powerit.
+
+KJ
