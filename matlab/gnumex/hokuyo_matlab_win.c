@@ -29,6 +29,8 @@
 
 #include <mex.h> // to create this int a mex file.
 
+static urg_state_t urg_state;
+
 
 void createEmptyOutputMatrices(int nlhs, mxArray * plhs[])
 {
@@ -39,7 +41,7 @@ void createEmptyOutputMatrices(int nlhs, mxArray * plhs[])
     }
 }
 
-int createOutput(int sensorType, char * scanType, unsigned int * data, unsigned int n_points, int nlhs, mxArray * plhs[])
+int createOutput(int sensorType, char * scanType, unsigned long * data, unsigned int n_points, int nlhs, mxArray * plhs[])
 {
     int numOutArgs= 3;
     if (numOutArgs <= 0)
@@ -140,7 +142,7 @@ int createOutput(int sensorType, char * scanType, unsigned int * data, unsigned 
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
     int ret;
-    unsigned int data[HOKUYO_MAX_NUM_POINTS];
+    unsigned long data[HOKUYO_MAX_NUM_POINTS];
     int n_points;
     mxArray *mxRange, *mxIntensityAv, *mxIntensity0, *mxIntensity1, *mxAGCAv, *mxAGC0, *mxAGC1;
     int dims[2], port;
@@ -151,7 +153,6 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
     int com_baudrate = 115200 ;
     char * com_port = "COM3";
 
-    urg_state_t urg_state;
 
     // Get input arguments
     if (nrhs == 0) {
@@ -186,7 +187,6 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
                 mexErrMsgTxt("hokuyoAPI: Could not read string while reading the device name");
             }
             // Connect with URG 
-            urg_state_t urg_state;
             int ret = urg_connect(&urg_state, com_port, com_baudrate);
             if (ret < 0) {
                 // Show error message and end
@@ -204,8 +204,6 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
     }else if(strcasecmp(buf, "getScan")){
         //need to check if the LRF is connected.
         
-        
-        
 
 
         enum { CaptureTimes = 5 };
@@ -217,38 +215,30 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
         // It is necessary to switch-on the laser using BM-Command to receive data from GD-Command
         int recv_n = 0;
         urg_sendMessage("BM", Timeout, &recv_n);
-
-        printf("\n");
-
-        /////////////////////////////////////////////////////////////////////
-        // Data receive using MD-Command
-        printf("using MD command\n");
-
-        urg_captureByMD(&urg_state, CaptureTimes);
+        
         int i;
         for (i = 0; i < CaptureTimes; ++i) {
+            urg_captureByGD(&urg_state);
             int n = urg_receiveData(&urg_state, data, urg_state.max_size);
             if (n > 0) {
                 printf("front: %ld, urg_timestamp: %d\n",
                         data[urg_state.area_front], urg_state.last_timestamp);
             }
-            if (createOutput(0, buf, data, urg_state.max_size, nlhs, plhs) == -1)
-                mexErrMsgTxt("HokuyoAPI: error parsing scan data\n");
-
         }
 
-        // Laser will switch-off automatically after data receive ends using MD-Command
+        if (createOutput(0, buf, data, urg_state.max_size, nlhs, plhs) == -1)
+            mexErrMsgTxt("HokuyoAPI: error parsing scan data\n");
 
+    }else if (strcasecmp(buf, "close")){
+     // need to switch off the sensor when finnished. 
+        int recv_n = 0;
+        urg_sendMessage("QT", Timeout, &recv_n); //send the QT-command
+
+        urg_disconnect(); //disconnect the com port
+
+        
     }
 
-
-
-
-    // Laser will switch-off automatically after data receive ends using MD-Command
-
-    urg_disconnect();
-
-    
 
 
     return;
