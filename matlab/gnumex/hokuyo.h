@@ -18,6 +18,23 @@
 
 #define HOKUYO_3DIGITS 3
 
+
+//for 04LX only:
+
+#define HOKUYO_RANGE_STRING "range"
+#define HOKUYO_RANGE_INTENSITY_AV_STRING "range+intensityAv"
+#define HOKUYO_RANGE_INTENSITY_0_STRING "range+intensity0"
+#define HOKUYO_RANGE_INTENSITY_1_STRING "range+intensity1"
+#define HOKUYO_INTENSITY_AV_STRING "intensityAv"
+#define HOKUYO_INTENSITY_0_STRING "intensity0"
+#define HOKUYO_INTENSITY_1_STRING "intensity1"
+#define HOKUYO_RANGE_INTENSITY_AV_AGC_AV_STRING "range+intensityAv+AGCAv"
+#define HOKUYO_RANGE_INTENSITY_0_AGC_0_STRING "range+intensity0+AGC0"
+#define HOKUYO_RANGE_INTENSITY_1_AGC_1_STRING "range+intensity1+AGC1"
+#define HOKUYO_AGC_0_STRING "AGC0"
+#define HOKUYO_AGC_1_STRING "AGC1"
+
+
 static HANDLE HComm = INVALID_HANDLE_VALUE;
 static char* ErrorMessage = "no error.";
 
@@ -62,11 +79,23 @@ static int com_connect(const char* device, long baudrate);
 static void com_disconnect(void);
 static int com_send(const char* data, int size);
 static int com_recv(char* data, int max_size, int timeout);
+
+// Send data(Commands) to URG 
 static int urg_sendTag(const char* tag);
+
+// Read data (Reply) from URG until the termination 
 static int urg_readLine(char *buffer);
+
+// Send data (Commands) to URG and wait for reply
 static int urg_sendMessage(const char* command, int timeout, int* recv_n);
+
+// Read URG parameters
 static int urg_getParameters(urg_state_t* state);
+
+// Process to connect with URG 
 static int urg_connect(urg_state_t* state, const char* port, const long baudrate);
+
+// Disconnect URG 
 static void urg_disconnect(void);
 
 // Data read using GD-Command

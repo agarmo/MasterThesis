@@ -25,6 +25,7 @@ static void com_disconnect(void) {
         CloseHandle(HComm);
         HComm = INVALID_HANDLE_VALUE;
     }
+    printf("diconnected from COM\n");
 }
 
 
