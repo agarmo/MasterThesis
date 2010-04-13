@@ -264,7 +264,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
         // It is necessary to switch-on the laser using BM-Command to receive data from GD-Command
         int recv_n = 0;
-        urg_sendMessage("BM", Timeout, &recv_n);
+//        urg_sendMessage("BM", Timeout, &recv_n);
 
         int i;
         for (i = 0; i < CaptureTimes; ++i) {
