@@ -31,6 +31,45 @@
 
 static urg_state_t urg_state;
 
+//get number of types of measurements (range, intensity, AGC...) in the given scan
+//since a single packet may contain several types of information
+int getNumOutputArgs(int sensorType, char * scanTypeName)
+{
+
+    if (strcmp(scanTypeName, HOKUYO_RANGE_STRING) == 0)
+        return 1;
+    if (strcmp(scanTypeName, HOKUYO_RANGE_INTENSITY_AV_STRING) == 0)
+        return 2;
+    if (strcmp(scanTypeName, HOKUYO_RANGE_INTENSITY_0_STRING) == 0)
+        return 2;
+    if (strcmp(scanTypeName, HOKUYO_RANGE_INTENSITY_1_STRING) == 0)
+        return 2;
+    if (strcmp(scanTypeName, HOKUYO_INTENSITY_AV_STRING) == 0)
+        return 1;
+    if (strcmp(scanTypeName, HOKUYO_INTENSITY_0_STRING) == 0)
+        return 1;
+    if (strcmp(scanTypeName, HOKUYO_INTENSITY_1_STRING) == 0)
+        return 1;
+    if (strcmp(scanTypeName, HOKUYO_RANGE_INTENSITY_AV_AGC_AV_STRING) == 0)
+        return 3;
+    if (strcmp(scanTypeName, HOKUYO_RANGE_INTENSITY_0_AGC_0_STRING) == 0)
+        return 3;
+    if (strcmp(scanTypeName, HOKUYO_RANGE_INTENSITY_1_AGC_1_STRING) == 0)
+        return 3;
+    if (strcmp(scanTypeName, HOKUYO_RANGE_INTENSITY_1_AGC_1_STRING) == 0)
+        return 3;
+    if (strcmp(scanTypeName, HOKUYO_AGC_0_STRING) == 0)
+        return 1;
+    if (strcmp(scanTypeName, HOKUYO_AGC_1_STRING) == 0)
+        return 1;
+
+    printf("Error: URG_04-LX does not support this scan type: %d\n",
+            *scanTypeName);
+
+    return -1;
+
+}
+
 
 void createEmptyOutputMatrices(int nlhs, mxArray * plhs[])
 {
@@ -43,7 +82,7 @@ void createEmptyOutputMatrices(int nlhs, mxArray * plhs[])
 
 int createOutput(int sensorType, char * scanType, unsigned long * data, unsigned int n_points, int nlhs, mxArray * plhs[])
 {
-    int numOutArgs= 3;
+    int numOutArgs=  1; //getNumOutputArgs(sensorType, scanType);
     if (numOutArgs <= 0)
     {
         createEmptyOutputMatrices(nlhs,plhs);
@@ -142,7 +181,7 @@ int createOutput(int sensorType, char * scanType, unsigned long * data, unsigned
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
     int ret;
-    unsigned long data[HOKUYO_MAX_NUM_POINTS];
+    unsigned long *data;
     int n_points;
     mxArray *mxRange, *mxIntensityAv, *mxIntensity0, *mxIntensity1, *mxAGCAv, *mxAGC0, *mxAGC1;
     int dims[2], port;
@@ -150,7 +189,11 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
     int i;
     int encoding = HOKUYO_3DIGITS;
 
-    int com_baudrate = 115200 ;
+    int com_baudrate = 115200 ; //default
+
+    urg_state.max_size = sizeof(long)*HOKUYO_MAX_NUM_POINTS_URG_04LX;
+
+    data = malloc(urg_state.max_size);
 
 
     // Get input arguments
@@ -164,7 +207,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
         mexErrMsgTxt("hokuyoAPI: Could not read string.");
     }
 
-    if (strcasecmp(buf, "open") == 0) {
+
+    if (strcasecmp(buf, "open") == 0){ 
 
         if (nrhs != 3) 
             mexErrMsgTxt("hokuyoAPI: Please enter correct arguments: 'open', <device>, <baud rate>\n");
@@ -177,7 +221,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
                 com_baudrate = 115200;
                 break;
             default:
-                mexErrMsgTxt("hokuyoAPI: Invalid hokuyo baud rate. Options are 19200, 115200");
+                mexErrMsgTxt("hokuyoAPI: Invalid hokuyo baud rate. Options are 19200, 115200. Using Default.");
         }
 
 
@@ -188,26 +232,31 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
             }
 
             // Connect with URG 
-            int ret = urg_connect(&urg_state, buf, com_baudrate);
+            int ret = urg_connect(&urg_state, buf, 
+                    com_baudrate);
             if (ret < 0) {
                 // Show error message and end
-                printf("hokuyoAPI: return urg_connect is < 0, Error Message: %s\n", ErrorMessage);
+                printf("hokuyoAPI: return urg_connect is < 0, Error Message: %s\n", 
+                        ErrorMessage);
 
-            }
+            }else
+                printf("Connected with URG-04LX\n");
 
 
         }else{
             mexErrMsgTxt("hokuyoAPI: Please enter correct arguments\n");
         }
 
-    ///////////End of the connection open routine/////////////
 
-    }else if(strcasecmp(buf, "getScan")){
+
+        ///////////End of the connection open routine/////////////
+
+        //}else if(strcasecmp(buf, "getScan")){
         //need to check if the LRF is connected.
-        
 
 
-        enum { CaptureTimes = 5 };
+
+        int CaptureTimes = 1;
 
 
         // Data receive using GD-Command
@@ -215,11 +264,11 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
         // It is necessary to switch-on the laser using BM-Command to receive data from GD-Command
         int recv_n = 0;
-        urg_sendMessage("BM", Timeout, &recv_n);
-        
+//        urg_sendMessage("BM", Timeout, &recv_n);
+
         int i;
         for (i = 0; i < CaptureTimes; ++i) {
-            urg_captureByGD(&urg_state);
+            urg_captureByMD(&urg_state, CaptureTimes);
             int n = urg_receiveData(&urg_state, data, urg_state.max_size);
             if (n > 0) {
                 printf("front: %ld, urg_timestamp: %d\n",
@@ -227,20 +276,40 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
             }
         }
 
+        printf("Max num points: %d, nlhs: %d\n", urg_state.max_size, nlhs);
+
         if (createOutput(0, buf, data, urg_state.max_size, nlhs, plhs) == -1)
             mexErrMsgTxt("HokuyoAPI: error parsing scan data\n");
 
-    }else if (strcasecmp(buf, "close")){
-     // need to switch off the sensor when finnished. 
-        int recv_n = 0;
+
+        //////////////END OF  THE GETSCAN RUOUTINE////////////
+
+
+        //    }else if (strcasecmp(buf, "close"))
+        // need to switch off the sensor when finnished. 
+
+        recv_n = 0;
         urg_sendMessage("QT", Timeout, &recv_n); //send the QT-command
 
         urg_disconnect(); //disconnect the com port
 
-        
+
+    }else{
+        int recv_n = 0;
+        urg_sendMessage("QT", Timeout, &recv_n); //send the QT-command
+
+
+        urg_disconnect();
+        printf("disconnected the com port\n");
     }
+    int recv_n = 0;
+    urg_sendMessage("QT", Timeout, &recv_n); //send the QT-command
 
 
+    urg_disconnect();
+    printf("disconnected the com port\n");
+
+    free(data);
 
     return;
 
