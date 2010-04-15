@@ -11,7 +11,7 @@ end
 hokuyo_matlab('open', 'COM5', 115200);
 
 %angle to be plotted against
-theta = (270/768)*(pi/180).*(1:768);
+theta = (360/1024)*(pi/180).*(1:1024);
 
 k=[];
 set(gcf,'keypress','k=get(gcf,''currentchar'');');
@@ -30,25 +30,10 @@ while 1
     tic;
     ampimg = sr_getimage(ToF,1);
     toc;
-    h1 = [h1; zeros((768-726), 1)]; %% fill the array with zeros when outside the FOV
-    
-%     for i = 1:176
-%         for j = 1:176
-%             if j > 144
-%                 threeD(i, j, 1) = 0;
-%                 threeD(i, j, 2) = 0;
-%                 threeD(i, j, 3) = 0;
-%             else
-%                 threeD(i, j, 1) = x(i,j);
-%                 threeD(i, j, 2) = y(i,j);
-%                 threeD(i, j, 3) = z(i,j);
-%             end
-%         end
-%     end
-    
-    
+    h1 = [zeros(128,1);h1; zeros((768-726)+128, 1)]; %% fill the array with zeros when outside the FOV
+   
     figure(1);
-    subplot(2, 2, 1), image(ampimg, 'cdatamapping', 'scaled');
+    subplot(2, 2, 1), image(ampimg', 'cdatamapping', 'scaled');
     subplot(2, 2, 2), polar(theta', h1);
     subplot(2, 1, 2), mesh(double(z));
     
