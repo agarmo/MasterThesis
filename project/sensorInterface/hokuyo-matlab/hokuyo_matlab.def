@@ -1,0 +1,2 @@
+LIBRARY hokuyo_matlab.mexw32
+EXPORTS mexFunction
