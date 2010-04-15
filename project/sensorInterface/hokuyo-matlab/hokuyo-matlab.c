@@ -199,10 +199,10 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
     	int getIntensity = 0;
 
     	if (nrhs == 2){
-    		printf("Intensity reading\n");
+//    		printf("Intensity reading\n");
     		getIntensity = 1;
     	}else if (nrhs == 1){
-    		printf("normal reading\n");
+//    		printf("normal reading\n");
     	}else{
     		printf("Wrong use. Use 'getReading', or 'getReading', 'intensity' for intensity readings as well\n");
     		return;
@@ -228,7 +228,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
     		/* Reception */
     		n = urg_receiveData(&urg, data, data_max);
-    		printf("# n = %d\n", n);
+//    		printf("# n = %d\n", n);
     		if (n < 0) {
     			printf("Error receiving data\n");
     			urg_exit(&urg, "urg_receiveData()");
@@ -341,6 +341,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
     	}
 
     	urg_parameter_t parameter;
+
 
     	/* Reserve for receive buffer */
     	data_max = urg_dataMax(&urg);
