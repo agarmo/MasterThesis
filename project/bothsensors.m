@@ -34,8 +34,14 @@ while 1
    
     figure(1);
     subplot(2, 2, 1), image(ampimg', 'cdatamapping', 'scaled');
+    title('ToF-camera Amplitude image');
+       
     subplot(2, 2, 2), polar(theta', h1);
+    title('Plot of the URG Laser Range finder');
+    
     subplot(2, 1, 2), mesh(double(z));
+    title('Depth plot from the ToF-camera');
+    
     
   if ~isempty(k)
     if strcmp(k,'s');
