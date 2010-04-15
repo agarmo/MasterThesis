@@ -16,6 +16,7 @@ theta = (270/768)*(pi/180).*(1:768);
 k=[];
 set(gcf,'keypress','k=get(gcf,''currentchar'');');
 
+threeD = zeros(176,176, 3);
 
 %main loop
 while 1
@@ -25,15 +26,31 @@ while 1
     toc
     
     sr_acquire(ToF);
-    %[res, x, y, z] = sr_coordtrf(ToF);
+    [res, x, y, z] = sr_coordtrf(ToF);
     tic;
     ampimg = sr_getimage(ToF,1);
     toc;
     h1 = [h1; zeros((768-726), 1)]; %% fill the array with zeros when outside the FOV
     
+%     for i = 1:176
+%         for j = 1:176
+%             if j > 144
+%                 threeD(i, j, 1) = 0;
+%                 threeD(i, j, 2) = 0;
+%                 threeD(i, j, 3) = 0;
+%             else
+%                 threeD(i, j, 1) = x(i,j);
+%                 threeD(i, j, 2) = y(i,j);
+%                 threeD(i, j, 3) = z(i,j);
+%             end
+%         end
+%     end
+    
+    
     figure(1);
-    subplot(1, 2, 1), image(ampimg, 'cdatamapping', 'scaled');
-    subplot(1, 2, 2), polar(theta', h1);
+    subplot(2, 2, 1), image(ampimg, 'cdatamapping', 'scaled');
+    subplot(2, 2, 2), polar(theta', h1);
+    subplot(2, 1, 2), mesh(double(z));
     
   if ~isempty(k)
     if strcmp(k,'s');
