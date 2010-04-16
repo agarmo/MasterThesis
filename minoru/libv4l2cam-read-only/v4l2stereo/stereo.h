@@ -21,6 +21,8 @@
 #ifndef STEREO_H_
 #define STEREO_H_
 
+#include <cv.h>
+#include <highgui.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -146,6 +148,7 @@ public:
     bool FileExists(std::string filename);
     void save_matches(std::string filename, unsigned char* rectified_frame_buf, int no_of_matches, bool colour);
     bool log_matches(std::string filename, unsigned char* rectified_frame_buf, int no_of_matches, bool colour);
+    static void histogram_equalise(IplImage* hist_image, unsigned char* img, int img_width, int img_height);
 
     svs(int width, int height);
     ~svs();

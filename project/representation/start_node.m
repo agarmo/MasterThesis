@@ -1,31 +1,30 @@
-%% Class defs of T-junction
+%% Class defs for the start node
 
-classdef t_junction < super_node
-    properties    
+classdef start_node < super_node
+    properties
     end
     methods
         
-        function [t] = t_junction(number, orientation, prev_node, diameter, dist_prev_node)
+        function [t] = start_node(orientation, diameter)
             
             %% Default constuctor
             if nargin == 0
                 args = {};
             else
-                if ~isempty(number)
-                    args{1} = number;
-                end
+                args{1} = 1;
+                args{3} = [];
+                args{5} = [];
                 if ~isempty(orientation)
                     args{2} = orientation;
-                end
-                if ~isempty(prev_node)
-                    args{3} = prev_node;
+                else 
+                    args{2} = [];
                 end
                 if ~isempty(diameter)
                     args{4} = diameter;
+                else
+                    args{4} = [];
                 end
-                if ~isempty(dist_prev_node)
-                    args{5} = dist_prev_node;
-                end
+                
             end
             
             %% calling super constructor.
@@ -33,11 +32,11 @@ classdef t_junction < super_node
             
             %% class specific
             
-            t.color = 'green';
-            t.type = 'T Junction';
+            t.color = 'yellow';
+            t.type = 'Start Node';
             
-            t.number_of_edges = 3;
-            t.angles_of_edges = [0, 180, 270]; %standard  
+            t.number_of_edges = 1;
+            t.angles_of_edges = 180; %standard  
         end
         
         function [lhs] = super_node(rhs)
@@ -55,10 +54,11 @@ classdef t_junction < super_node
             lhs.angles_of_edges = rhs.angles_of_edges;
             lhs.position = rhs.position;
             
-            lhs = super_node(lhs);
-            
+            lhs = super_node(lhs);            
         end
         
+ 
+       
         function [t] = setType(obj, nodetype)
             obj.type = nodetype;
             t = obj;

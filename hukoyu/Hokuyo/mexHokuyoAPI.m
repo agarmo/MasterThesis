@@ -1,1 +1,1 @@
-mex -O hokuyoAPI.cc Hokuyo.cc SerialDevice.cc -DSERIAL_DEVICE_DEBUG
+mex -f Z:\master-thesis\matlab\gnumex\mexopts.bat -O hokuyoAPI.cc Hokuyo.cc SerialDevice.cc -DSERIAL_DEVICE_DEBUG 

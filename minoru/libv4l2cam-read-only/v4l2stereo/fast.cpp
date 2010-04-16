@@ -1,12 +1,14 @@
 #include "fast.h"
 
 int descriptor_lookup[] = {
-0,20,4,19,9,17,13,14,16,10,19,6,19,1,19,-3,18,-8,15,-12,11,-16,7,-18,2,-19,-2,-19,-7,-18,-11,-16,-15,-12,-18,-8,-19,-3,-19,1,-19,6,-16,10,-13,14,-9,17,-4,19,
-0,40,9,38,19,35,27,29,33,21,38,12,39,2,39,-7,36,-17,30,-25,23,-32,14,-37,5,-39,-5,-39,-14,-37,-23,-32,-30,-25,-36,-17,-39,-7,-39,2,-38,12,-33,21,-27,29,-19,35,-9,38,
-0,60,14,58,28,52,41,43,50,32,57,18,59,3,58,-11,54,-25,46,-38,35,-48,22,-55,7,-59,-7,-59,-22,-55,-35,-48,-46,-38,-54,-25,-58,-11,-59,3,-57,18,-50,32,-41,43,-28,52,-14,58,
-0,80,19,77,38,70,54,58,67,42,76,24,79,5,78,-14,72,-34,61,-50,47,-64,29,-74,10,-79,-10,-79,-29,-74,-47,-64,-61,-50,-72,-34,-78,-14,-79,5,-76,24,-67,42,-54,58,-38,70,-19,77,
+0,42,10,41,20,37,29,31,36,22,40,13,42,2,42,-8,38,-18,33,-27,25,-34,15,-39,5,-42,-5,-42,-15,-39,-25,-34,-33,-27,-38,-18,-42,-8,-42,2,-40,13,-36,22,-29,31,-20,37,-10,41,
+0,57,14,55,27,50,39,41,48,30,54,17,57,3,56,-10,51,-24,44,-36,33,-46,21,-53,7,-56,-7,-56,-21,-53,-33,-46,-44,-36,-51,-24,-56,-10,-57,3,-54,17,-48,30,-39,41,-27,50,-14,55,
+0,71,17,69,34,62,48,52,60,38,67,22,71,4,70,-13,64,-30,55,-45,41,-57,26,-66,8,-70,-8,-70,-26,-66,-41,-57,-55,-45,-64,-30,-70,-13,-71,4,-67,22,-60,38,-48,52,-34,62,-17,69,
+0,85,21,83,41,75,58,62,72,45,81,26,85,5,84,-16,77,-36,66,-54,50,-69,31,-79,10,-85,-10,-85,-31,-79,-50,-69,-66,-54,-77,-36,-84,-16,-85,5,-81,26,-72,45,-58,62,-41,75,-21,83,
 0,100,24,96,48,87,68,72,84,53,95,30,99,6,98,-18,90,-42,77,-63,58,-80,36,-92,12,-99,-12,-99,-36,-92,-58,-80,-77,-63,-90,-42,-98,-18,-99,6,-95,30,-84,53,-68,72,-48,87,-24,96,
 };
+
+int descriptor_direction_buf[FAST_DESCRIPTOR_WIDTH];
 
 fast::fast() {
     scores = new int[FAST_MAX_CORNERS];
@@ -30,12 +32,12 @@ fast::fast() {
     threshold = 100;
     num_nonmax = 0;
 
-    //descriptor_lookup = new int[radius*width*2];
-    //create_descriptor_lookup(FAST_DESCRIPTOR_RADIUS, FAST_DESCRIPTOR_WIDTH, lookup);
+    //int* descriptor_lookup2 = new int[FAST_DESCRIPTOR_RADIUS*FAST_DESCRIPTOR_WIDTH*2];
+    //create_descriptor_lookup(FAST_DESCRIPTOR_RADIUS, FAST_DESCRIPTOR_WIDTH, descriptor_lookup2);
+    //delete[] descriptor_lookup2;
 }
 
 fast::~fast() {
-	//delete[] descriptor_lookup;
     delete[] scores;
     delete[] corners;
     delete[] nonmax;
@@ -6163,7 +6165,9 @@ void fast::update_descriptors(
 	unsigned char *img,
 	int img_width,
 	int img_height,
-	unsigned int* descriptor)
+	unsigned int* descriptor,
+	unsigned char* descriptor_colour,
+	unsigned char* descriptor_direction)
 {
 	int f, radius, disp;
 
@@ -6179,7 +6183,9 @@ void fast::update_descriptors(
 		compute_descriptor(
 			img, img_width, img_height,
 			nonmax[f].x, nonmax[f].y,
-			radius, f, descriptor);
+			radius, f, descriptor,
+			descriptor_colour,
+			descriptor_direction);
 	}
 }
 
@@ -6194,11 +6200,15 @@ void fast::compute_descriptor(
 	int x, int y,
 	int radius,
 	int descriptor_index,
-	unsigned int* descriptor)
+	unsigned int* descriptor,
+	unsigned char* descriptor_colour,
+	unsigned char* descriptor_direction)
 {
 	int mean = 0;
 	int max = img_width * img_height*3-3;
-	int xx,yy,r,w,n2,n=0;
+	int xx,yy,r,w,w2,n2,n=0,tot,max2,w3;
+	int tot_r=0,tot_g=0,tot_b=0;
+	int dir = 0;
 	for (r = 1; r <= FAST_DESCRIPTOR_RADIUS; r++) {
 		for (w = 0; w < FAST_DESCRIPTOR_WIDTH; w++, n += 2) {
 			xx = x + (descriptor_lookup[n] * radius / 100);
@@ -6206,21 +6216,61 @@ void fast::compute_descriptor(
 			n2 = (yy*img_width + xx) * 3;
 			if ((n2 > -1) && (n2 < max)) {
 			    mean += img[n2] + img[n2+1] + img[n2+2];
+			    tot_r += img[n2+2];
+			    tot_g += img[n2+1];
+			    tot_b += img[n2];
 			}
 		}
 	}
 	mean /= (FAST_DESCRIPTOR_RADIUS*FAST_DESCRIPTOR_WIDTH);
+	int offset = descriptor_index*3;
+	descriptor_colour[offset] = (unsigned char)(tot_r / (FAST_DESCRIPTOR_RADIUS*FAST_DESCRIPTOR_WIDTH));
+	descriptor_colour[offset+1] = (unsigned char)(tot_g / (FAST_DESCRIPTOR_RADIUS*FAST_DESCRIPTOR_WIDTH));
+	descriptor_colour[offset+2] = (unsigned char)(tot_b / (FAST_DESCRIPTOR_RADIUS*FAST_DESCRIPTOR_WIDTH));
 
-	n=0;
+	for (w = 0; w < FAST_DESCRIPTOR_WIDTH; w++) {
+		descriptor_direction_buf[w] = 0;
+	    for (r = 1; r <= FAST_DESCRIPTOR_RADIUS; r++) {
+	    	n = r * FAST_DESCRIPTOR_RADIUS + w;
+			xx = x + (descriptor_lookup[n] * radius / 100);
+			yy = y + (descriptor_lookup[n+1] * radius / 100);
+			n2 = (yy*img_width + xx) * 3;
+			if ((n2 > -1) && (n2 < max)) {
+			    if (img[n2] + img[n2+1] + img[n2+2] > mean) {
+			    	descriptor_direction_buf[w]++;
+			    }
+			}
+		}
+	}
+	max2 = 0;
+	int rr = FAST_DESCRIPTOR_WIDTH/6;
+	for (w = 0; w < FAST_DESCRIPTOR_WIDTH; w++) {
+		tot=0;
+		for (w2 = -rr; w2 <= rr; w2++) {
+			w3 = w + w2;
+			if (w3 < 0) w3 += FAST_DESCRIPTOR_WIDTH;
+			if (w3 >= FAST_DESCRIPTOR_WIDTH) w3 -=FAST_DESCRIPTOR_WIDTH;
+			tot += descriptor_direction_buf[w3] * (1 + rr - w2);
+		}
+		if (tot > max2) {
+			max2 = tot;
+			dir = w;
+		}
+	}
+	descriptor_direction[descriptor_index] = dir;
+
 	int bit = 1;
 	int bitno = 0;
-	int offset = descriptor_index*4;
+	offset = descriptor_index*4;
 	descriptor[offset] = 0;
 	descriptor[offset+1] = 0;
 	descriptor[offset+2] = 0;
 	descriptor[offset+3] = 0;
 	for (r = 1; r <= FAST_DESCRIPTOR_RADIUS; r++) {
-		for (w = 0; w < FAST_DESCRIPTOR_WIDTH; w++, n += 2) {
+		for (w = 0; w < FAST_DESCRIPTOR_WIDTH; w++) {
+			w2 = w + dir;
+			if (w2 >= FAST_DESCRIPTOR_WIDTH-1) w2 -= FAST_DESCRIPTOR_WIDTH;
+			n = (r * FAST_DESCRIPTOR_WIDTH) + w2;
 			xx = x + (descriptor_lookup[n] * radius / 100);
 			yy = y + (descriptor_lookup[n+1] * radius / 100);
 			n2 = (yy*img_width + xx) * 3;
@@ -6236,7 +6286,6 @@ void fast::compute_descriptor(
 			}
 		}
 	}
-
 }
 
 /* shows FAST corners */
@@ -6677,6 +6726,8 @@ int img_height)
 				unsigned short int x;
 				unsigned short int y;
 				unsigned short int disparity;
+				unsigned char r, g, b;
+				unsigned char direction;
 				unsigned int descriptor0;
 				unsigned int descriptor1;
 				unsigned int descriptor2;
@@ -6684,6 +6735,8 @@ int img_height)
 			};
 
 			unsigned int* descriptor = new unsigned int[4];
+			unsigned char* descriptor_colour = new unsigned char[3];
+			unsigned char* descriptor_direction = new unsigned char[1];
 			MatchData *m = new MatchData[FAST_MAX_CORNERS_PREVIOUS];
 			ctr = 0;
 			for (i = 0; i < num_nonmax; i++) {
@@ -6700,11 +6753,17 @@ int img_height)
 						img, img_width, img_height,
 						nonmax[i].x, nonmax[i].y,
 						radius,
-						0, descriptor);
+						0, descriptor,
+						descriptor_colour,
+						descriptor_direction);
 					m[ctr].descriptor0 = descriptor[0];
 					m[ctr].descriptor1 = descriptor[1];
 					m[ctr].descriptor2 = descriptor[2];
 					m[ctr].descriptor3 = descriptor[3];
+					m[ctr].r = descriptor_colour[0];
+					m[ctr].g = descriptor_colour[1];
+					m[ctr].b = descriptor_colour[2];
+					m[ctr].direction = descriptor_direction[0];
 
 					ctr++;
 				}
@@ -6717,6 +6776,8 @@ int img_height)
 			fwrite(m, sizeof(MatchData), FAST_MAX_CORNERS_PREVIOUS, file);
 			delete[] m;
 			delete[] descriptor;
+			delete[] descriptor_colour;
+			delete[] descriptor_direction;
 
 			printf("%d feature descriptors saved to %s\n", max, filename.c_str());
 			fclose(file);
@@ -6752,8 +6813,8 @@ void fast::create_descriptor_lookup(
 	printf("int descriptor_lookup[] = {\n");
 	for (r = 1; r <= radius; r++) {
 		for (w = 0; w < width; w++, n += 2) {
-			lookup[n] = (int)(r * 100 * sin(w * 3.1415927*2 / width) / radius);
-			lookup[n+1] = (int)(r * 100 * cos(w * 3.1415927*2 / width) / radius);
+			lookup[n] = (int)((r+2) * 100 * sin(w * 3.1415927*2 / width) / (radius+2));
+			lookup[n+1] = (int)((r+2) * 100 * cos(w * 3.1415927*2 / width) / (radius+2));
 			printf("%d,%d,", lookup[n], lookup[n+1]);
 		}
 		printf("\n");

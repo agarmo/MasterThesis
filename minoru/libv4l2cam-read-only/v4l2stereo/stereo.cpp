@@ -141,6 +141,35 @@ svs::~svs() {
 		delete[] calibration_map;
 }
 
+/*!
+ * \brief performs histogram equalisation using openCV
+ * \param hist_image mono image used for the conversion
+ * \param img colour image
+ * \param img_width width of the image
+ * \param img_height height of the image
+ */
+void svs::histogram_equalise(
+	IplImage* hist_image,
+	unsigned char* img,
+	int img_width,
+	int img_height)
+{
+    #pragma omp parallel for
+	for (int i = img_width*img_height-1; i >= 0; i--) {
+		hist_image->imageData[i] = (img[i*3+2] + img[i*3+1] + img[i*3])/3;
+	}
+
+	cvEqualizeHist( hist_image, hist_image );
+
+	#pragma omp parallel for
+	for (int i = img_width*img_height-1; i >= 0; i--) {
+		int magnitude_corrected = hist_image->imageData[i];
+    	img[i*3] = magnitude_corrected;
+	    img[i*3+1] = magnitude_corrected;
+	    img[i*3+2] = magnitude_corrected;
+	}
+}
+
 /* Updates sliding sums and edge response values along a single row or column
  * Returns the mean luminance along the row or column */
 int svs::update_sums(int cols, /* if non-zero we're dealing with columns not rows */
