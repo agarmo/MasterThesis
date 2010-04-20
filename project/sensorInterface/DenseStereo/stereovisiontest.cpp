@@ -17,8 +17,8 @@
 
 #include <opencv/highgui.h>
 
-    int sampleTimeout;
-    CvMat* imageRectifiedPair;
+int sampleTimeout;
+CvMat* imageRectifiedPair;
 
 void displayOutput(StereoCamera * camera, StereoVision * vision){
 
@@ -42,11 +42,35 @@ void displayOutput(StereoCamera * camera, StereoVision * vision){
 }
 
 
+int calibrationLoad(StereoVision* vision, std::string filename)
+{
+    std::cout << "Loading calibration file..." << filename << std::endl;;
+    if(0 == vision->calibrationLoad(filename.c_str())){
+        std::cout << "OK" << std::endl;
+        return 0;
+    }else{
+        std::cout << "-FAIL" << std::endl;
+        return 1;
+    }
+}
+
+void calibrationSave(StereoVision* vision, std::string filename)
+{
+    std::cout << "Saving calibration file..." << filename << std::endl;
+    if(0 == vision->calibrationSave(filename.c_str())){
+        std::cout << "OK" << std::endl;
+    }else{
+        std::cout <<"-FAIL"<< std::endl;
+    }
+}
+
 
 
 int main(){
 
-	CvSize resolution = cvSize(640, 480);
+	bool usefile = false;
+
+	CvSize resolution = cvSize(640,480);
 
 	StereoCamera *camera = new StereoCamera();
 
@@ -68,42 +92,55 @@ int main(){
 			}else{
 				std::cout <<"...OK" << std::endl;
 
-				//cvNamedWindow( "left");
-				//cvNamedWindow( "right");
+				cvNamedWindow( "left");
+				cvNamedWindow( "right");
 				cvNamedWindow( "rectified", 1 );
 				cvNamedWindow( "depth", 1 );
 				vision->calibrationStart(cornersX, cornersY);
 			}
 		}else{
 			if(0 == camera->capture()){
-				cvShowImage("left",camera->render[0]);
-				cvShowImage("right",camera->render[1]);
+				if(!vision->getCalibrationDone()){
+					cvShowImage("left",camera->frames[0]);
+					cvShowImage("right",camera->frames[1]);
+				}
 				int c = cvWaitKey( 1 );
-				if( c == 27 ) //if esc key break.
-					break;
+					if( c == 27 ) //if esc key break.
+						break;
 
 			}
 
 
+			if(vision->getCalibrationStarted()){//start the calibration process to rectify the images
 
-			if(vision->getCalibrationStarted()){ //start the calibration process to rectify the images
-				IplImage * left_gray = camera->getFramesGray(0);
-				IplImage * right_gray = camera->getFramesGray(1);
-
-				result = vision->calibrationAddSample(left_gray, right_gray);
-
-				if(0 == result){
-					std::cout << "+OK" << std::endl;
-					if(vision->getSampleCount() >= 10){
-						vision->calibrationEnd();
+				if (usefile ){
+					if(calibrationLoad(vision, "calibration.xml") == 0){
 						std::cout << "Calibration Done !" << std::endl;
-											}
+						usefile = false;
+					}
 				}else{
-					std::cout <<"-FAIL Try a different position. Chessboard should be visible on both cameras." << std::endl;
+
+					IplImage * left_gray = camera->getFramesGray(0);
+					IplImage * right_gray = camera->getFramesGray(1);
+
+					result = vision->calibrationAddSample(left_gray, right_gray);
+
+					if(0 == result){
+						std::cout << "+OK" << std::endl;
+						if(vision->getSampleCount() >= 20){
+							vision->calibrationEnd();
+							std::cout << "Calibration Done !" << std::endl;
+							calibrationSave(vision, "calibration");
+						}
+					}else{
+						std::cout <<"-FAIL Try a different position. Chessboard should be visible on both cameras." << std::endl;
+					}
 				}
 
 			}else{ // Display the depth output.
-				if(vision->getCalibrationDone()) displayOutput(camera, vision);
+				if(vision->getCalibrationDone()){
+					displayOutput(camera, vision);
+				}
 			}
 
 

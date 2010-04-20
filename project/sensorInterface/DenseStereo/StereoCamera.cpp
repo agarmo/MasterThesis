@@ -25,7 +25,7 @@ StereoCamera::~StereoCamera()
         cvReleaseImage(&frames[lr]);
         cvReleaseImage(&framesGray[lr]);
         cvReleaseCapture(&captures[lr]);
-        cvReleaseImage(&render[lr]);
+        //cvReleaseImage(&render[lr]);
     }
 
 }
@@ -64,23 +64,23 @@ int StereoCamera::capture(){
     frames[0] = cvQueryFrame(captures[0]);
     frames[1]= cvQueryFrame(captures[1]);
 
-    render[0] = cvCloneImage(frames[0]);
-    render[1] = cvCloneImage(frames[1]);
+    //render[0] = cvCloneImage(frames[0]);
+    //render[1] = cvCloneImage(frames[1]);
 
 
     return (captures[0] && captures[1]) ? 0 : 1;
 }
 
 IplImage*  StereoCamera::getFramesGray(int lr){
-    if(!render[lr])
+    if(!frames[lr])
     	return 0;
-    if(render[lr]->depth == 1){
-        framesGray[lr] = render[lr];
-        return render[lr];
+    if(frames[lr]->depth == 1){
+        framesGray[lr] = frames[lr];
+        return frames[lr];
     }else{
         if(framesGray[lr] == 0)
-        	framesGray[lr] = cvCreateImage(cvGetSize(render[lr]),IPL_DEPTH_8U,1);
-        cvCvtColor(render[lr],framesGray[lr],CV_BGR2GRAY);
+        	framesGray[lr] = cvCreateImage(cvGetSize(frames[lr]),IPL_DEPTH_8U,1);
+        cvCvtColor(frames[lr],framesGray[lr],CV_BGR2GRAY);
         return framesGray[lr];
     }
 }

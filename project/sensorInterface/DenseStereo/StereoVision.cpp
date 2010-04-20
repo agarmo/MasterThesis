@@ -8,6 +8,7 @@
 #include "StereoVision.h"
 
 #include <iostream>
+#include <string>
 
 StereoVision::StereoVision(int imageWidth,int imageHeight)
 {
@@ -87,7 +88,6 @@ int StereoVision::calibrationAddSample(IplImage* imageLeft,IplImage* imageRight)
 
 
         if(result && (cornersDetected == cornersN)){
-        	std::cout << "inne i calibrationAddSample423" << std::endl;
             succeses++;
         }
 
@@ -144,8 +144,6 @@ int StereoVision::calibrationEnd(){
     cvZero(&_D1);
     cvZero(&_D2);
 
-    std::cout << "inne i calibration end" << std::endl;
-
     //CALIBRATE THE STEREO CAMERAS
     cvStereoCalibrate( &_objectPoints, &_imagePoints1,
         &_imagePoints2, &_npoints,
@@ -154,7 +152,6 @@ int StereoVision::calibrationEnd(){
         cvTermCriteria(CV_TERMCRIT_ITER+CV_TERMCRIT_EPS, 100, 1e-5),
         CV_CALIB_FIX_ASPECT_RATIO + CV_CALIB_ZERO_TANGENT_DIST + CV_CALIB_SAME_FOCAL_LENGTH
     );
-    std::cout << "inne i calibration end67" << std::endl;
     //Always work in undistorted space
     cvUndistortPoints( &_imagePoints1, &_imagePoints1,&_M1, &_D1, 0, &_M1 );
     cvUndistortPoints( &_imagePoints2, &_imagePoints2,&_M2, &_D2, 0, &_M2 );
@@ -171,8 +168,6 @@ int StereoVision::calibrationEnd(){
     CvMat _H1 = cvMat(3, 3, CV_64F, H1);
     CvMat _H2 = cvMat(3, 3, CV_64F, H2);
     CvMat _iM = cvMat(3, 3, CV_64F, iM);
-
-    std::cout << "inne i calibration end1" << std::endl;
 
     cvStereoRectifyUncalibrated(
         &_imagePoints1,&_imagePoints2, &_F,
@@ -196,8 +191,6 @@ int StereoVision::calibrationEnd(){
     my1 = cvCreateMat( imageSize.height,imageSize.width, CV_32F );
     mx2 = cvCreateMat( imageSize.height,imageSize.width, CV_32F );
     my2 = cvCreateMat( imageSize.height,imageSize.width, CV_32F );
-
-    std::cout << "inne i calibration end4" << std::endl;
 
     cvInitUndistortRectifyMap(&_M1,&_D1,&_R1,&_M1,mx1,my1);
     cvInitUndistortRectifyMap(&_M2,&_D2,&_R2,&_M2,mx2,my2);
@@ -240,18 +233,30 @@ int StereoVision::stereoProcess(CvArr* imageSrcLeft,CvArr* imageSrcRight){
 
 int StereoVision::calibrationSave(const char* filename){
     if(!calibrationDone) return 1;
-    FILE* f =  fopen(filename,"wb");
+/*    FILE* f =  fopen(filename,"wb");
     if(!f) return 1;
     if(!fwrite(mx1->data.fl,sizeof(float),mx1->rows*mx1->cols,f)) return 1;
     if(!fwrite(my1->data.fl,sizeof(float),my1->rows*my1->cols,f)) return 1;
     if(!fwrite(mx2->data.fl,sizeof(float),mx2->rows*mx2->cols,f)) return 1;
     if(!fwrite(my2->data.fl,sizeof(float),my2->rows*my2->cols,f)) return 1;
     fclose(f);
+*/
+    std::string temp(filename);
+
+    cvSave((temp.append("1.xml")).c_str(), mx1);
+    temp = std::string(filename);
+    cvSave((temp.append("2.xml")).c_str(), my1);
+    temp = std::string(filename);
+    cvSave((temp.append("3.xml")).c_str(), mx2);
+    temp = std::string(filename);
+    cvSave((temp.append("4.xml")).c_str(), my2);
+
     return 0;
 }
 
 
 int StereoVision::calibrationLoad(const char* filename){
+	calibrationStarted = false;
     cvReleaseMat(&mx1);
     cvReleaseMat(&my1);
     cvReleaseMat(&mx2);

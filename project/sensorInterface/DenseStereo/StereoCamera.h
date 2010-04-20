@@ -26,7 +26,7 @@ public:
     IplImage* frames[2];
     IplImage* framesGray[2];
 
-    IplImage* render[2];
+    //IplImage* render[2];
 
 
     StereoCamera();

@@ -11,6 +11,10 @@
 
 
 
+
+
+
+
 /*
  * Main entry point for the dense stereo algorithm.
  * The input to this function should be som parameters and the two
