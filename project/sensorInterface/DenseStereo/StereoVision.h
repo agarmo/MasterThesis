@@ -16,6 +16,12 @@
 using namespace std;
 #include <vector>
 
+enum{
+	STEREO_CALIBRATE_BOTH_CAMERAS = 0,
+	STEREO_CALIBRATE_INDIVIDUAL_CAMERAS = 1,
+};
+
+
 class StereoVision
 {
 private:
@@ -44,9 +50,10 @@ public:
     CvMat* imagesRectified[2];
     CvMat  *imageDepth,*imageDepthNormalized;
 
-        void calibrationStart(int cornersX,int cornersY);
+
+    void calibrationStart(int cornersX,int cornersY);
     int calibrationAddSample(IplImage* imageLeft,IplImage* imageRight);
-    int calibrationEnd();
+    int calibrationEnd(int flag);
 
     int calibrationSave(const char* filename);
     int calibrationLoad(const char* filename);

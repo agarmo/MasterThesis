@@ -104,7 +104,7 @@ int StereoVision::calibrationAddSample(IplImage* imageLeft,IplImage* imageRight)
     }
 }
 
-int StereoVision::calibrationEnd(){
+int StereoVision::calibrationEnd(int flag){
     calibrationStarted = false;
 
     // ARRAY AND VECTOR STORAGE:
@@ -144,14 +144,42 @@ int StereoVision::calibrationEnd(){
     cvZero(&_D1);
     cvZero(&_D2);
 
-    //CALIBRATE THE STEREO CAMERAS
-    cvStereoCalibrate( &_objectPoints, &_imagePoints1,
-        &_imagePoints2, &_npoints,
-        &_M1, &_D1, &_M2, &_D2,
-        imageSize, &_R, &_T, &_E, &_F,
-        cvTermCriteria(CV_TERMCRIT_ITER+CV_TERMCRIT_EPS, 100, 1e-5),
-        CV_CALIB_FIX_ASPECT_RATIO + CV_CALIB_ZERO_TANGENT_DIST + CV_CALIB_SAME_FOCAL_LENGTH
-    );
+
+    switch(flag){
+    case STEREO_CALIBRATE_BOTH_CAMERAS:
+    	//CALIBRATE THE STEREO CAMERAS
+    	cvStereoCalibrate( &_objectPoints, &_imagePoints1,
+    			&_imagePoints2, &_npoints,
+    			&_M1, &_D1, &_M2, &_D2,
+    			imageSize, &_R, &_T, &_E, &_F,
+    			cvTermCriteria(CV_TERMCRIT_ITER+CV_TERMCRIT_EPS, 100, 1e-5),
+    			CV_CALIB_FIX_ASPECT_RATIO + CV_CALIB_ZERO_TANGENT_DIST + CV_CALIB_SAME_FOCAL_LENGTH
+    	);
+    	break;
+    case STEREO_CALIBRATE_INDIVIDUAL_CAMERAS:
+    	//calibrate left camera
+    	cvCalibrateCamera2( &_objectPoints, &_imagePoints1,
+    			&_npoints, imageSize,
+    			&_M1, &_D1, NULL, NULL,
+    			0
+    	);
+    	cvCalibrateCamera2( &_objectPoints, &_imagePoints2,
+    			&_npoints, imageSize,
+    			&_M2, &_D2, NULL, NULL,
+    			0
+    	);
+    	cvStereoCalibrate( &_objectPoints, &_imagePoints1,
+    			&_imagePoints2, &_npoints,
+    			&_M1, &_D1, &_M2, &_D2,
+    			imageSize, &_R, &_T, &_E, &_F,
+    			cvTermCriteria(CV_TERMCRIT_ITER+CV_TERMCRIT_EPS, 100, 1e-5),
+    			CV_CALIB_FIX_INTRINSIC
+    	);
+    	break;
+    default:
+    	break;
+    }
+
     //Always work in undistorted space
     cvUndistortPoints( &_imagePoints1, &_imagePoints1,&_M1, &_D1, 0, &_M1 );
     cvUndistortPoints( &_imagePoints2, &_imagePoints2,&_M2, &_D2, 0, &_M2 );
@@ -201,12 +229,17 @@ int StereoVision::calibrationEnd(){
 }
 
 int StereoVision::stereoProcess(CvArr* imageSrcLeft,CvArr* imageSrcRight){
-    if(!calibrationDone) return 1;
+    if(!calibrationDone)
+    	return 1;
 
-    if(!imagesRectified[0]) imagesRectified[0] = cvCreateMat( imageSize.height,imageSize.width, CV_8U );
-    if(!imagesRectified[1]) imagesRectified[1] = cvCreateMat( imageSize.height,imageSize.width, CV_8U );
-    if(!imageDepth) imageDepth = cvCreateMat( imageSize.height,imageSize.width, CV_16S );
-    if(!imageDepthNormalized) imageDepthNormalized = cvCreateMat( imageSize.height,imageSize.width, CV_8U );
+    if(!imagesRectified[0])
+    	imagesRectified[0] = cvCreateMat( imageSize.height,imageSize.width, CV_8U );
+    if(!imagesRectified[1])
+    	imagesRectified[1] = cvCreateMat( imageSize.height,imageSize.width, CV_8U );
+    if(!imageDepth)
+    	imageDepth = cvCreateMat( imageSize.height,imageSize.width, CV_16S );
+    if(!imageDepthNormalized)
+    	imageDepthNormalized = cvCreateMat( imageSize.height,imageSize.width, CV_8U );
 
     //rectify images
     cvRemap( imageSrcLeft, imagesRectified[0] , mx1, my1 );

@@ -69,6 +69,7 @@ void calibrationSave(StereoVision* vision, std::string filename)
 int main(){
 
 	bool usefile = false;
+	bool saveCalibration = false;
 
 	CvSize resolution = cvSize(640,480);
 
@@ -127,10 +128,11 @@ int main(){
 
 					if(0 == result){
 						std::cout << "+OK" << std::endl;
-						if(vision->getSampleCount() >= 20){
-							vision->calibrationEnd();
+						if(vision->getSampleCount() >= 50){
+							vision->calibrationEnd(STEREO_CALIBRATE_INDIVIDUAL_CAMERAS);
 							std::cout << "Calibration Done !" << std::endl;
-							calibrationSave(vision, "calibration");
+							if(saveCalibration)
+								calibrationSave(vision, "calibration");
 						}
 					}else{
 						std::cout <<"-FAIL Try a different position. Chessboard should be visible on both cameras." << std::endl;
