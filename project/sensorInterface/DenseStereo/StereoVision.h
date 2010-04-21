@@ -19,6 +19,8 @@ using namespace std;
 enum{
 	STEREO_CALIBRATE_BOTH_CAMERAS = 0,
 	STEREO_CALIBRATE_INDIVIDUAL_CAMERAS = 1,
+	STEREO_MATCH_BY_BM = 2,
+	STEREO_MATCH_BY_GC = 3
 };
 
 
@@ -50,15 +52,19 @@ public:
     CvMat* imagesRectified[2];
     CvMat  *imageDepth,*imageDepthNormalized;
 
+    CvMat * disp_gc[2];
+
+    CvMat* image3d;
+
 
     void calibrationStart(int cornersX,int cornersY);
     int calibrationAddSample(IplImage* imageLeft,IplImage* imageRight);
-    int calibrationEnd(int flag);
+    int calibrationEnd(int flag, CvMat* dist1, CvMat* cam1, CvMat* dist2, CvMat* cam2,CvMat* fundamentalMat );
 
     int calibrationSave(const char* filename);
     int calibrationLoad(const char* filename);
 
-    int stereoProcess(CvArr* imageSrcLeft,CvArr* imageSrcRight);
+    int stereoProcess(CvArr* imageSrcLeft,CvArr* imageSrcRight, int match);
 
     CvSize getImageSize(){return imageSize;}
     bool getCalibrationStarted(){return calibrationStarted;}

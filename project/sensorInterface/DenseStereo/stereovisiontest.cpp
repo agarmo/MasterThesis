@@ -25,7 +25,7 @@ void displayOutput(StereoCamera * camera, StereoVision * vision){
     CvSize imageSize = vision->getImageSize();
     if(!imageRectifiedPair) imageRectifiedPair = cvCreateMat( imageSize.height, imageSize.width*2,CV_8UC3 );
 
-    vision->stereoProcess(camera->getFramesGray(0), camera->getFramesGray(1));
+    vision->stereoProcess(camera->getFramesGray(0), camera->getFramesGray(1), STEREO_MATCH_BY_BM);
 
 
     CvMat part;
@@ -70,6 +70,8 @@ int main(){
 
 	bool usefile = false;
 	bool saveCalibration = false;
+
+	CvMat C1, C2, D1, D2, F;
 
 	CvSize resolution = cvSize(640,480);
 
@@ -129,7 +131,9 @@ int main(){
 					if(0 == result){
 						std::cout << "+OK" << std::endl;
 						if(vision->getSampleCount() >= 50){
-							vision->calibrationEnd(STEREO_CALIBRATE_INDIVIDUAL_CAMERAS);
+							vision->calibrationEnd(
+									STEREO_CALIBRATE_INDIVIDUAL_CAMERAS,
+									&D1, &C1, &D2, &C2, &F);
 							std::cout << "Calibration Done !" << std::endl;
 							if(saveCalibration)
 								calibrationSave(vision, "calibration");
@@ -153,6 +157,8 @@ int main(){
 
 	cvDestroyAllWindows();
 	cvReleaseMat(&imageRectifiedPair);
+
+
 
     delete vision;
     delete camera;

@@ -28,6 +28,8 @@ public:
 
     //IplImage* render[2];
 
+    CvMat D1, D2, R1, R2; //used for parameter output and saving of estimated paramters.
+
 
     StereoCamera();
     ~StereoCamera();

@@ -17,8 +17,8 @@ StereoVision::StereoVision(int imageWidth,int imageHeight)
     calibrationStarted = false;
     calibrationDone = false;
     imagesRectified[0] = imagesRectified[1] = imageDepth = imageDepthNormalized = 0;
-    imageDepth = 0;
-        sampleCount = 0;
+    sampleCount = 0;
+    disp_gc[0] = disp_gc[1] = 0;
 }
 
 StereoVision::StereoVision(CvSize size){
@@ -29,6 +29,7 @@ StereoVision::StereoVision(CvSize size){
 	imagesRectified[0] = imagesRectified[1] = imageDepth = imageDepthNormalized = 0;
 	imageDepth = 0;
 	sampleCount = 0;
+	disp_gc[0] = disp_gc[1] = 0;
 }
 
 StereoVision::~StereoVision()
@@ -37,6 +38,8 @@ StereoVision::~StereoVision()
     cvReleaseMat(&imagesRectified[1]);
     cvReleaseMat(&imageDepth);
     cvReleaseMat(&imageDepthNormalized);
+    cvReleaseMat(&disp_gc[0]);
+    cvReleaseMat(&disp_gc[1]);
 }
 
 void StereoVision::calibrationStart(int cornersX,int cornersY){
@@ -104,8 +107,16 @@ int StereoVision::calibrationAddSample(IplImage* imageLeft,IplImage* imageRight)
     }
 }
 
-int StereoVision::calibrationEnd(int flag){
+int StereoVision::calibrationEnd(int flag,
+				CvMat* dist1, //output of distrotion paramters for cam1
+				CvMat* cam1,  // output of camera matrix for cam1
+				CvMat* dist2,
+				CvMat* cam2,
+				CvMat* fundamentalMat){
+
     calibrationStarted = false;
+
+    int useUncalibrated = 0;
 
     // ARRAY AND VECTOR STORAGE:
     double M1[3][3], M2[3][3], D1[5], D2[5];
@@ -186,49 +197,67 @@ int StereoVision::calibrationEnd(int flag){
 
     //COMPUTE AND DISPLAY RECTIFICATION
 
+	cvReleaseMat(&mx1);
+	cvReleaseMat(&my1);
+	cvReleaseMat(&mx2);
+	cvReleaseMat(&my2);
+	mx1 = cvCreateMat( imageSize.height,imageSize.width, CV_32F );
+	my1 = cvCreateMat( imageSize.height,imageSize.width, CV_32F );
+	mx2 = cvCreateMat( imageSize.height,imageSize.width, CV_32F );
+	my2 = cvCreateMat( imageSize.height,imageSize.width, CV_32F );
 
-    double R1[3][3], R2[3][3];
+    double R1[3][3], R2[3][3], P1[3][4], P2[3][4];
     CvMat _R1 = cvMat(3, 3, CV_64F, R1);
     CvMat _R2 = cvMat(3, 3, CV_64F, R2);
 
-    //HARTLEY'S RECTIFICATION METHOD
-    double H1[3][3], H2[3][3], iM[3][3];
-    CvMat _H1 = cvMat(3, 3, CV_64F, H1);
-    CvMat _H2 = cvMat(3, 3, CV_64F, H2);
-    CvMat _iM = cvMat(3, 3, CV_64F, iM);
+    if(useUncalibrated == 0){
+    	CvMat _P1 = cvMat(3, 4, CV_64F, P1);
+    	CvMat _P2 = cvMat(3, 4, CV_64F, P2);
+    	cvStereoRectify( &_M1, &_M2, &_D1, &_D2, imageSize,
+    			&_R, &_T,
+    			&_R1, &_R2, &_P1, &_P2, 0,
+    			0/*CV_CALIB_ZERO_DISPARITY*/ );
+    	//Precompute maps for cvRemap()
+    	cvInitUndistortRectifyMap(&_M1,&_D1,&_R1,&_P1,mx1,my1);
+    	cvInitUndistortRectifyMap(&_M2,&_D2,&_R2,&_P2,mx2,my2);
 
-    cvStereoRectifyUncalibrated(
-        &_imagePoints1,&_imagePoints2, &_F,
-        imageSize,
-        &_H1, &_H2, 3
-    );
-    cvInvert(&_M1, &_iM);
-    cvMatMul(&_H1, &_M1, &_R1);
-    cvMatMul(&_iM, &_R1, &_R1);
-    cvInvert(&_M2, &_iM);
-    cvMatMul(&_H2, &_M2, &_R2);
-    cvMatMul(&_iM, &_R2, &_R2);
+    }else{
+
+    	//HARTLEY'S RECTIFICATION METHOD
+    	double H1[3][3], H2[3][3], iM[3][3];
+    	CvMat _H1 = cvMat(3, 3, CV_64F, H1);
+    	CvMat _H2 = cvMat(3, 3, CV_64F, H2);
+    	CvMat _iM = cvMat(3, 3, CV_64F, iM);
+
+    	cvStereoRectifyUncalibrated(
+    			&_imagePoints1,&_imagePoints2, &_F,
+    			imageSize,
+    			&_H1, &_H2, 3
+    	);
+    	cvInvert(&_M1, &_iM);
+    	cvMatMul(&_H1, &_M1, &_R1);
+    	cvMatMul(&_iM, &_R1, &_R1);
+    	cvInvert(&_M2, &_iM);
+    	cvMatMul(&_H2, &_M2, &_R2);
+    	cvMatMul(&_iM, &_R2, &_R2);
 
 
-    //Precompute map for cvRemap()
-    cvReleaseMat(&mx1);
-    cvReleaseMat(&my1);
-    cvReleaseMat(&mx2);
-    cvReleaseMat(&my2);
-    mx1 = cvCreateMat( imageSize.height,imageSize.width, CV_32F );
-    my1 = cvCreateMat( imageSize.height,imageSize.width, CV_32F );
-    mx2 = cvCreateMat( imageSize.height,imageSize.width, CV_32F );
-    my2 = cvCreateMat( imageSize.height,imageSize.width, CV_32F );
-
-    cvInitUndistortRectifyMap(&_M1,&_D1,&_R1,&_M1,mx1,my1);
-    cvInitUndistortRectifyMap(&_M2,&_D2,&_R2,&_M2,mx2,my2);
-
+    	cvInitUndistortRectifyMap(&_M1,&_D1,&_R1,&_M1,mx1,my1);
+    	cvInitUndistortRectifyMap(&_M2,&_D2,&_R2,&_M2,mx2,my2);
+    }
     calibrationDone = true;
+
+    // copy the paramtere matrices
+    cvInitMatHeader(dist1, 5, 1, CV_64F, D1);
+    cvInitMatHeader(cam1, 3, 3, CV_64F, M1);
+    cvInitMatHeader(dist2, 5, 1, CV_64F, D2);
+    cvInitMatHeader(cam2, 3, 3, CV_64F, M2);
+    cvInitMatHeader(fundamentalMat, 3, 3, CV_64F, F);
 
     return 0;
 }
 
-int StereoVision::stereoProcess(CvArr* imageSrcLeft,CvArr* imageSrcRight){
+int StereoVision::stereoProcess(CvArr* imageSrcLeft,CvArr* imageSrcRight, int match){
     if(!calibrationDone)
     	return 1;
 
@@ -236,53 +265,82 @@ int StereoVision::stereoProcess(CvArr* imageSrcLeft,CvArr* imageSrcRight){
     	imagesRectified[0] = cvCreateMat( imageSize.height,imageSize.width, CV_8U );
     if(!imagesRectified[1])
     	imagesRectified[1] = cvCreateMat( imageSize.height,imageSize.width, CV_8U );
-    if(!imageDepth)
-    	imageDepth = cvCreateMat( imageSize.height,imageSize.width, CV_16S );
-    if(!imageDepthNormalized)
-    	imageDepthNormalized = cvCreateMat( imageSize.height,imageSize.width, CV_8U );
 
     //rectify images
     cvRemap( imageSrcLeft, imagesRectified[0] , mx1, my1 );
     cvRemap( imageSrcRight, imagesRectified[1] , mx2, my2 );
 
+    //chose algorithm
+    if (match == STEREO_MATCH_BY_BM){
+    	if(!imageDepth)
+   	    	imageDepth = cvCreateMat( imageSize.height,imageSize.width, CV_16S );
+  	    if(!imageDepthNormalized)
+   	    	imageDepthNormalized = cvCreateMat( imageSize.height,imageSize.width, CV_8U );
 
-    CvStereoBMState *BMState = cvCreateStereoBMState();
-    BMState->preFilterSize=41;
-    BMState->preFilterCap=31;
-    BMState->SADWindowSize=41;
-    BMState->minDisparity=-64;
-    BMState->numberOfDisparities=128;
-    BMState->textureThreshold=10;
-    BMState->uniquenessRatio=15;
+    	CvStereoBMState *BMState = cvCreateStereoBMState();
+    	BMState->preFilterSize=41;
+    	BMState->preFilterCap=31;
+    	BMState->SADWindowSize=41;
+    	BMState->minDisparity=-64;
+    	BMState->numberOfDisparities=128;
+    	BMState->textureThreshold=10;
+    	BMState->uniquenessRatio=15;
 
-    cvFindStereoCorrespondenceBM( imagesRectified[0], imagesRectified[1], imageDepth, BMState);
-    cvNormalize( imageDepth, imageDepthNormalized, 0, 256, CV_MINMAX );
+    	cvFindStereoCorrespondenceBM( imagesRectified[0],
+    			imagesRectified[1],
+    			imageDepth,
+    			BMState);
+    	cvNormalize( imageDepth, imageDepthNormalized, 0, 256, CV_MINMAX );
 
 
-    cvReleaseStereoBMState(&BMState);
+    	cvReleaseStereoBMState(&BMState);
+
+    }else if (match == STEREO_MATCH_BY_GC){
+    	if(!disp_gc[0])
+   	    	disp_gc[0] = cvCreateMat( imageSize.height,imageSize.width, CV_16S );
+  	    if(!disp_gc[1])
+   	    	disp_gc[1] = cvCreateMat( imageSize.height,imageSize.width, CV_16S );
+
+  	    CvStereoGCState * GCState = cvCreateStereoGCState(16, 2);
+
+  	    cvFindStereoCorrespondenceGC(imagesRectified[0],
+  	    		imagesRectified[1],
+  	    		disp_gc[0],
+  	    		disp_gc[1],
+  	    		GCState,
+  	    		0);
+
+  	    if(!imageDepthNormalized)
+  	       	imageDepthNormalized = cvCreateMat( imageSize.height,imageSize.width, CV_8U );
+
+
+  	    cvConvertScale(disp_gc[0], imageDepthNormalized, -16);
+
+  	    cvReleaseStereoGCState(&GCState);
+
+    }
 
     return 0;
 }
 
 int StereoVision::calibrationSave(const char* filename){
-    if(!calibrationDone) return 1;
-/*    FILE* f =  fopen(filename,"wb");
-    if(!f) return 1;
-    if(!fwrite(mx1->data.fl,sizeof(float),mx1->rows*mx1->cols,f)) return 1;
-    if(!fwrite(my1->data.fl,sizeof(float),my1->rows*my1->cols,f)) return 1;
-    if(!fwrite(mx2->data.fl,sizeof(float),mx2->rows*mx2->cols,f)) return 1;
-    if(!fwrite(my2->data.fl,sizeof(float),my2->rows*my2->cols,f)) return 1;
-    fclose(f);
-*/
-    std::string temp(filename);
+    if(!calibrationDone)
+    	return 1;
 
-    cvSave((temp.append("1.xml")).c_str(), mx1);
-    temp = std::string(filename);
-    cvSave((temp.append("2.xml")).c_str(), my1);
-    temp = std::string(filename);
-    cvSave((temp.append("3.xml")).c_str(), mx2);
-    temp = std::string(filename);
-    cvSave((temp.append("4.xml")).c_str(), my2);
+
+    FILE* f =  fopen(filename,"wb");
+    if(!f)
+    	return 1;
+    if(!fwrite(mx1->data.fl,sizeof(float),mx1->rows*mx1->cols,f))
+    	return 1;
+    if(!fwrite(my1->data.fl,sizeof(float),my1->rows*my1->cols,f))
+    	return 1;
+    if(!fwrite(mx2->data.fl,sizeof(float),mx2->rows*mx2->cols,f))
+    	return 1;
+    if(!fwrite(my2->data.fl,sizeof(float),my2->rows*my2->cols,f))
+    	return 1;
+    fclose(f);
+
 
     return 0;
 }
