@@ -14,6 +14,7 @@ StereoVision::StereoVision(int imageWidth,int imageHeight)
 {
     this->imageSize = cvSize(imageWidth,imageHeight);
     mx1 = my1 = mx2 = my2 = 0;
+    Q = 0;
     calibrationStarted = false;
     calibrationDone = false;
     imagesRectified[0] = imagesRectified[1] = imageDepth = imageDepthNormalized = 0;
@@ -22,8 +23,10 @@ StereoVision::StereoVision(int imageWidth,int imageHeight)
 }
 
 StereoVision::StereoVision(CvSize size){
+
 	this->imageSize = size;
 	mx1 = my1 = mx2 = my2 = 0;
+	Q = 0;
 	calibrationStarted = false;
 	calibrationDone = false;
 	imagesRectified[0] = imagesRectified[1] = imageDepth = imageDepthNormalized = 0;
@@ -213,9 +216,13 @@ int StereoVision::calibrationEnd(int flag,
     if(useUncalibrated == 0){
     	CvMat _P1 = cvMat(3, 4, CV_64F, P1);
     	CvMat _P2 = cvMat(3, 4, CV_64F, P2);
+
+    	if(!Q) // create the perspective transformation
+    		Q = cvCreateMat(4, 4, CV_32F);
+
     	cvStereoRectify( &_M1, &_M2, &_D1, &_D2, imageSize,
     			&_R, &_T,
-    			&_R1, &_R2, &_P1, &_P2, 0,
+    			&_R1, &_R2, &_P1, &_P2, Q,
     			0/*CV_CALIB_ZERO_DISPARITY*/ );
     	//Precompute maps for cvRemap()
     	cvInitUndistortRectifyMap(&_M1,&_D1,&_R1,&_P1,mx1,my1);

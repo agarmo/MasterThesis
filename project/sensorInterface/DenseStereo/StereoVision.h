@@ -49,12 +49,12 @@ public:
     //matrices resulting from calibration (used for cvRemap to rectify images)
     CvMat *mx1,*my1,*mx2,*my2;
 
+    CvMat * Q; //perspective transformation matrix created by stereoRectify
+
     CvMat* imagesRectified[2];
     CvMat  *imageDepth,*imageDepthNormalized;
 
     CvMat * disp_gc[2];
-
-    CvMat* image3d;
 
 
     void calibrationStart(int cornersX,int cornersY);
