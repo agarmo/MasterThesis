@@ -19,6 +19,21 @@ StereoCamera::StereoCamera()
     ready = false;
 }
 
+StereoCamera::StereoCamera(CvSize size)
+{
+    for(int lr=0;lr<2;lr++){
+        captures[lr] = 0;
+        frames[lr] = 0;
+        framesGray[lr] =0;
+
+    }
+    imageSize = size;
+
+    ready = false;
+}
+
+
+
 StereoCamera::~StereoCamera()
 {
     for(int lr=0;lr<2;lr++){

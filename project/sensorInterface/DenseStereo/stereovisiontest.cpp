@@ -83,7 +83,7 @@ void create3dOutput(StereoCamera *camera, StereoVision * vision, IplImage * dest
 
 
 
-int main(){
+/*int main(){
 
 	bool usefile = false;
 	bool saveCalibration = false;
@@ -170,6 +170,8 @@ int main(){
 							img3d = cvCreateImage(resolution, IPL_DEPTH_16S, 3);
 
 					create3dOutput(camera, vision, img3d);
+					cvShowImage("depth", img3d);
+
 				}
 			}
 
@@ -190,3 +192,4 @@ int main(){
 
     return 0;
 }
+*/

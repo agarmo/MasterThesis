@@ -32,7 +32,9 @@ public:
 
 
     StereoCamera();
+    StereoCamera(CvSize size);
     ~StereoCamera();
+
     int setup(CvSize imageSize);
     bool ready;
     int capture();
