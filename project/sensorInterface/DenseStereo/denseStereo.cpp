@@ -22,11 +22,10 @@ void createCamMatOutput(StereoVision * vision,
 
 
 
-
 }
 
 
-void doCalibrate(	StereoCamera *camera,
+void doCalibration(	StereoCamera *camera,
 		StereoVision *vision,
 		CvSize resolution,
 		int iterations, //number of pictures of the chessboard
@@ -88,7 +87,6 @@ void doCalibrate(	StereoCamera *camera,
 						//output the matrices
 
 
-
 					}
 				}else{
 					std::cout <<"-FAIL Try a different position. Chessboard should be visible on both cameras." << std::endl;
@@ -100,6 +98,25 @@ void doCalibrate(	StereoCamera *camera,
 	}
 	cvDestroyAllWindows();
 	//cvReleaseMat(&imageRectifiedPair);
+
+}
+
+void loadCalibration(){
+
+
+}
+
+
+//function for getting the disparity map.
+void getDisparityMap(){
+
+
+
+}
+
+// return the 3d coordinates from the scene.
+void get3DOutuput(){
+
 
 }
 
