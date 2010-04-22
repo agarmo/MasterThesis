@@ -13,11 +13,26 @@
 #include "StereoCamera.h"
 
 
+void createCamMatOutput(StereoVision * vision,
+		CvMat* C1, CvMat* C2, CvMat* D1, CvMat* D2, CvMat* F,
+		int nlhs,
+		mxArray * plhs[])
+{
+
+
+
+
+
+}
+
+
 void doCalibrate(	StereoCamera *camera,
 		StereoVision *vision,
 		CvSize resolution,
 		int iterations, //number of pictures of the chessboard
-		int flag)
+		int flag,
+		int nlhs,
+		mxArray * plhs[])
 {
 
 	bool calibrationDone = false;
@@ -49,9 +64,10 @@ void doCalibrate(	StereoCamera *camera,
 					cvShowImage("right",camera->frames[1]);
 				}
 				int c = cvWaitKey( 1 );
-				if( c == 27 ) //if esc key break.
+				if( c == 27 ) {//if esc key break.
+					mexErrMsgTxt("StereoCamAPI: canceled by user\n");
 					break;
-
+				}
 			}
 
 
@@ -62,14 +78,16 @@ void doCalibrate(	StereoCamera *camera,
 									camera->getFramesGray(1));
 
 				if(0 == result){
-					std::cout << "+OK" << std::endl;
+//					std::cout << "+OK" << std::endl;
 					if(vision->getSampleCount() >= iterations){
-						vision->calibrationEnd(
-								flag, &D1, &C1, &D2, &C2, &F);
+						vision->calibrationEnd(flag, &D1, &C1, &D2, &C2, &F);
+
 						std::cout << "Calibration Done !" << std::endl;
 						calibrationDone = true;
 
 						//output the matrices
+
+
 
 					}
 				}else{
@@ -78,7 +96,6 @@ void doCalibrate(	StereoCamera *camera,
 
 			}
 		}
-
 
 	}
 	cvDestroyAllWindows();
@@ -158,13 +175,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
 
 
-
-
     	}
 
-
     }
-
 
 
     //do cleanup
