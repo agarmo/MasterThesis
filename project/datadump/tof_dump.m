@@ -26,6 +26,7 @@ function [xall, yall, zall] = tof_dump(filename, iterations)
     
     temp = [xall; yall; zall];
 
+    disp('Writing to file...')
     csvwrite(filename, temp );
     
     
