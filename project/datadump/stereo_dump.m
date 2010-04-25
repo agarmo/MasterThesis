@@ -32,5 +32,8 @@ function [tempLeft, tempRight] = stereo_dump(iterations)
 
     trigger(left_cam);
     trigger(right_cam);
+    
+    imwrite(tempLeft, 'left.bmp', 'bmp');
+    imwrite(tempRight, 'right.bmp', 'bmp');
 
 end
