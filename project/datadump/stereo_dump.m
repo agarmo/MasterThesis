@@ -24,7 +24,7 @@ function [tempLeft, tempRight] = stereo_dump(iterations)
         left = getsnapshot(left_cam);
         right = getsnapshot(right_cam);
         toc
-        
+            
         tempLeft = [tempLeft; left];
         tempRight = [tempRight; right];
 
