@@ -223,6 +223,20 @@ object.
         \label{fig:ch2-stereo_geometry}
     \end{figure}
 
+    Distance are inversely proportional to the disparity, and have a clearly nonlinear.
+    This means that there are small differences in depth when the disparity is large, and
+    when the disparity is small, the variance in depth will be large. This means that the
+    depth is more accurate when the object are close to the camera. 
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.5\textwidth]{pics/disparity-depth}
+        \caption{The relationship between depth and disparity}
+        \label{fig:chap2-disparity-depth}
+    \end{figure}
+
+
+    
+
     The distance to the common point in both cameras can now be calculated by 
     \begin{equation}
         D = f (L / (x+y) - 1)
