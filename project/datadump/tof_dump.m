@@ -1,6 +1,6 @@
 %% ToF camera dump script
 
-function [xall, yall, zall] = tof_dump(filename, iterations)
+function [xall, yall, zall, amplitude] = tof_dump(filename, iterations)
 
     [dev] = sr_open(); % open the connection
 
@@ -15,7 +15,7 @@ function [xall, yall, zall] = tof_dump(filename, iterations)
         sr_acquire(dev); % start the acquiring process
         
         [res, x, y, z] = sr_coordtrf(dev);
-        ampimg = sr_getimage(ToF,1);
+        ampimg = sr_getimage(dev,1);
 
         %stor the coordinates in the overall array
         xall = [xall; x];
