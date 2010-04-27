@@ -3,12 +3,17 @@ All todos which have to be done should be here. They should be added whenever po
 
 Data Fusion - Fuse the data from the different sensors.
     Test different fusion schemes - Using LRF for some parameters and ToF for others
-
+    Projecting into different domains - Project the 3D sensors into the 2D domain and
+                            other way around.
+    Interpolation         - Using interpolation between the 3D and 2D sensors.
+    
 
 Node Detection/Recognition - Be able to detect what kind pipe junction one is at.
     Surface Fit -           Be able to match the data with the nodes
-    Curve Fit algorithms -  Find different algorithms, or find one and implement. 
-    Data Filtering -        Run some kind of low-pass filter on the ToF-data.
+    Curve Fit algorithms  - Find different algorithms, or find one and implement. 
+    Make a model          - Find a model to represent the pipes. cylinder?
+    Data Filtering        - Run some kind of low-pass filter on the ToF-data.
+    Plotting              - Plotting of the world.
     
 
 Stereo Camera - Be able to give out distances from the stereo camera.
@@ -19,7 +24,7 @@ Stereo Camera - Be able to give out distances from the stereo camera.
                             given disparity maps.
 
 
-Report -    Finish writing the report
+Report - Finish writing the report
     Stereo cam background - Need more background on the steroe camera. Matching,
                             calibration, and rectification.
     LRF background        - Background and error sources of the LRF.
@@ -30,4 +35,8 @@ Report -    Finish writing the report
     Algorithms            - Descirbe the algorithms implemented. 
     Implementation issues - How the project was implemented. Descibre Open CV library,
                             drivers etc.
+    Discussion            - Discussing the tests and why it was this way
+    Conclusion            - Conclude the thesis.
+    Pictures              - Lots of pictures and figures.
+
 
