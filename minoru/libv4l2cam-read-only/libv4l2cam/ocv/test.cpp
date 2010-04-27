@@ -20,7 +20,7 @@ int main(int argc, char **args) {
   int hh=480;
   int fps=30;
 
-  const char *dev="/dev/video0";
+  const char *dev="/dev/video1";
 
 
   printf("Usage is:\n    %s -w width -h height -d device -f fps\n\n", args[0]);

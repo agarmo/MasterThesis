@@ -43,7 +43,7 @@ all: v4l2stereo
 v4l2stereo: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++ -L/usr/local/lib -L/usr/lib/gstreamer-0.10 /usr/local/lib/libcxcore.so /usr/local/lib/libcvaux.so /usr/local/lib/libcv.so /usr/local/lib/libhighgui.so -o"v4l2stereo" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -L/usr/lib -L/usr/lib/gstreamer-0.10 /usr/lib/libcxcore.so /usr/lib/libcvaux.so /usr/lib/libcv.so /usr/lib/libhighgui.so -o"v4l2stereo" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

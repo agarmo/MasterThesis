@@ -52,7 +52,7 @@ private:
 	void make_offsets(int* pixel, int row_stride);
 	void match_temporal(unsigned char* img_mono, int img_width, int img_height, int current_no_of_corners, xy* current_corners, int prev_no_of_corners, xy* prev_corners, unsigned char* matches, int max_disparity);
 	bool FileExists(std::string filename);
-	void compute_descriptor(unsigned char *img, int img_width, int img_height, int x, int y, int radius, int descriptor_index, unsigned int* descriptor);
+	void compute_descriptor(unsigned char *img, int img_width, int img_height, int x, int y, int radius, int descriptor_index, unsigned int* descriptor, unsigned char* descriptor_colour, unsigned char* descriptor_direction);
 	void create_descriptor_lookup(int radius, int width, int* lookup);
 
 	int* previous_no_of_corners;
@@ -73,8 +73,6 @@ private:
 	xy* nonmax;
 	int num_nonmax;
 
-	//int *descriptor_lookup;
-
 public:
 	void show(unsigned char *outbuf, int img_width, int img_height, int show_tracking);
 	int update(unsigned char* img, int img_width, int img_height, int desired_features, int use_tracking);
@@ -83,7 +81,7 @@ public:
 	void match_interocular(int img_width, int img_height, int no_of_stereo_matches, unsigned int* stereo_matches);
 	void estimate_pan_tilt(int img_width, int img_height, int fov_degrees, int angle_multiplier);
 
-	void update_descriptors(unsigned char *img, int img_width, int img_height, unsigned int* descriptor);
+	void update_descriptors(unsigned char *img, int img_width, int img_height, unsigned int* descriptor, unsigned char* descriptor_colour, unsigned char* descriptor_direction);
 	int save_descriptors(std::string filename, unsigned char *img, int img_width, int img_height);
 
 	int get_no_of_corners();

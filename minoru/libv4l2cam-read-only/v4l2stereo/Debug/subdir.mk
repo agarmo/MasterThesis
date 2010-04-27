@@ -12,7 +12,8 @@ CPP_SRCS += \
 ../main.cpp \
 ../motionmodel.cpp \
 ../polynomial.cpp \
-../stereo.cpp 
+../stereo.cpp \
+../stereodense.cpp 
 
 OBJS += \
 ./anyoption.o \
@@ -23,7 +24,8 @@ OBJS += \
 ./main.o \
 ./motionmodel.o \
 ./polynomial.o \
-./stereo.o 
+./stereo.o \
+./stereodense.o 
 
 CPP_DEPS += \
 ./anyoption.d \
@@ -34,14 +36,15 @@ CPP_DEPS += \
 ./main.d \
 ./motionmodel.d \
 ./polynomial.d \
-./stereo.d 
+./stereo.d \
+./stereodense.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
 %.o: ../%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
-	g++ -I/usr/local/include/opencv -I/usr/include/gstreamer-0.10 -O3 -g3 -Wall -c -fmessage-length=0 -lcam -lcv -lcxcore -lcvaux -lhighgui `pkg-config --cflags --libs gstreamer-0.10` -L/usr/local/lib -lcv -lcxcore -lcvaux -lhighgui `pkg-config --cflags --libs glib-2.0` `pkg-config --cflags --libs gstreamer-plugins-base-0.10` -lgstapp-0.10 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<"
+	g++ -I/usr/include/opencv -I/usr/include/gstreamer-0.10 -O3 -g3 -Wall -c -fopenmp -fmessage-length=0 -lcam -lcv -lcxcore -lcvaux -lhighgui `pkg-config --cflags --libs gstreamer-0.10` -L/usr/lib -lcv -lcxcore -lcvaux -lhighgui `pkg-config --cflags --libs glib-2.0` `pkg-config --cflags --libs gstreamer-plugins-base-0.10` -lgstapp-0.10 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o"$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
