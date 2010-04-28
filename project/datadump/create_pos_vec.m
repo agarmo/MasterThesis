@@ -57,7 +57,7 @@ s = 1;
 param = [x0, y0, alpha, beta, s];
 
 [x0n, an, phin, rn, d, sigmah, conv, Vx0n, Van, uphin, urn, ... 
-GNlog, a, R0, R] = lscone(temp, [0, 0,0.5]', [0,0,1]', 5*pi/180, 0.125, 0.1, 0.1);
+GNlog, a, R0, R] = lscone(temp, [0, 0,0.5]', [0,0,1]', 0, 0.125, 0.1, 0.1);
 
 
 % [f] = fgcylinder(param, pos_vec);
