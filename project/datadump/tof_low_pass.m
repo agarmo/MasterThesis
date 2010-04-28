@@ -11,17 +11,25 @@ zall = temp(2/3*i+1:end,:);
 
 clear temp;
 
+%% Start the filtering.
+start = 1;
+stop = 10;
+interval = stop-start;
 
+x = zeros(176,144);
+y = zeros(176,144);
+z = zeros(176,144);
 
-for n = 1:size(xall)
+for n = start:stop
 
-    %input filter here
+    %input filter here simple averaging
+    x = x+xall(176*n+1:176*(n+1), :);
+    y = y+yall(176*n+1:176*(n+1), :);
+    z = z+zall(176*n+1:176*(n+1), :);
     
-    
-    x = xall(176*n+1:176*(n+1), :);
-    y = yall(176*n+1:176*(n+1), :);
-    z = zall(176*n+1:176*(n+1), :);
-
 end
 
+x = x./interval;
+y = y./interval;
+z = z./interval;
 
