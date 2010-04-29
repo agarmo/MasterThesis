@@ -10,7 +10,7 @@ for i = 1:176
         if j > 144
             pos(i, j, :) = zeros(1,1,3);
         else
-            if (z(i,j) <= threshold) || (z(i,j) >= 1.2)
+            if (z(i,j) <= threshold) || (z(i,j) >= 1.2) % sort out the right distances
                 x(i,j) = 0;
                 y(i,j) = 0;
                 z(i,j) = 0;
@@ -31,8 +31,10 @@ for i=1:176
     end
 end
 
+pos_vec = sortrows(pos_vec, 3); % sort the vector on z value.
+
  temp = pos_vec;
- temp(~any(pos_vec,2),:)=[]; %% remove zeros
+ temp(~any(pos_vec,2),:)=[]; %% remove trivial points
 
 %% Start the surface fit
 
@@ -71,6 +73,7 @@ for i = 1:126
 end
 
 %% Start plotting the data.
+close all;
 
 figure;
 plot(pos_vec(:,3)); % distribution of the points along the z-axis
@@ -85,5 +88,8 @@ hold off
 axis equal
 grid on
 
+figure;
+plot(d);
+title('Distance of points from the fitted cylinder');
 
 
