@@ -1,30 +1,16 @@
-clear all;close all;
 
-temp = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\tof-pos1-control.txt');
+tof_low_pass;
 
-i = size(temp);
- 
-xall = temp(1:i/3,:);
-yall = temp(i/3+1:2/3*i,:);
-zall = temp(2/3*i+1:end,:);
-
-clear temp;
-
-n = 4;
-
-x = xall(176*n+1:176*(n+1), :);
-y = yall(176*n+1:176*(n+1), :);
-z = zall(176*n+1:176*(n+1), :);
 
 pos = [];
-threshold = 0; % Threshold for how far away there should be data.
+threshold = .5; % Threshold for how far away there should be data.
 
 for i = 1:176
     for j = 1:176   
         if j > 144
             pos(i, j, :) = zeros(1,1,3);
         else
-            if z(i,j) <= threshold
+            if (z(i,j) <= threshold) || (z(i,j) >= 1.2)
                 x(i,j) = 0;
                 y(i,j) = 0;
                 z(i,j) = 0;
@@ -45,8 +31,8 @@ for i=1:176
     end
 end
 
-temp = pos_vec;
-temp(~any(pos_vec,2),:)=[]; %% remove zeros
+ temp = pos_vec;
+ temp(~any(pos_vec,2),:)=[]; %% remove zeros
 
 %% Start the surface fit
 
@@ -55,16 +41,20 @@ a0 = [0,0,1]';
 angle = 0;
 radius = 0.125;
 
-[x0n, an, phin, rn, d, sigmah, conv, Vx0n, Van, uphin, urn, ... 
-GNlog, a, R0, R] = lscone(temp, x0, a0, angle, radius, 0.1, 0.1);
+% [x0n, an, phin, rn, d, sigmah, conv, Vx0n, Van, uphin, urn, ... 
+% GNlog, a, R0, R] = lscone(temp, x0, a0, angle, radius, 0.1, 0.1);
+
+[x0n, an, rn, d, sigmah, conv, Vx0n, Van, urn, GNlog, a, R0, R] = ...
+        lscylinder(temp, x0, a0, radius, 100, 100);
+
 
 
 %% start constructing the cylinder from the given parameters.
-[X, Y, Z] = cylinder([rn*1, rn*sin(phin)], 125); % plot the cone.
+[X, Y, Z] = cylinder([rn*1], 125); % plot the cone.
 
-X = X-x0n(1);
-Y = Y-x0n(2);
-Z = (Z+x0n(3))./(1+x0n(3));
+X = X + x0n(1);
+Y = Y + x0n(2);
+Z = Z*max(pos_vec(:,3));
 
 Rx = rotox(acos(an(2)));
 Ry = rotoy(acos(an(3)));
@@ -82,9 +72,18 @@ end
 
 %% Start plotting the data.
 
+figure;
+plot(pos_vec(:,3)); % distribution of the points along the z-axis
+
+figure;
 start = 1;
-surfl(pos(:,:,3), pos(:,:,1), pos(:,:,2));
+%surfl(pos(:,:,3), pos(:,:,1), pos(:,:,2));
+plot3(pos(:,:,3), pos(:,:,1), pos(:,:,2), '.');
 hold on
 surf(Z(start:end,:), X(start:end,:), Y(start:end,:));
-    
+hold off    
+axis equal
+grid on
+
+
 

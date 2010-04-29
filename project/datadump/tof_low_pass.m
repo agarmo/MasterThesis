@@ -1,7 +1,8 @@
 %% Low pass filter for ToF-data
+clear all; close all;
 
 %% Load in data from files
-temp = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\tof-pos1-control.txt');
+temp = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\tof-pos1-longpipe.txt');
 
 i = size(temp);
  
@@ -33,3 +34,6 @@ x = x./interval;
 y = y./interval;
 z = z./interval;
 
+clear xall;
+clear yall;
+clear zall;
