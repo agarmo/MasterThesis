@@ -86,7 +86,5 @@ start = 1;
 surfl(pos(:,:,3), pos(:,:,1), pos(:,:,2));
 hold on
 surf(Z(start:end,:), X(start:end,:), Y(start:end,:));
-axis equal
-hold off
-
+    
 

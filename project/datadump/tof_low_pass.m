@@ -12,8 +12,8 @@ zall = temp(2/3*i+1:end,:);
 clear temp;
 
 %% Start the filtering.
-start = 1;
-stop = 10;
+start = 10;
+stop = 100;
 interval = stop-start;
 
 x = zeros(176,144);
