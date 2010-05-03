@@ -62,13 +62,15 @@ for k = 1:47
         
         %calculate the line
         
-        t = min(data(:,1)):0.01:max(data(:,1));
+        %scaling is difficutl!!! 
+        x_urgt_s = (x0_urgt(1) + ((a_urgt(1)*0)).*min(data(:,1));
+        y_urgt_s = (x0_urgt(2) + ((a_urgt(2)*0)).*min(data(:,2));
         
-        x_urgt = x0_urgt(1) + (a_urgt(1).*t);
-        y_urgt = x0_urgt(2) + (a_urgt(2).*t);
+        x_urgt_l = (x0_urgt(1) + (a_urgt(1)*1)).*max(data(:,1));
+        y_urgt_l = (x0_urgt(2) + (a_urgt(2)*1)).*max(data(:,2));
         
-        x_urg = [x_urg; x_urgt];
-        y_urg = [y_urg; y_urgt];
+        x_urg = [x_urg; [x_urgt_s, x_urgt_l]];
+        y_urg = [y_urg; [y_urgt_s, y_urgt_l]];
     end
 
 end
@@ -80,9 +82,23 @@ figure;
 polar(ranges(1,:), ranges(61,:), '.');
 title('Plot of the URG Laser Range finder');
 
+
 figure;
+subplot(2, 1, 1);
+plot(sorted(:,1), sorted(:,2), 'r.');
+hold on;
+% plot(urgx, urgy, '.');
+grid on;
+xlabel('Depth into the pipe Z-axis [m]');
+ylabel('X-axis relative to ToF-camera [m]');
+title('URG Laser Range Finder');
+for i = 1:size(x_urg,1)
+    line([x_urg(i,1);x_urg(i,2)],[y_urg(i,1);y_urg(i,2)]);
+end
+hold off;
+
 subplot(2, 1, 2);
-plot(data(:,1),d_urg);
+plot(d_urgt);
 title('Error from the fitted line');
 grid on;
 
