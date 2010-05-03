@@ -13,20 +13,25 @@ for i = 1:176
             pos(i,j,1) = x(i,j);
             pos(i,j,2) = y(i,j);
             pos(i,j,3) = z(i,j);
-            if (z(i,j) <= threshold) || (z(i,j) >= .6) % sort out the right distances
-                pos(i,j,1) = 0;
-                pos(i,j,2) = 0;
-                pos(i,j,3) = 0;
-            end
+%             if (z(i,j) <= threshold) || (z(i,j) >= .6) % sort out the right distances
+%                 pos(i,j,1) = 0;
+%                 pos(i,j,2) = 0;
+%                 pos(i,j,3) = 0;
+%             end
         end
     end
 end
 
 pos_vec = [];
-
+k = 1;
 for i=1:176
     for j = 1:144
-        pos_vec(i*j, :) = pos(i,j,:);
+        if (pos(i,j,3) > threshold*k) || (pos(i,j,3) < threshold*(k+1))
+            pos_vec(i*j, :) = pos(i,j,:);
+        elseif pos(i,j,3)> threshold*(k+1)
+            k = k+1;
+            
+            
         
     end
 end
@@ -92,10 +97,12 @@ end
 close all;
 
 figure;
-plot(temp(:,3)); % distribution of the points along the z-axis
+plot(d, temp(:,3)); % distribution of the points along the z-axis
+xlabel('Length from point on cylinder [m]');
+ylabel('Detpth into the pipe, Z-axis [m]');
+grid on
 
 figure;
-
 set(gcf, 'Renderer', 'opengl');
 start = 1;
 %surfl(pos(:,:,3), pos(:,:,1), pos(:,:,2));
