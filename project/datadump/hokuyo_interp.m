@@ -12,7 +12,6 @@ ranges = hokuyo_parse_range(urg,1,size(urg)); % parses the ranges and angles in 
 % sort on x
 sorted = sortrows([urgx', urgy'], -1);
 
-
 temp = sorted;
 temp(~any(sorted,2),:)=[]; %% remove trivial points (0,0)
 
@@ -58,7 +57,7 @@ for k = 1:size(histrangey)
         [x0_urgt, a_urgt, d_urgt, normd_urgt] = ls2dline(data);
         x0_urg = [x0_urg; x0_urgt'];
         a_urg = [a_urg; a_urgt'];
-        d_urg = [d_urg; d_urgt];
+        d_urg = [d_urg; zeros(50,1); d_urgt]; %%adding zeros to see where the new line starts
         normd_urg =[normd_urg; normd_urgt];
         
         %calculate the line
@@ -93,7 +92,7 @@ for k = 1:size(histrange)
         [x0_urgtx, a_urgtx, d_urgtx, normd_urgtx] = ls2dline(datax);
         x0_urgx = [x0_urgx; x0_urgtx'];
         a_urgx = [a_urgx; a_urgtx'];
-        d_urgx = [d_urgx; d_urgtx];
+        d_urgx = [d_urgx; zeros(50,1); d_urgtx];
         normd_urgx =[normd_urgx; normd_urgtx];
         
         %calculate the line
@@ -127,7 +126,6 @@ figure;
 subplot(2, 2, 1:2);
 plot(sorted(:,1), sorted(:,2), 'b.');
 hold on;
-% plot(urgx, urgy, '.');
 grid on;
 xlabel('Depth into the pipe Z-axis [m]');
 ylabel('X-axis relative to ToF-camera [m]');
@@ -147,6 +145,7 @@ for i = 1:size(x_urgx,1)
     plot(x0_urgx(i,1), x0_urgx(i,2), 'g*');
 end
 hold off;
+
 
 subplot(2, 2, 3);
 plot(d_urg);
