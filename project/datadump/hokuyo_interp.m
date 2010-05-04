@@ -1,13 +1,38 @@
 %% Script interpreting urg-range data.
 close all; clear all;
 
-urg = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\urg-pos1-irregularB.txt');
+urg = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\urg-pos1-longpipe.txt');
 ranges = hokuyo_parse_range(urg,1,size(urg)); % parses the ranges and angles in rad and meters
+
+%% parameters
+number_points_y = 40;
+number_points_x = 20;
+
+histogram_interval_y = 0.05;
+histogram_interval_x = 0.1;
+
+
+%% calculating variances of the measurements and various info
+
+urg_variance = var(ranges(2:101, :));
+[urg_max_var, urg_index_ang] = max(urg_variance);
+urg_max_var_ang = ranges(1, urg_index_ang)*180/pi;
+
+
+%% averaging the ranges
+
+start = 2;
+stop = 101;
+
+for i = start+1:stop
+    ranges(2,:) = ranges(2,:) + ranges(i,:);
+end
+ranges(2,:) = ranges(2,:)./(stop-(start-1));
 
 %% start interpreting the data.
 
 %transform to cartesian coordinates
-[urgx, urgy] = pol2cart(ranges(1,:), ranges(5, :));
+[urgx, urgy] = pol2cart(ranges(1,:), ranges(2, :));
 
 % sort on x
 sorted = sortrows([urgx', urgy'], -1);
@@ -15,8 +40,8 @@ sorted = sortrows([urgx', urgy'], -1);
 temp = sorted;
 temp(~any(sorted,2),:)=[]; %% remove trivial points (0,0)
 
-histrangey = (-1.6:0.05:0.7)';
-histrange = (-1.6:0.1:0.7)';
+histrangey = (-4.6:histogram_interval_y:4.7)';
+histrange = (-4.6:histogram_interval_x:4.7)';
 
 [nx, binx] = hist(temp(:,1), histrange);
 [ny, biny] = hist(temp(:,2), histrangey);
@@ -44,9 +69,11 @@ for k = 1:size(histrangey)
     threshold = histrangey(k);
     % horizontal lines. from the parallell to the y-axis
     data = [];
-    if ny(k) > 30
+    if ny(k) > number_points_y
         for i = 1:size(temp(:,2))
-            if (temp(i,2) > threshold-0.05) && (temp(i,2) < threshold+0.05)
+            if (temp(i,2) > threshold-histogram_interval_y) && ...
+                    (temp(i,2) < threshold+histogram_interval_y)
+                
                 data = [data; temp(i,:)];
             end
         end
@@ -81,9 +108,11 @@ end
 for k = 1:size(histrange)
     threshold = histrange(k);
     datax = [];
-    if nx(k) > 30
+    if nx(k) > number_points_x
         for i = 1:size(temp(:,2))
-            if (temp(i,1) > threshold-0.1) && (temp(i,1) < threshold+0.1)
+            if (temp(i,1) > threshold-histogram_interval_x) && ...
+                    (temp(i,1) < threshold+histogram_interval_x)
+             
                 datax = [datax; temp(i,:)];
             end
         end
@@ -118,9 +147,17 @@ end
 
 %% plot the data
 figure;
+subplot(1, 2, 1)
 polar(ranges(1,:), ranges(61,:), '.');
 title('Plot of the URG Laser Range finder');
 
+subplot(1, 2, 2)
+plot(ranges(1,:).*(180/pi), urg_variance);
+axis([0 360 0 0.04]);
+title('The variance of the ranges according to angle')
+grid on
+xlabel('Angle [deg]');
+ylabel('Variance');
 
 figure;
 subplot(2, 2, 1:2);
@@ -161,8 +198,10 @@ grid on;
 figure;
 subplot(1, 2, 1)
 hist(temp(:,1), histrange);
-title('Histogram of x-coordinates');
+title('Histogram of Vertical pixels');
+xlabel('Position depth into the pipe (camera z-axis) [m]');
 
 subplot(1, 2, 2);
 hist(temp(:,2), histrangey);
-title('Histogram of y-coordinates');
+title('Histogram of Horizontal pixels');
+xlabel('Position lateral position into the pipe(camera x-axis) [m]');
