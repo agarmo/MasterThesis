@@ -1,9 +1,43 @@
 %file included in thesis.tex
 
 \chapter{Implementation}
+In this chapter implementation specific issues are treated. Figure
+\ref{chap6:fig-implementation} shows the three-layer implementation of the project.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{pics/implemntation}
+    \caption{Three-layer implementation}
+    \label{chap6:fig-implementation}
+\end{figure}
 
 
-\section{What is implemented}
+\section{Low-level Interfaces}
+The low-level interfaces from the sensors are implemented in 
+
+
+\section{Mid-level Implantations}
+
+\subsection{Analysis of 3D Sensor Data}
+
+\subsubsection{Filtering of ToF Data}
+
+
+\subsubsection{Surface Fit Algorithm}
+
+
+\paragraph{Guass-Newton Least Squares}
+
+
+\paragraph{Issues}
+The algorithm is sensitive to edge data. This can be controlled with limiting the interval
+in the z-direction of which the cylinder is fitted to the data.*************FIX*******
+
+
+\section{High-level Implementations}
+
+\subsection{World Representation}
+The world representation are implemented as objects in Matlab.
+
 
 
 \section{Structure of the Implementation}

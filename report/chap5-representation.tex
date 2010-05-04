@@ -62,15 +62,18 @@ detected.
 \section{Map-building From the Sensor Data}
 
 
-\subsection{Cylinder or Cone Fit}
+\subsection{Cylinder or Cone Fit from 3D Sensor Data}
+The cylinder fit is a Least-Squares Gauss-Newton algorithm. 
 
 
 
-\subsection{Edge-detection Algorithms}
-Used in the stereo cam algorithm. Used for rectifying of the image from the web cams. 
+\subsection{Line Fit and Arc Fit in 2D Sensor Data}
+Line fit algorithm is a least-squares line fit algorithm. For this to work properly, a
+selection of points assumed belonging to the line need to be fed into the algorithm. To
+select this points a histogram is formed for both x- and y-direction of the points. This
+will detect points which lie in a horizontal- and vertical lines. This points are selected
+and fed into the line fit algorithm. 
 
-
-\subsection{Other Feature Extraction}
 
 
 \section{Positioning in the World Representation}
