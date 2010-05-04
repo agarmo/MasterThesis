@@ -12,13 +12,6 @@ ranges = hokuyo_parse_range(urg,1,size(urg)); % parses the ranges and angles in 
 % sort on x
 sorted = sortrows([urgx', urgy'], -1);
 
-%sort out special lines
-% for i = 1:1024
-%     if urgy(i) > 0.0
-%         urgx(i) = 0;
-%         urgy(i) = 0;
-%     end
-% end
 
 temp = sorted;
 temp(~any(sorted,2),:)=[]; %% remove trivial points (0,0)
@@ -31,24 +24,23 @@ histrange = (-1.6:0.1:0.7)';
 
 %pick out interesting poitns.
 
-%threshold
+%Allocation for the horizontal lines
 x0_urg = [];
 a_urg = [];
 d_urg = [];
 normd_urg =[];
-
 x_urg = [];
 y_urg = [];
 
-x_urgx = [];
-y_urgx = [];
-
+%Allocation for the vertical lines
 x0_urgx = [];
 a_urgx = [];
 d_urgx = [];
 normd_urgx =[];
+x_urgx = [];
+y_urgx = [];
 
-for k = 1:47
+for k = 1:size(histrangey)
         
     threshold = histrangey(k);
     % horizontal lines. from the parallell to the y-axis
@@ -66,7 +58,7 @@ for k = 1:47
         [x0_urgt, a_urgt, d_urgt, normd_urgt] = ls2dline(data);
         x0_urg = [x0_urg; x0_urgt'];
         a_urg = [a_urg; a_urgt'];
-        %d_urg = [d_urg; d_urgt'];
+        d_urg = [d_urg; d_urgt];
         normd_urg =[normd_urg; normd_urgt];
         
         %calculate the line
@@ -101,7 +93,7 @@ for k = 1:size(histrange)
         [x0_urgtx, a_urgtx, d_urgtx, normd_urgtx] = ls2dline(datax);
         x0_urgx = [x0_urgx; x0_urgtx'];
         a_urgx = [a_urgx; a_urgtx'];
-        %d_urg = [d_urg; d_urgt'];
+        d_urgx = [d_urgx; d_urgtx];
         normd_urgx =[normd_urgx; normd_urgtx];
         
         %calculate the line
@@ -132,7 +124,7 @@ title('Plot of the URG Laser Range finder');
 
 
 figure;
-subplot(2, 1, 1);
+subplot(2, 2, 1:2);
 plot(sorted(:,1), sorted(:,2), 'b.');
 hold on;
 % plot(urgx, urgy, '.');
@@ -156,10 +148,16 @@ for i = 1:size(x_urgx,1)
 end
 hold off;
 
-subplot(2, 1, 2);
-plot(d_urgt);
-title('Error from the fitted line');
+subplot(2, 2, 3);
+plot(d_urg);
+title('Error from the fitted lines Horizontal');
 grid on;
+
+subplot(2, 2, 4);
+plot(d_urgx);
+title('Error from the fitted lines Vertical');
+grid on;
+
 
 figure;
 subplot(1, 2, 1)
