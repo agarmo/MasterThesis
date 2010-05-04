@@ -63,8 +63,25 @@ detected.
 
 
 \subsection{Cylinder or Cone Fit from 3D Sensor Data}
-The cylinder fit is a Least-Squares Gauss-Newton algorithm. 
+The cylinder fit is a Least-Squares Gauss-Newton algorithm. This algorithm are very
+useful since it does not require the calculation of the Second order derivatives, or the
+Hessian matrix. This calculations are very cumbersome and computationally expensive. 
 
+The point cloud which is the output from the Time-of-Flight camera are divided into
+sections with regard to the z-axis, i.e. the depth into the pipe. This intervals of 3D
+data are fed into the algorithm and produces a set of cylinders which are fitted to the
+pipe. The distance of the points from the proposed cylinder are output from the algorithm
+and are used for determining if the cylinder fit is a good fit. 
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{pics/cylinderfit}
+    \caption{The set of cylinders fitted to the point cloud}
+    \label{chap5:fig-cylinderfit}
+\end{figure}
+An example of a set of fitted cylinders are shown in Figure \ref{chap5:fig-cylinderfit}.
+One might see that the axis are off. This is because noise and the least squares nature of
+the fit. The noisy points will draw the cylinder off axis compared to the real one. 
 
 
 \subsection{Line Fit and Arc Fit in 2D Sensor Data}
@@ -73,6 +90,9 @@ selection of points assumed belonging to the line need to be fed into the algori
 select this points a histogram is formed for both x- and y-direction of the points. This
 will detect points which lie in a horizontal- and vertical lines. This points are selected
 and fed into the line fit algorithm. 
+
+This method involves a number of parameters and threshold values which need to be set and
+tuned by the user. 
 
 
 
