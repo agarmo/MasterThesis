@@ -1,7 +1,7 @@
 %% Script interpreting urg-range data.
 close all; clear all;
 
-urg = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\urg-pos1-longpipe.txt');
+urg = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\urg-pos1-regularB.txt');
 ranges = hokuyo_parse_range(urg,1,size(urg)); % parses the ranges and angles in rad and meters
 
 %% parameters
