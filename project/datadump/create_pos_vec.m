@@ -4,7 +4,7 @@
 %% parameters
 close all;
 
-interval = 0.1;
+interval = 0.5;
 radius = 0.125; % radius of the pipe
 a0 = [0,0,1]'; % allways assume that the direction is along the z-direction
 
@@ -58,7 +58,7 @@ for k = 1:pieces
     
     temp = [];
     for i = 1:size(pos_vec,1) % might be optimized because of the sorted array
-        if (pos_vec(i, 3) > interval*(k-1)) && (pos_vec(i, 3) < interval*k)
+        if (pos_vec(i, 3) >= interval*(k-1)) && (pos_vec(i, 3) <= interval*k)
             temp = [temp; pos_vec(i, :)];
         end
     end
@@ -90,6 +90,9 @@ for k = 1:pieces
 
 end
 
+rot_axis = zeros(3, size(x0k, 1));
+rot_angle = zeros(size(x0, 1), 1);
+
 figure;
 set(gcf, 'Renderer', 'opengl');
 test = plot3(pos_vec(:,3), pos_vec(:,1), pos_vec(:,2), '.');
@@ -104,22 +107,22 @@ for k = 1:size(x0k, 1)
         
         
         %% find rotation axis and transformation matrix
-        rot_axis = cross(a0,ank(k,:)');
-        if norm(rot_axis) > eps
-            rot_angle = asin(norm(rot_axis));
+        rot_axis(:, k) = cross(a0,ank(k,:)');
+        if norm(rot_axis(:,k)) > eps
+            rot_angle(k) = asin(norm(rot_axis(:,k)));
             if(dot(a0, ank(k,:)')< 0)
-                rot_angle = pi-rot_angle;
+                rot_angle(k) = pi-rot_angle(k);
             end
         else
-            rot_axis = a0;
-            rot_angle = 0;
+            rot_axis(:,k) = a0;
+            rot_angle(k) = 0;
         end
                 
         Sz = makehgtform('scale', [1;1;interval]);
         Txyz = makehgtform('translate', x0k(k,:));
-        Rxyz = makehgtform('axisrotate', rot_axis, rot_angle);
+        Rxyz = makehgtform('axisrotate', rot_axis(:,k), rot_angle(k));
         
-        tf = Txyz*Sz;
+        tf = Txyz*Rxyz*Sz;
         
         
         %% Transform cylinder to right scale and position
@@ -132,8 +135,7 @@ for k = 1:size(x0k, 1)
         end
         
         
-        
-        test2 = surface(Z, X, Y);
+        h(k) = surface(Z, X, Y);
 
     end
 
