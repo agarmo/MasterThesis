@@ -2,7 +2,7 @@
 clear all; close all;
 
 %% Load in data from files
-temp = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\tof-pos2-control.txt');
+temp = csvread('data/tof-pos1-control.txt');
 
 i = size(temp);
  
