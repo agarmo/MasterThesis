@@ -4,8 +4,9 @@
 %% parameters
 close all;
 
-interval = 0.2;
+interval = 0.1;
 radius = 0.125; % radius of the pipe
+a0 = [0,0,1]'; % allways assume that the direction is along the z-direction
 
 
 
@@ -49,6 +50,7 @@ x0k = [];
 ank = [];
 rk = [];
 dk = [];
+length_d = [];
 a_parmk = [];
 
 for k = 1:pieces
@@ -66,9 +68,7 @@ for k = 1:pieces
     %% Start the surface fit
     
     x0 = [0,0,interval*(k-1)]';
-    a0 = [0,0,1]'; % allways assume that the direction is along the z-direction
     angle = 0; % not used with cylinderfit
-    radius = 0.125; 
     
     % [x0n, an, phin, rn, d, sigmah, conv, Vx0n, Van, uphin, urn, ...
     % GNlog, a, R0, R] = lscone(temp, x0, a0, angle, radius, 0.1, 0.1);
@@ -83,7 +83,8 @@ for k = 1:pieces
         x0k = [x0k; x0n'];
         ank = [ank; an'];
         rk = [rk; rn];
-        dk = [dk;zeros(1,50)'; d];
+        dk = [dk; d];
+        length_d = [length_d; size(d,1)];
         a_parmk = [a_parmk; a'];
     end
 
@@ -95,7 +96,7 @@ test = plot3(pos_vec(:,3), pos_vec(:,1), pos_vec(:,2), '.');
 hold on;
 for k = 1:size(x0k, 1)
     
-    if rk(k) > 3*radius
+    if rk(k) > 2*radius
         disp('Radius errenous. Skipping...');
     else
         %% start constructing the cylinder from the given parameters.
@@ -103,19 +104,22 @@ for k = 1:size(x0k, 1)
         
         
         %% find rotation axis and transformation matrix
-        rot_axis = cross(a0,ank(k,:));
+        rot_axis = cross(a0,ank(k,:)');
         if norm(rot_axis) > eps
             rot_angle = asin(norm(rot_axis));
-            if(dot([0;0;1], ank(k,:))< 0)
+            if(dot(a0, ank(k,:)')< 0)
                 rot_angle = pi-rot_angle;
             end
         else
             rot_axis = a0;
             rot_angle = 0;
         end
+                
+        Sz = makehgtform('scale', [1;1;interval]);
+        Txyz = makehgtform('translate', x0k(k,:));
+        Rxyz = makehgtform('axisrotate', rot_axis, rot_angle);
         
-        tf = makehgtform('translate', x0k(k, :), 'axisrotate', rot_axis, rot_angle, ...
-            'scale', [1; 1;interval]);
+        tf = Txyz*Sz;
         
         
         %% Transform cylinder to right scale and position
@@ -145,14 +149,18 @@ grid on
 
 %% Start plotting othre data
 
+
+figure;
+plot(dk);
+title('Distance of points from the fitted cylinder');
+hold on
+plot([length_d; size(dk,1)], zeros(1, size(length_d,1)+1), '+r', 'MarkerSize', 10);
+hold off;
+
 figure;
 plot(dk, pos_vec(:,3)); % distribution of the points along the z-axis
 xlabel('Length from point on cylinder [m]');
 ylabel('Detpth into the pipe, Z-axis [m]');
 grid on
 
-
-figure;
-plot(dk);
-title('Distance of points from the fitted cylinder');
 

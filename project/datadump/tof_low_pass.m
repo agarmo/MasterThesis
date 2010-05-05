@@ -2,7 +2,7 @@
 clear all; close all;
 
 %% Load in data from files
-temp = csvread('data/tof-pos1-control.txt');
+temp = csvread('data/tof-pos2-control.txt');
 
 i = size(temp);
  
