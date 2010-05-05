@@ -5,6 +5,11 @@ tof_low_pass; %filter the input using averagin.
 pos = [];
 threshold = .5; % Threshold for how far away there should be data.
 
+%% Need to calculate the interval
+
+
+
+
 for i = 1:176
     for j = 1:176   
         if j > 144
@@ -31,7 +36,7 @@ for i=1:176
         elseif pos(i,j,3)> threshold*(k+1)
             k = k+1;
             
-            
+        end
         
     end
 end
@@ -79,6 +84,8 @@ else
     rot_angle = 0;
 end
 
+%% Transform cylinder to right scale and position
+
 tf = makehgtform('translate', x0n, 'axisrotate', rot_axis, rot_angle, ...
      'scale', [1; 1;(max(temp(:,3))-min(temp(:,3)))]);
 
@@ -90,7 +97,6 @@ for i = 1:126
     end
 end
  
-%normalize the cyliner length
 
 
 %% Start plotting the data.
