@@ -22,4 +22,3 @@ function [temp] = hokuyo_dump(file, com, baud, iterations)
     
     
 end
-    
