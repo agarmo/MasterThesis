@@ -73,17 +73,17 @@ classdef sensorinterpreter
         
         %% Asociating sensors to the object.
         
-        function this = getLRFData(this, LRF_data)
+        function this = setLRFData(this, LRF_data)
             if (size(LRF_data, 1) ~= 2) || isempty(LRF_data)
-                disp('The LRF-data should be on the form 2xM')
+                error('The LRF-data should be on the form 2xM')
             else
-                this.LRF_date = LRF_data;
+                this.LRF_data = LRF_data;
             end
         end
         
-        function this = getToFData(this, ToF_data)
+        function this = setToFData(this, ToF_data)
             if (size(ToF_data, 2) ~= 3) || isempty(ToF_data) 
-                disp('The LRF-data should be on the form Mx3')
+                error('The LRF-data should be on the form Mx3')
             else
                 this.ToF_data = ToF_data; 
             end
@@ -107,17 +107,17 @@ classdef sensorinterpreter
         
         %% find lines in 2d data
         function this = find2Dlines(this, number_points_y, number_points_x,...
-                histogram_interval_y, histogram_interval_x)
+                 histogram_interval_x, histogram_interval_y)
             
             if nargin ~= 5
-                disp('Too few arguments')
+                error('Too few arguments. Usage: find2DLines(num_point_y, num_points_x, histx_int, hitsy_int')
             else
             
                 
                 % start interpreting the data.
                 
                 %transform to cartesian coordinates
-                [urgx, urgy] = pol2cart(ranges(1,:), ranges(2, :));
+                [urgx, urgy] = pol2cart(this.LRF_data(1,:), this.LRF_data(2, :));
                 
                 % sort on x descending order
                 sorted = sortrows([urgx', urgy'], -1);
@@ -150,6 +150,7 @@ classdef sensorinterpreter
                     %look for different shapes, arcs, lines, parallell to the y-axis
                     if (~isempty(data)) && (size(data, 1) > 2)
                         [x0_urgt, a_urgt, d_urgt, normd_urgt] = ls2dline(data);
+                        
                         this.LRF_paramsy.x0_urg = [this.LRF_paramsy.x0_urg; x0_urgt'];
                         this.LRF_paramsy.a_urg = [this.LRF_paramsy.a_urg; a_urgt'];
                         this.LRF_paramsy.d_urg = [this.LRF_paramsy.d_urg; zeros(50,1); d_urgt]; %%adding zeros to see where the new line starts
@@ -233,9 +234,9 @@ classdef sensorinterpreter
                 %% Select data from total selection
                 
                 temp = [];
-                for i = 1:size(pos_vec,1) % might be optimized because of the sorted array
-                    if (pos_vec(i, 3) >= interval*(k-1)) && (pos_vec(i, 3) <= interval*k)
-                        temp = [temp; pos_vec(i, :)];
+                for i = 1:size(this.ToF_data,1) % might be optimized because of the sorted array
+                    if (this.ToF_data(i, 3) >= interval*(k-1)) && (this.ToF_data(i, 3) <= interval*k)
+                        temp = [temp; this.ToF_data(i, :)];
                     end
                 end
                 
@@ -249,10 +250,10 @@ classdef sensorinterpreter
                 % GNlog, a, R0, R] = lscone(temp, x0, a0, angle, radius, 0.1, 0.1);
                 
                 if (isempty(temp) ) || (size(temp,1) < 5)
-                    disp('Too few points')
+                    warning(this,'Too few points')
                 else
                     % Start cylinder fit using gauss-newton
-                    [x0n, an, rn, d, sigmah, conv, Vx0n, Van, urn, GNlog, a, R0, R] = ...
+                    [x0n, an, rn, d, sigmah, conv, Vx0n, Van, urn, GNlog, a] = ...
                         lscylinder(temp, x0, a0, radius, .001, .001);
                     
                     this.ToF_params.x0k = [this.ToF_params.x0k; x0n'];
@@ -274,7 +275,6 @@ classdef sensorinterpreter
         % readings. This should open a plot with the the given view.
         function [] = showSynthesizedView(this)
             
-            
             rot_axis = zeros(3, size(this.ToF_params.x0k, 1));
             rot_angle = zeros(size(x0, 1), 1);
             
@@ -291,7 +291,7 @@ classdef sensorinterpreter
                     [X, Y, Z] = cylinder(this.ToF_params.rk(k)*ones(2,1), 125); % plot the cone.
                     
                     
-                    %% find rotation axis and transformation matrix
+                    % find rotation axis and transformation matrix
                     rot_axis(:, k) = cross(a0,this.ToF_params.ank(k,:)');
                     if norm(rot_axis(:,k)) > eps
                         rot_angle(k) = asin(norm(rot_axis(:,k)));
@@ -310,7 +310,7 @@ classdef sensorinterpreter
                     tf = Txyz*Rxyz*Sz;
                     
                     
-                    %% Transform cylinder to right scale and position
+                    % Transform cylinder to right scale and position
                     for i = 1:size(X,2)
                         for j = 1:2
                             X(j, i) = tf(1, 1:3)*[X(j,i); Y(j,i); Z(j,i)] + tf(1,4);
@@ -332,13 +332,59 @@ classdef sensorinterpreter
             ylabel('Camera X-direction');
             zlabel('Camera Y-direction');
             grid on
-            
-
-                        
         end
         
         % this creates the real view from the sensors at the given moment.
-        function [] = showRealView(object)
+        function [] = plot2Dlines(this)
+            
+            figure;
+            subplot(2, 2, 1:2);
+            plot(this.LRF_data(:,1), this.LRF_data(:,2), 'b.');
+            hold on;
+            grid on;
+            xlabel('Depth into the pipe Z-axis [m]');
+            ylabel('X-axis relative to ToF-camera [m]');
+            title('URG Laser Range Finder');
+            
+            for i = 1:size(this.LRF_paramsy.x_urg,1)
+                line([this.LRF_paramsy.x_urg(i,1);this.LRF_paramsy.x_urg(i,2)],...
+                    [this.LRF_paramsy.y_urg(i,1);this.LRF_paramsy.y_urg(i,2)], 'Color', 'magenta', ...
+                    'LineWidth', 1.5);
+                %plot centroid
+                plot(this.LRF_paramsy.x0_urg(i,1), this.LRF_paramsy.x0_urg(i,2), 'k*');
+            end
+            
+            for i = 1:size(this.LRF_paramsx.x_urg,1)
+                line([this.LRF_paramsx.x_urg(i,1);this.LRF_paramsx.x_urg(i,2)],...
+                    [this.LRF_paramsx.y_urg(i,1);this.LRF_paramsx.y_urg(i,2)], 'Color', 'red', ...
+                    'LineWidth', 1.5);
+                %plot centroid
+                plot(this.LRF_paramsx.x0_urg(i,1), this.LRF_paramsx.x0_urg(i,2), 'g*');
+            end
+            hold off;
+            
+            
+            subplot(2, 2, 3);
+            plot(this.LRF_paramsy.d_urg);
+            title('Error from the fitted lines Horizontal');
+            grid on;
+            
+            subplot(2, 2, 4);
+            plot(this.LRF_paramsx.d_urg);
+            title('Error from the fitted lines Vertical');
+            grid on;
+            
+            
+            figure;
+            subplot(1, 2, 1)
+            hist(this.LRF_data(:,1), this.LRF_paramsx.histrange);
+            title('Histogram of Vertical pixels');
+            xlabel('Position depth into the pipe (camera z-axis) [m]');
+            
+            subplot(1, 2, 2);
+            hist(this.LRF_data(:,2), this.LRF_paramsy.histrange);
+            title('Histogram of Horizontal pixels');
+            xlabel('Position lateral position into the pipe(camera x-axis) [m]');
             
             
         end

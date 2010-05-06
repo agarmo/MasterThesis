@@ -148,7 +148,7 @@ end
 %% plot the data
 figure;
 subplot(1, 2, 1)
-polar(ranges(1,:), ranges(61,:), '.');
+polar(ranges(1,:), ranges(2,:), '.');
 title('Plot of the URG Laser Range finder');
 
 subplot(1, 2, 2)
