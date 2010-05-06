@@ -36,6 +36,8 @@ classdef sensorinterpreter
         
         ToF_data; % input: point cloud, x,y,z Mx3
         ToF_params; % struct for the cylinder fits
+        a0; % assumed direction of the pipe. 
+        interval; %tof cylinder fit interval
         
         Stereo_data; % input: x,y,z of features
     
@@ -52,13 +54,15 @@ classdef sensorinterpreter
                 
                 
                 object.LRF_paramsy = struct('x0_urg', [], 'a_urg' ,[],...
-                    'd_urg' , [], 'normd_urg', [],'x_urg' , [],'y_urg' , []);
+                    'd_urg' , [], 'normd_urg', [],'x_urg' , [],'y_urg' , [],...
+                    'histrange', []);
                 
                 object.LRF_paramsx = struct('x0_urg', [], 'a_urg' ,[],...
-                    'd_urg' , [], 'normd_urg', [],'x_urg' , [],'y_urg' , []);
+                    'd_urg' , [], 'normd_urg', [],'x_urg' , [],'y_urg' , [],...
+                    'histrange', []);
             
                 object.ToF_params = struct('x0k', [], 'ank',  [], 'rk', [],...
-                    'dk', [], 'length_d', [], 'a_parmk', []);
+                    'dk', [], 'length_d', [], 'a_parmk', [], 'x0', []);
             
                 
                 
@@ -106,7 +110,7 @@ classdef sensorinterpreter
         % deviations from this ideal cylinder.
         
         %% find lines in 2d data
-        function this = find2Dlines(this, number_points_y, number_points_x,...
+        function this = find2Dlines(this, number_points_x, number_points_y,...
                  histogram_interval_x, histogram_interval_y)
             
             if nargin ~= 5
@@ -126,15 +130,15 @@ classdef sensorinterpreter
                 temp(~any(sorted,2),:)=[]; %% remove trivial points (0,0)
                 
                 %form histogram ranges and calculate histograms
-                histrangey = (-4.6:histogram_interval_y:4.7)';
-                histrange = (-4.6:histogram_interval_x:4.7)';
+                this.LRF_paramsy.histrange = (-4.6:histogram_interval_y:4.7)';
+                this.LRF_paramsx.histrange = (-4.6:histogram_interval_x:4.7)';
                 
-                [nx] = hist(temp(:,1), histrange);
-                [ny] = hist(temp(:,2), histrangey);
+                [nx] = hist(temp(:,1), this.LRF_paramsx.histrange);
+                [ny] = hist(temp(:,2), this.LRF_paramsy.histrange);
                 
-                for k = 1:size(histrangey)
+                for k = 1:size(this.LRF_paramsy.histrange)
                     
-                    threshold = histrangey(k);
+                    threshold = this.LRF_paramsy.histrange(k);
                     % horizontal lines. from the parallell to the y-axis
                     
                     data = [];
@@ -176,8 +180,8 @@ classdef sensorinterpreter
                 end
                 
                 % look along the x-axis
-                for k = 1:size(histrange)
-                    threshold = histrange(k);
+                for k = 1:size(this.LRF_paramsx.histrange)
+                    threshold = this.LRF_paramsx.histrange(k);
                     datax = [];
                     if nx(k) > number_points_x
                         for i = 1:size(temp(:,2))
@@ -217,6 +221,9 @@ classdef sensorinterpreter
         
         function this = find3Dcylinders(this, interval, a0)
 
+            this.a0 = a0;
+            this.interval = interval;
+            
             % sort rows and remove trivial points
             this.ToF_data= sortrows(this.ToF_data, 3); % sort the vector on z value.
             temp = this.ToF_data;
@@ -244,17 +251,18 @@ classdef sensorinterpreter
                 
                 %% Start the surface fit
                 
-                x0 = [0,0,interval*(k-1)]';
+                this.ToF_params.x0 = [this.ToF_params.x0; 0,0,interval*(k-1)];
                 
                 % [x0n, an, phin, rn, d, sigmah, conv, Vx0n, Van, uphin, urn, ...
                 % GNlog, a, R0, R] = lscone(temp, x0, a0, angle, radius, 0.1, 0.1);
                 
                 if (isempty(temp) ) || (size(temp,1) < 5)
-                    warning(this,'Too few points')
+                    warning('Too few points')
                 else
                     % Start cylinder fit using gauss-newton
                     [x0n, an, rn, d, sigmah, conv, Vx0n, Van, urn, GNlog, a] = ...
-                        lscylinder(temp, x0, a0, radius, .001, .001);
+                        lscylinder(temp, (this.ToF_params.x0(k, :))', a0,...
+                        this.verden.pipe_diameter/2, .001, .001);
                     
                     this.ToF_params.x0k = [this.ToF_params.x0k; x0n'];
                     this.ToF_params.ank = [this.ToF_params.ank; an'];
@@ -276,7 +284,7 @@ classdef sensorinterpreter
         function [] = showSynthesizedView(this)
             
             rot_axis = zeros(3, size(this.ToF_params.x0k, 1));
-            rot_angle = zeros(size(x0, 1), 1);
+            rot_angle = zeros(size(this.ToF_params.x0, 1), 1);
             
             figure;
             set(gcf, 'Renderer', 'opengl');
@@ -285,25 +293,25 @@ classdef sensorinterpreter
             for k = 1:size(this.ToF_params.x0k, 1)
                 
                 if this.ToF_params.rk(k) > 2*(this.verden.pipe_diameter)/2
-                    disp('Radius errenous. Skipping...');
+                    warning('Radius errenous. Skipping...');
                 else
                     %% start constructing the cylinder from the given parameters.
                     [X, Y, Z] = cylinder(this.ToF_params.rk(k)*ones(2,1), 125); % plot the cone.
                     
                     
                     % find rotation axis and transformation matrix
-                    rot_axis(:, k) = cross(a0,this.ToF_params.ank(k,:)');
+                    rot_axis(:, k) = cross(this.a0,this.ToF_params.ank(k,:)');
                     if norm(rot_axis(:,k)) > eps
                         rot_angle(k) = asin(norm(rot_axis(:,k)));
-                        if(dot(a0, this.ToF_params.ank(k,:)')< 0)
+                        if(dot(this.a0, this.ToF_params.ank(k,:)')< 0)
                             rot_angle(k) = pi-rot_angle(k);
                         end
                     else
-                        rot_axis(:,k) = a0;
+                        rot_axis(:,k) = this.a0;
                         rot_angle(k) = 0;
                     end
                     
-                    Sz = makehgtform('scale', [1;1;interval]);
+                    Sz = makehgtform('scale',[1;1;this.interval] );
                     Txyz = makehgtform('translate', this.ToF_params.x0k(k,:));
                     Rxyz = makehgtform('axisrotate', rot_axis(:,k), rot_angle(k));
                     
@@ -332,14 +340,30 @@ classdef sensorinterpreter
             ylabel('Camera X-direction');
             zlabel('Camera Y-direction');
             grid on
+            
+            figure;
+            plot(this.ToF_params.dk);
+            title('Distance of points from the fitted cylinder');
+            hold on
+            plot([this.ToF_params.length_d; size(this.ToF_params.dk,1)],...
+                zeros(1, size(this.ToF_params.length_d,1)+1), '+r', 'MarkerSize', 10);
+            hold off;
+            
+%             figure;
+%             plot(this.ToF_params.dk, this.ToF_data(:,3)); % distribution of the points along the z-axis
+%             xlabel('Length from point on cylinder [m]');
+%             ylabel('Detpth into the pipe, Z-axis [m]');
+%             grid on
+%             
         end
         
         % this creates the real view from the sensors at the given moment.
         function [] = plot2Dlines(this)
             
+            [x, y ]= pol2cart(this.LRF_data(1,:), this.LRF_data(2,:));
             figure;
             subplot(2, 2, 1:2);
-            plot(this.LRF_data(:,1), this.LRF_data(:,2), 'b.');
+            plot(x, y, 'b.');
             hold on;
             grid on;
             xlabel('Depth into the pipe Z-axis [m]');
@@ -377,12 +401,12 @@ classdef sensorinterpreter
             
             figure;
             subplot(1, 2, 1)
-            hist(this.LRF_data(:,1), this.LRF_paramsx.histrange);
+            hist(x, this.LRF_paramsx.histrange);
             title('Histogram of Vertical pixels');
             xlabel('Position depth into the pipe (camera z-axis) [m]');
             
             subplot(1, 2, 2);
-            hist(this.LRF_data(:,2), this.LRF_paramsy.histrange);
+            hist(y, this.LRF_paramsy.histrange);
             title('Histogram of Horizontal pixels');
             xlabel('Position lateral position into the pipe(camera x-axis) [m]');
             
