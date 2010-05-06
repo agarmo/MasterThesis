@@ -272,24 +272,68 @@ classdef sensorinterpreter
         
         % This shows what the view should be like with the previous sensor
         % readings. This should open a plot with the the given view.
-        function [] = showSynthesizedView(object)
+        function [] = showSynthesizedView(this)
             
-            % create a cylinder with default radius.
-            if nargin > 1
-                [X, Y, Z] = cylinder(sqrt(object.verden.pipe_diameter));
-                figure(1);
-                cylinder(sqrt(object.verden.pipe_diameter), 64)
-%                 axes('Projection', 'perspective');
-            else
-                [X, Y, Z] = cylinder(sqrt(10));
-                figure(1)
-                cylinder(sqrt(10), 64)
-%                 axes('Projection', 'perspective');
+            
+            rot_axis = zeros(3, size(this.ToF_params.x0k, 1));
+            rot_angle = zeros(size(x0, 1), 1);
+            
+            figure;
+            set(gcf, 'Renderer', 'opengl');
+            test = plot3(this.ToF_data(:,3), this.ToF_data(:,1), this.ToF_data(:,2), '.');
+            hold on;
+            for k = 1:size(this.ToF_params.x0k, 1)
+                
+                if this.ToF_params.rk(k) > 2*(this.verden.pipe_diameter)/2
+                    disp('Radius errenous. Skipping...');
+                else
+                    %% start constructing the cylinder from the given parameters.
+                    [X, Y, Z] = cylinder(this.ToF_params.rk(k)*ones(2,1), 125); % plot the cone.
+                    
+                    
+                    %% find rotation axis and transformation matrix
+                    rot_axis(:, k) = cross(a0,this.ToF_params.ank(k,:)');
+                    if norm(rot_axis(:,k)) > eps
+                        rot_angle(k) = asin(norm(rot_axis(:,k)));
+                        if(dot(a0, this.ToF_params.ank(k,:)')< 0)
+                            rot_angle(k) = pi-rot_angle(k);
+                        end
+                    else
+                        rot_axis(:,k) = a0;
+                        rot_angle(k) = 0;
+                    end
+                    
+                    Sz = makehgtform('scale', [1;1;interval]);
+                    Txyz = makehgtform('translate', this.ToF_params.x0k(k,:));
+                    Rxyz = makehgtform('axisrotate', rot_axis(:,k), rot_angle(k));
+                    
+                    tf = Txyz*Rxyz*Sz;
+                    
+                    
+                    %% Transform cylinder to right scale and position
+                    for i = 1:size(X,2)
+                        for j = 1:2
+                            X(j, i) = tf(1, 1:3)*[X(j,i); Y(j,i); Z(j,i)] + tf(1,4);
+                            Y(j, i) = tf(2, 1:3)*[X(j,i); Y(j,i); Z(j,i)] + tf(2,4);
+                            Z(j, i) = tf(3, 1:3)*[X(j,i); Y(j,i); Z(j,i)] + tf(3,4);
+                        end
+                    end
+                    
+                    
+                    h(k) = surface(Z, X, Y);
+                    
+                end
                 
             end
             
-            % Set the view from the current position.
+            hold off;
+            axis equal;
+            xlabel('Depth');
+            ylabel('Camera X-direction');
+            zlabel('Camera Y-direction');
+            grid on
             
+
                         
         end
         
