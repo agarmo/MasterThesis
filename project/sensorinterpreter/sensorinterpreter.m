@@ -23,9 +23,9 @@ classdef sensorinterpreter
         dist_to_walls; % size 2, 1 
         
         verden; % binding til verdenen over.
-    end
+%     end
     
-    properties(GetAccess = private, SetAccess = private)
+    %properties(GetAccess = private, SetAccess = private)
         %% Internal properties
         pipeline_profiles; % The profiles to match the sensor data to
     
@@ -33,6 +33,9 @@ classdef sensorinterpreter
         LRF_data; % input: angles and ranges 2xN
         LRF_paramsy; % structs for holding data asociated with line fit
         LRF_paramsx; 
+        
+%         FittedStructures_2D; % Structures for gathering 2d structures
+%         FittedStructures_3D; % structures for gathering 3d Structures
         
         ToF_data; % input: point cloud, x,y,z Mx3
         ToF_params; % struct for the cylinder fits
@@ -63,17 +66,13 @@ classdef sensorinterpreter
             
                 object.ToF_params = struct('x0k', [], 'ank',  [], 'rk', [],...
                     'dk', [], 'length_d', [], 'a_parmk', [], 'x0', []);
-            
-                
+                            
                 
             elseif nargin == 2
                 
                 
             end
-            
-            
         end
-        
         
         %% Asociating sensors to the object.
         
@@ -96,18 +95,59 @@ classdef sensorinterpreter
         
         %% Internal Calculation Function
         
-        function this = fuseSensors(this, LRF, ToF)
+        function [minDist, indexMin] = fuseSensors(this, threshold)
+            % find pralell lines, start with lines assumed along the pipe.
+            directions = this.LRF_paramsy.a_urg;
+            
+            equalToLine1 = zeros(size(directions,1),1);
+            
+            %should start with line nearest to origin.
+            
+            %compare the first with the others
+            for i = 2:size(directions, 1)
+                if (abs(directions(i, 1)) >= (abs(directions(1, 1))-threshold)) &&...
+                        (abs(directions(i, 1)) <= (abs(directions(1,1))+threshold))
+                    if (abs(directions(i, 2)) >= (abs(directions(1, 2))-threshold)) &&...
+                            (abs(directions(i, 2)) <= (abs(directions(1,2))+threshold))
+                        disp('line 1 and line %i are within the threshold')
+                        equalToLine1(i) = 1;
+                    else
+                        disp('Not equal');
+                    end
+                end
+            end
+            
+            %then find the ones that are closes togheter
+            
+            distanceToLine1 = zeros(size(directions,1),1);
+            distanceToLine1(1) = Inf;
+            for i = 2:size(directions, 1)
+                if equalToLine1(i) == 1
+                    %calculat the distance from centeroids at x=0
+                    distanceToLine1(i) = norm([0, this.LRF_paramsy.x0_urg(i,2)]-...
+                        [0, this.LRF_paramsy.x0_urg(1,2)]);
+                end
+            end
+            %find the smalles distance
+            [minDist, indexMin] = min(distanceToLine1);
+            if minDist == 0
+                disp('No paralell lines found');
+            else
+                disp('Found paralell lines');
+                minDist
+                indexMin
+                distanceToLine1
+            end
+            
+            %compare the distance to the calculated radiuses.
+            
             
         end
-        
         
         function type = matchPipeProfile(this)
             
         end
         
-        % This function should try to fit a cylinder to the acquired data
-        % from the sensors, to match the pipe. Anomalies are large
-        % deviations from this ideal cylinder.
         
         %% find lines in 2d data
         function this = find2Dlines(this, number_points_x, number_points_y,...
@@ -116,10 +156,7 @@ classdef sensorinterpreter
             if nargin ~= 5
                 error('Too few arguments. Usage: find2DLines(num_point_x, num_points_x, histx_int, hitsy_int')
             else
-            
-                
                 % start interpreting the data.
-                
                 %transform to cartesian coordinates
                 [urgx, urgy] = pol2cart(this.LRF_data(1,:), this.LRF_data(2, :));
                 
