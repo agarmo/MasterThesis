@@ -8,6 +8,7 @@ oversetter = sensorinterpreter();
 oversetter = oversetter.setWorld(verden);
 
 %% load data and average
+
 %% urg
 disp('Loading urg file...')
 urg = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\urg-pos1-control.txt');
@@ -85,3 +86,12 @@ clear z;
 oversetter = oversetter.setToFData(pos_vec);
 
 clear pos_vec;
+
+%% start data recognition
+
+oversetter = oversetter.find3Dcylinders(0.3,[0;0;1])
+
+oversetter = oversetter.find2Dlines(30,50,0.5,0.1)
+
+oversetter.showSynthesizedView();
+oversetter.plot2Dlines();

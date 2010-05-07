@@ -114,7 +114,7 @@ classdef sensorinterpreter
                  histogram_interval_x, histogram_interval_y)
             
             if nargin ~= 5
-                error('Too few arguments. Usage: find2DLines(num_point_y, num_points_x, histx_int, hitsy_int')
+                error('Too few arguments. Usage: find2DLines(num_point_x, num_points_x, histx_int, hitsy_int')
             else
             
                 
