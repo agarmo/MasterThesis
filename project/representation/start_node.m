@@ -1,6 +1,6 @@
 %% Class defs for the start node
 
-classdef start_node < node
+classdef start_node < super_node
     properties
     end
     methods
@@ -16,15 +16,19 @@ classdef start_node < node
                 args{5} = [];
                 if ~isempty(orientation)
                     args{2} = orientation;
+                else 
+                    args{2} = [];
                 end
                 if ~isempty(diameter)
                     args{4} = diameter;
+                else
+                    args{4} = [];
                 end
                 
             end
             
             %% calling super constructor.
-            t = t@node(args{:});
+            t = t@super_node(args{:});
             
             %% class specific
             
@@ -34,6 +38,26 @@ classdef start_node < node
             t.number_of_edges = 1;
             t.angles_of_edges = 180; %standard  
         end
+        
+        function [lhs] = super_node(rhs)
+            %% converting function
+            lhs.number = rhs.number;
+            lhs.type = rhs.type;
+            lhs.orientation = rhs.orientation;
+            lhs.prev_node = rhs.prev_node;
+            lhs.discovered = rhs.discovered;
+            lhs.diameter = rhs.diameter;
+            lhs.dist_prev_node = rhs.dist_prev_node;
+            lhs.anomalies = rhs.anomalies;
+            lhs.color = rhs.color;
+            lhs.number_of_edges = rhs.number_of_edges;
+            lhs.angles_of_edges = rhs.angles_of_edges;
+            lhs.position = rhs.position;
+            
+            lhs = super_node(lhs);            
+        end
+        
+ 
        
         function [t] = setType(obj, nodetype)
             obj.type = nodetype;

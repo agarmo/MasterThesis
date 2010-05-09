@@ -1,6 +1,6 @@
 %% Class defs of right-bend pipe
 
-classdef right_bend < node
+classdef right_bend < super_node
     properties
     end
     methods
@@ -27,13 +27,31 @@ classdef right_bend < node
                 end
             end    
             %% calling super constructor.
-            t = t@node(args{:});
+            t = t@super_node(args{:});
             
             %% class specific
             
             t.color = 'red';
             t.type = 'Right Bend';
         end
+        function [lhs] = super_node(rhs)
+            %% converting function
+            lhs.number = rhs.number;
+            lhs.type = rhs.type;
+            lhs.orientation = rhs.orientation;
+            lhs.prev_node = rhs.prev_node;
+            lhs.discovered = rhs.discovered;
+            lhs.diameter = rhs.diameter;
+            lhs.dist_prev_node = rhs.dist_prev_node;
+            lhs.anomalies = rhs.anomalies;
+            lhs.color = rhs.color;
+            lhs.number_of_edges = rhs.number_of_edges;
+            lhs.angles_of_edges = rhs.angles_of_edges;
+            lhs.position = rhs.position;
+            
+            lhs = super_node(lhs);            
+        end
+        
     end
 end
 
