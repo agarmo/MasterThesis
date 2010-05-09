@@ -4,13 +4,12 @@
 \chapter{Sensors}
 
 
-
-
 \section{2D Sensors}
 
-\subsection{Laser Scanner}
+\subsection{Laser Range Finder}
 
 
+\subsubsection{Noise- and Error Sources}
 
 
 
@@ -20,14 +19,52 @@
 \subsection{Stereo Camera}
 
 
+\subsubsection{Camera Calibration}
+To work with stereo images the captured images need to be rectified, i.e. the images need
+to be corrected for distortion introduced by the camera lenses. This is a part of
+calibrating the camera, meaning that the intrinsic parameters of the camera are
+determined. That is distortion coefficients, and other camera parameters. 
+
+Figure \ref{cahp3:fig-lensdist} below shows how the camera lenses of the Stereo camera distorts the pictures
+towards the edges of the lens. 
+
+\begin{figure}[htbp]
+    \centering
+   % \includegraphics[width=0.8\textwidth]{pics/left-rigth-camera-dist}
+    \caption{The left and right camera distortion due to lens nonlinearities}
+    \label{chap3:fig-lensdist}
+\end{figure}
+
+This distortion can be removed and are called rectifying the image. This makes common
+features in the two images aligned horizontally. This makes it much easier for the matching
+algorithm because it only need to match vertically.
+
+
+\subsubsection{Noise- and Error Sources}
+
+
+
 
 \subsection{Time-of-Flight Camera}
+The time of flight camera gives out either Cartesian coordinates or intensity. This
+intensity is the amplitude of the returned laser light. Figure
+\ref{chap3:fig-tof-amppicture} shows a typical amplitude plot of the inside of a pipe.
+\begin{figure}[htbp]
+    \centering
+   % \includegraphics[width=0.8\textwidth]{pics/tof-amppicture}
+    \caption{Typical amplitude image of the SR-3000 ToF-camera}
+    \label{chap3:fig-tof-amppicture}
+\end{figure}
+
+
+
+\subsubsection{Noise- and Error Sources}
+*******LIST THE ERROR SOURCES AND HOW TO SUPPRESS THEM**********
 
 
 
 
 \section{Comparisons Between the Proposed Sensors}
-
 \begin{table}[htbp]
     \centering
     \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
@@ -52,6 +89,25 @@
     \label{tab-chap3-sensors}
 \end{table}
 ***FIX TABLE \ref{tab-chap3-sensors}********
+
+
+\section{Sensor Configurations}
+There are a couple of possible sensor configurations available for this project. ***SHOULD
+MAYBE BE IN THE IMPLEMENTATION CHAPTER?****
+
+The Laser Range Finder should alway be used in every sensor configuration. This should be
+the primary source of length measurements since this is the most accurate of all the range
+devices. 
+
+The stereo camera might be looked upon as a cheap type of the Time-of-Flight camera. So
+the two possible configurations are:
+\begin{itemize}
+    \item Laser Range Finder and Stereo Camera
+    \item Laser Range Finder and Time-of-Flight Camera
+\end{itemize}
+The Stereo Camera will give sparse range data, while the Time-of-Flight camera will give
+dense range data. 
+
 
 
 
