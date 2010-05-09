@@ -362,9 +362,9 @@ classdef sensorinterpreter
                     % Transform cylinder to right scale and position
                     for i = 1:size(X,2)
                         for j = 1:2
-                            X(j, i) = tf(1, 1:3)*[X(j,i); Y(j,i); Z(j,i)] + tf(1,4);
-                            Y(j, i) = tf(2, 1:3)*[X(j,i); Y(j,i); Z(j,i)] + tf(2,4);
-                            Z(j, i) = tf(3, 1:3)*[X(j,i); Y(j,i); Z(j,i)] + tf(3,4);
+                            X(j, i) = (tf(1, 1:3)*[X(j,i); Y(j,i); Z(j,i)] + tf(1,4))/tf(4,4);
+                            Y(j, i) = (tf(2, 1:3)*[X(j,i); Y(j,i); Z(j,i)] + tf(2,4))/tf(4,4);
+                            Z(j, i) = (tf(3, 1:3)*[X(j,i); Y(j,i); Z(j,i)] + tf(3,4))/tf(4,4);
                         end
                     end
                     

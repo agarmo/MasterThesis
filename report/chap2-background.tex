@@ -22,7 +22,7 @@ making.
 	is not
 	strictly inertial, but the angular velocity of the Earths rotation are considered very small, and can
 	be neglected compared to other velocities in the same frame. Position on the earth are described by
-	\textit{longitude} and \textit{latitude}.
+	\emph{longitude} and \emph{latitude}.
 
 	An important reference frame when considering local motion are the NED (North East Down) frame. This
 	frame is defined as the tangent plane on the current position, and moving with the object. The axis
@@ -35,27 +35,94 @@ making.
 	origin are defined in the Centre of Gravity of the object. This frame are convenient when
 	defining velocities, forces and moments. More on reference frames in \cite{fossen} and
     \cite{forsell}.
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.7\textwidth]{pics/referenceframse}
+        \caption{The different reference frames in this report}
+        \label{chap2:fig-ref-frames}
+    \end{figure}
 
-    The ones which are important in this report is the NED frame, which will be used for
-    the global reference frame. The body frame will describe velocities of the robot. But
-    theres this last frame which also are very important, that is the \emph{sensor} frame.
-    This is where the sensor data are described. Since the sensors are not mounted in the
-    centre of gravity of the robot, the sensor data need to be projected into the body
-    frame. 
+    The reference frames that will be considered in this report are the \emph{NED}- and
+    \emph{body} frames. In addition to these two frames there are the last, but not least
+    important frame, called the \emph{single-sensor} frame. This is where the output from
+    the sensors are defined. These output need to be transformed into the \emph{body} and
+    to the \emph{NED} frame to make sense for the control system and ultimately for the
+    user. 
 
-    The dimension of the sensor frame are dependant on the kind of sensor, if its a 2D
-    sensor, 3D sensor, or what kind of measurement it gives. This will be described in
-    detail later.
+    The \emph{single-sensor} frames are where the individual sensors give readings. The
+    exact mount point relative to the centre-of-gravity need to be defined, to make the
+    transformation to other frames possible. The domain of the \emph{single-sensor} frames
+    are defined in accordance to the domain of the sensor, i.e. the domain of a Laser
+    Range Finder, which gives angles and ranges in the plane are two dimensional. 
 
-    ***********FIGUR AV VERDENEN MED MED KOORDINATSYSTEMER OG LIGNENDE**********
-	
-\section{Homogeneous Transformation Coordinates}
-To represent rotation, translation, shear, scaling in a common matrix representation
-homogeneous transformation coordinates are used. In our daily lives we use 3 dimensions.
-Homogeneous coordinates uses a four dimensional matrix to represent all of this in one
-matrix. This is because matrix representations are fast and effective on computers.
+    \begin{figure}[htbp]
+        \centering
+        \includegraphics[width=0.7\textwidth]{pics/singlesensorframes}
+        \caption{\emph{Single-Sensor} frames on PiKo}
+        \label{chap2:fig-single-sensor-frames}
+    \end{figure}
 
 
+\subsection{Homogeneous Transformation Coordinates}
+To represent transformations, i.e. rotations, translations, shear and scaling, it is
+practical to represent those transformations in matrix form. But it is not mathematically
+possible to represent both rotations and translations in the same matrix as long as it is
+contained in $\mathbb{R}^3$. ******REFERENCE******
+
+To overcome this problem, the coordinates are projected into a fourth dimensional space.
+All points and vectors gain an extra element which describes if the coordinate is a vector
+or a point. 
+\begin{equation}
+        \mathbf{v} = \left[ \begin{array}{c}
+                                    x_v \\
+                                    y_v \\
+                                    z_v \\
+                                    w_v  \end{array} \right]  =
+                     \left[ \begin{array}{c}
+                                    1 \\
+                                    0 \\
+                                    0 \\
+                                    0  \end{array} \right] \quad \quad
+        \mathbf{p} = \left[ \begin{array}{c}
+                                    x_p \\
+                                    y_p \\
+                                    z_p \\
+                                    w_p  \end{array} \right]  =
+                     \left[ \begin{array}{c}
+                                    1 \\
+                                    0 \\
+                                    0 \\
+                                    1  \end{array} \right] \quad \quad
+\end{equation}
+Here $\mathbf{v}$ is a vector with the fourth element as zero, while $\mathbf{p}$ is a
+point with the fourth element equal one.A
+
+This leads us to the \emph{Transformation Matrix} which is a $4 \times 4$ matrix. For
+example a matrix representing rotation and translation will look like this
+\begin{equation}
+    \label{chap2:eq-TransformationMatrix}
+    \mathbf{T_{rt}} = \left [ \begin{array}{cccc}
+                                r_{xx} & r_{xy} & r_{xz} & t_x \\
+                                r_{yx} & r_{yy} & r_{yz} & t_y \\
+                                r_{zx} & r_{zy} & r_{zz} & t_z \\
+                                0  & 0  & 0  & 1  \end{array} \right]
+\end{equation}
+Here the $r_{ii}$ coefficients are rotation parameters and the $t_i$ coefficients are the
+translation parameters. The rotation coefficients are calculated from the Euler angles.
+
+Likewise, scaling might be performed by the following transformation matrix
+\begin{equation}
+    \label{chap2:eq-TransformationMatrixScaling}
+    \mathbf{T_S} = \left [ \begin{array}{cccc}
+                                S_x & 0 & 0 & 0 \\
+                                0 & S_y & 0 & 0 \\
+                                0 & 0 & S_z & 0 \\
+                                0 & 0 & 0 & 1 
+                                 \end{array} \right]
+\end{equation}
+All of this transformations might be combined into a single matrix by multiplying the
+matrices together, in the reverse of the order of which the transformations are carried
+out. 
 
 \section{Ranging Techniques}
 To determine range to objects are based on some common mathematical principles. They emit
