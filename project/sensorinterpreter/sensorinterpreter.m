@@ -95,7 +95,7 @@ classdef sensorinterpreter
         
         %% Internal Calculation Function
         
-        function [minDist, indexMin] = fuseSensors(this, threshold)
+        function [minDist, indexMin, closestRadius] = fuseSensors(this, threshold)
             % find pralell lines, start with lines assumed along the pipe.
             directions = this.LRF_paramsy.a_urg;
             
@@ -134,13 +134,21 @@ classdef sensorinterpreter
                 disp('No paralell lines found');
             else
                 disp('Found paralell lines');
-                minDist
-                indexMin
-                distanceToLine1
+                            
+                %compare the distance to the calculated radiuses.
+                calculatedRadius = minDist/2; % assume that the laser is measuring exactly in the middel of the pipe.
+                
+                closestRadius = 0;
+                for j = 1:size(this.ToF_params.rk)
+                    % TODO check this
+                    if this.ToF_params.rk(j) >= closestRadius && this.ToF_params.rk(j) <= abs(calculatedRadius+0.05)
+                        closestRadius = this.ToF_params.rk(j);
+                    end
+                end
+                    
+                closestRadius
             end
-            
-            %compare the distance to the calculated radiuses.
-            
+                       
             
         end
         

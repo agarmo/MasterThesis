@@ -11,7 +11,7 @@ oversetter = oversetter.setWorld(verden);
 
 %% urg
 disp('Loading urg file...')
-urg = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\urg-pos1-control.txt');
+urg = csvread('datadump/data/urg-pos1-control.txt');
 disp('Loading urg file... Done!')
 ranges = hokuyo_parse_range(urg,1,size(urg)); % parses the ranges and angles in rad and meters
 
@@ -30,7 +30,7 @@ clear ranges;
 
 %% tof
 disp('Loading ToF file...')
-temp = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\tof-pos1-control.txt');
+temp = csvread('datadump/data/tof-pos1-control.txt');
 disp('Loading ToF file... Done!')
 i = size(temp);
  
