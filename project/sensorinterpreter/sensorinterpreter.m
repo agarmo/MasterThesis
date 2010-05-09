@@ -128,7 +128,9 @@ classdef sensorinterpreter
                         [0, this.LRF_paramsy.x0_urg(1,2)]);
                 end
             end
-            %find the smalles distance
+            
+            %find the smalles distance assume this is at the center of the
+            %pipe. 
             [minDist, indexMin] = min(distanceToLine1);
             if minDist == 0
                 disp('No paralell lines found');
@@ -143,6 +145,8 @@ classdef sensorinterpreter
             
             
         end
+        
+        
         
         function type = matchPipeProfile(this)
             
