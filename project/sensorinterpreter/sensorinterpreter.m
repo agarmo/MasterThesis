@@ -33,6 +33,7 @@ classdef sensorinterpreter
         LRF_data; % input: angles and ranges 2xN
         LRF_paramsy; % structs for holding data asociated with line fit
         LRF_paramsx; 
+        LRF_height; % The height of the measurement plane.
         
 %         FittedStructures_2D; % Structures for gathering 2d structures
 %         FittedStructures_3D; % structures for gathering 3d Structures
@@ -67,6 +68,7 @@ classdef sensorinterpreter
                 object.ToF_params = struct('x0k', [], 'ank',  [], 'rk', [],...
                     'dk', [], 'length_d', [], 'a_parmk', [], 'x0', []);
                             
+                object.LRF_height = 0.1; % 10 cm above ground.
                 
             elseif nargin == 2
                 
@@ -95,7 +97,7 @@ classdef sensorinterpreter
         
         %% Internal Calculation Function
         
-        function [minDist, indexMin] = fuseSensors(this, threshold)
+        function [radius, closestRadius, indexMin] = fuseSensors(this, threshold)
             % find pralell lines, start with lines assumed along the pipe.
             directions = this.LRF_paramsy.a_urg;
             
@@ -105,10 +107,8 @@ classdef sensorinterpreter
             
             %compare the first with the others
             for i = 2:size(directions, 1)
-                if (abs(directions(i, 1)) >= (abs(directions(1, 1))-threshold)) &&...
-                        (abs(directions(i, 1)) <= (abs(directions(1,1))+threshold))
-                    if (abs(directions(i, 2)) >= (abs(directions(1, 2))-threshold)) &&...
-                            (abs(directions(i, 2)) <= (abs(directions(1,2))+threshold))
+                if compareValue(directions(i,1), directions(1,1), threshold) == 0
+                    if compareValue(directions(i,2), directions(1,2), threshold) == 0
                         disp('line 1 and line %i are within the threshold')
                         equalToLine1(i) = 1;
                     else
@@ -136,14 +136,41 @@ classdef sensorinterpreter
                 disp('No paralell lines found');
             else
                 disp('Found paralell lines');
-                minDist
+                radius = this.LRF_height/2 + (minDist^2)/(8*this.LRF_height);
                 indexMin
                 distanceToLine1
+                
+                closestRadius = inf;
+                
+                %compare the distance to the calculated radiuses.
+                for i = 1:size(this.ToF_params.rk,1)
+                    switch compareValue(radius, this.ToF_params.rk(i), threshold/10)
+                        case 0
+                            disp('Found a radius whitihn 10 % of threshold of radius');
+                            
+                            closestRadius = this.ToF_params.rk(i);
+                        case -1
+                            disp('Found a radius smaller than radius');
+                            if isinf(closestRadius)
+                                closestRadius = this.ToF_params.rk(i);
+                            end
+                        case 1
+                            disp('Found a radius larger than radius')
+                            if norm([closestRadius, this.ToF_params.rk(i)]) < 0.03;
+                                closestRadius = this.ToF_params.rk(i)
+                            end
+                        otherwise
+                            disp('Unkonwn error')
+                    end
+                end
+                
+                % Plot the most probable cylinder
+                
+                
+               
             end
             
-            %compare the distance to the calculated radiuses.
-            
-            
+                        
         end
         
         
@@ -460,7 +487,7 @@ classdef sensorinterpreter
         function this = setWorld(this, world)
            this.verden = world; 
         end
-        
+             
         
     end
     
