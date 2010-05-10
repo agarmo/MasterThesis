@@ -68,7 +68,7 @@ classdef sensorinterpreter
                 object.ToF_params = struct('x0k', [], 'ank',  [], 'rk', [],...
                     'dk', [], 'length_d', [], 'a_parmk', [], 'x0', []);
                             
-                object.LRF_height = 0.1; % 10 cm above ground.
+                object.LRF_height = 0.07; % 7 cm above ground.
                 
             elseif nargin == 2
                 
@@ -97,7 +97,7 @@ classdef sensorinterpreter
         
         %% Internal Calculation Function
         
-        function [radius, closestRadius, indexMin] = fuseSensors(this, threshold)
+        function [this, radius, closestRadius, indexMin] = fuseSensors(this, threshold)
             % find pralell lines, start with lines assumed along the pipe.
             directions = this.LRF_paramsy.a_urg;
             
@@ -168,7 +168,59 @@ classdef sensorinterpreter
                 
                 % find direction
                 
+                
+                
+                direction = [ (this.LRF_paramsy.a_urg(1,2)+this.LRF_paramsy.a_urg(indexMin,2)/2), 0,...
+                             -(this.LRF_paramsy.a_urg(1,1)+this.LRF_paramsy.a_urg(indexMin,1)/2)];
+                x0 = [0, this.LRF_height/2,0.2];
                
+                
+                               
+                
+                
+                [X, Y, Z] = cylinder(radius*ones(2,1), 125); % plot the cone.
+                    
+                    
+                    % find rotation axis and transformation matrix
+                    rot_axis = cross(this.a0, direction')
+                    if norm(rot_axis) > eps
+                        rot_angle = asin(norm(rot_axis))
+                        if(dot(this.a0, direction')< 0)
+                            rot_angle = pi-rot_angle;
+                        end
+                    else
+                        rot_axis = this.a0
+                        rot_angle = 0
+                    end
+                    
+                    Rxyz = makehgtform('axisrotate', rot_axis, rot_angle);
+                    Txyz = makehgtform('translate', x0');
+                    
+                    tf = Txyz*Rxyz;
+                    
+                    Xny = zeros(2, size(X,2));
+                    Yny = zeros(2, size(Y,2));
+                    Zny = zeros(2, size(Z,2));
+                    % Transform cylinder to right scale and position
+                    for i = 1:126
+                        for j = 1:2
+                            Xny(j, i) = (tf(1, 1:4)*[X(j,i); Y(j,i); Z(j,i); 1]);
+                            Yny(j, i) = (tf(2, 1:4)*[X(j,i); Y(j,i); Z(j,i); 1]);
+                            Zny(j, i) = (tf(3, 1:4)*[X(j,i); Y(j,i); Z(j,i); 1]);
+                        end
+                    end
+                    
+                    figure;
+                    set(gcf, 'Renderer', 'opengl');
+                    plot3(this.ToF_data(:,3), this.ToF_data(:,1), this.ToF_data(:,2), '.');
+                    hold on;
+                    surface(Zny./tf(4,4), Xny./tf(4,4), Yny./tf(4,4));
+                    hold off;
+                    axis equal;
+                    xlabel('Depth');
+                    ylabel('Camera X-direction');
+                    zlabel('Camera Y-direction');
+                    grid on
             end
             
                         
