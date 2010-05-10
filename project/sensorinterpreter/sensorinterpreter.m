@@ -144,28 +144,29 @@ classdef sensorinterpreter
                 
                 %compare the distance to the calculated radiuses.
                 for i = 1:size(this.ToF_params.rk,1)
-                    switch compareValue(radius, this.ToF_params.rk(i), threshold/10)
+                    switch compareValue(this.ToF_params.rk(i), radius, threshold/10)
                         case 0
                             disp('Found a radius whitihn 10 % of threshold of radius');
                             
                             closestRadius = this.ToF_params.rk(i);
                         case -1
                             disp('Found a radius smaller than radius');
-                            if isinf(closestRadius)
+                            if abs(radius - this.ToF_params.rk(i)) < 0.03
                                 closestRadius = this.ToF_params.rk(i);
                             end
                         case 1
                             disp('Found a radius larger than radius')
-                            if norm([closestRadius, this.ToF_params.rk(i)]) < 0.03;
-                                closestRadius = this.ToF_params.rk(i)
+                            if abs(this.ToF_params.rk(i) - radius) < 0.03
+                                closestRadius = this.ToF_params.rk(i);
                             end
                         otherwise
                             disp('Unkonwn error')
                     end
                 end
                 
-                % Plot the most probable cylinder
+                % Add the cylinder to the back of the ToF_params.
                 
+                % find direction
                 
                
             end
@@ -349,7 +350,7 @@ classdef sensorinterpreter
         
         % This shows what the view should be like with the previous sensor
         % readings. This should open a plot with the the given view.
-        function [] = showSynthesizedView(this)
+        function [rot_axis, rot_angle] = showSynthesizedView(this)
             
             rot_axis = zeros(3, size(this.ToF_params.x0k, 1));
             rot_angle = zeros(size(this.ToF_params.x0, 1), 1);
@@ -382,21 +383,24 @@ classdef sensorinterpreter
                     Sz = makehgtform('scale',[1;1;this.interval] );
                     Txyz = makehgtform('translate', this.ToF_params.x0k(k,:));
                     Rxyz = makehgtform('axisrotate', rot_axis(:,k), rot_angle(k));
+                    Tz = makehgtform('translate', [0;0;-(this.interval/2)]);
                     
                     tf = Txyz*Rxyz*Sz;
                     
-                    
+                    Xny = zeros(2, size(X,2));
+                    Yny = zeros(2, size(Y,2));
+                    Zny = zeros(2, size(Z,2));
                     % Transform cylinder to right scale and position
-                    for i = 1:size(X,2)
+                    for i = 1:126
                         for j = 1:2
-                            X(j, i) = (tf(1, 1:3)*[X(j,i); Y(j,i); Z(j,i)] + tf(1,4))/tf(4,4);
-                            Y(j, i) = (tf(2, 1:3)*[X(j,i); Y(j,i); Z(j,i)] + tf(2,4))/tf(4,4);
-                            Z(j, i) = (tf(3, 1:3)*[X(j,i); Y(j,i); Z(j,i)] + tf(3,4))/tf(4,4);
+                            Xny(j, i) = (tf(1, 1:4)*[X(j,i); Y(j,i); Z(j,i); 1]);
+                            Yny(j, i) = (tf(2, 1:4)*[X(j,i); Y(j,i); Z(j,i); 1]);
+                            Zny(j, i) = (tf(3, 1:4)*[X(j,i); Y(j,i); Z(j,i); 1]);
                         end
                     end
+               
+                    h(k) = surface(Zny./tf(4,4), Xny./tf(4,4), Yny./tf(4,4));
                     
-                    
-                    h(k) = surface(Z, X, Y);
                     
                 end
                 

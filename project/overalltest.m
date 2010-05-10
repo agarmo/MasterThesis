@@ -93,5 +93,5 @@ oversetter = oversetter.find3Dcylinders(0.3,[0;0;1])
 
 oversetter = oversetter.find2Dlines(30,50,0.5,0.1)
 
-oversetter.showSynthesizedView();
+[axis, angle] = oversetter.showSynthesizedView();
 oversetter.plot2Dlines();

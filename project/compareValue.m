@@ -1,16 +1,18 @@
 % determines if the source value is whihtin some threshold of value. 
 
-function result = compareValue(source, value, threshold)
+function result = compareValue(radius, value, threshold)
 
-    if (source >= value-threshold) && (source <= value+threshold)
+    if (radius >= value-threshold) && (radius <= value+threshold)
         result = 0;
         return
-    elseif (source >= value+threshold)
+    elseif radius > (value+threshold)
         result = 1;
         return
-    elseif (source <= value-threshold)
+    elseif radius < (value-threshold)
         result = -1;
         return;
+    else
+        result = inf;
     end
 
 end
