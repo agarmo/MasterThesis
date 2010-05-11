@@ -11,7 +11,11 @@ oversetter = oversetter.setWorld(verden);
 
 %% urg
 disp('Loading urg file...')
+<<<<<<< HEAD
 urg = csvread('datadump/data/urg-pos1-control.txt');
+=======
+urg = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\urg-pos1-longpipe.txt');
+>>>>>>> 3ba18ca6c2ddf688381292c4f7abf635e8fe595f
 disp('Loading urg file... Done!')
 ranges = hokuyo_parse_range(urg,1,size(urg)); % parses the ranges and angles in rad and meters
 
@@ -30,7 +34,11 @@ clear ranges;
 
 %% tof
 disp('Loading ToF file...')
+<<<<<<< HEAD
 temp = csvread('datadump/data/tof-pos1-control.txt');
+=======
+temp = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\tof-pos1-longpipe.txt');
+>>>>>>> 3ba18ca6c2ddf688381292c4f7abf635e8fe595f
 disp('Loading ToF file... Done!')
 i = size(temp);
  
@@ -93,5 +101,7 @@ oversetter = oversetter.find3Dcylinders(0.3,[0;0;1])
 
 oversetter = oversetter.find2Dlines(30,50,0.5,0.1)
 
-oversetter.showSynthesizedView();
+[oversetter, radius, closestRadius, index] = oversetter.fuseSensors(0.1);
+
+[axis, angle] = oversetter.showSynthesizedView();
 oversetter.plot2Dlines();
