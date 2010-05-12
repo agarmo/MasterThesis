@@ -5,7 +5,10 @@
 \chapter{Background and Literature Study}
 This chapter will try to outline the basics needed to understand this report. Mathematical
 knowledge are crucial to understand the principles used in robot navigation and decision
-making. 
+making. The topics treated here include, general reference frames, homogeneous coordinate
+representations, camera modeling, feature matching, map representations and optimization
+criterions.
+
 
 
 \section{Basics}
@@ -126,41 +129,56 @@ out.
 
 
 \section{Ranging Techniques}
-To determine range to objects are based on some common mathematical principles. They emit
-some kind of signal, either light, sound or radio waves, and process the reflected signal.
-Some use triangulation to determine the distance, some measure the time-of-flight of the
-emitted signal, and some measures the phase-delay of the emitted signal, which actually
-just is another way of measuring the time-of-flight. 
+The measure of distances and ranges are important and there are various ways of doing
+this. Most techniques include the measure of time-of-flight of some signal and calculating
+the distance from the known travel velocity of the signal. This requires the signal
+emitted to be reflected, captured and processed at or close to the emitter. The signal is
+usually electromagnetic or sound based, which allows for different kinds of modulations to
+make the signal easier to recognize at the receiver.
+
 
 This section will first outline the usual range determination techniques then go into the
-more specific sensor characteristics in later sections. 
+more specific sensor characteristics in later sections.
 
 
 \subsection{Triangulation}
-The principle of triangulation is to have two known locations, where the intersection
-between two lines from the known locations are the point one wishes to calculate the
-location to. 
-
+The technique of triangulation is an old and well-known technique for range determination.
+Two points with known locations are used. The distance between the two points are called
+the \emph{baseline}. Instead of measuring the range to a third point directly the angles
+from the two ends of the baseline to a third point is used to calculate the range
+according to Equation \ref{chap2:eq-triangulation}. See Figure
+\ref{chap2:fig-triangulation}.
+\begin{equation}
+    \label{chap2:eq-triangulation}
+    d = b \frac{\sin{\alpha} \sin{\beta}}{\sin{\alpha + \beta}}
+\end{equation}
 \begin{figure}[htbp]
     \caption{Triangulation setup}
-    \label{fig:triangulation}
+    \label{chap2:fig-triangulation}
 \end{figure}
+
+This technique is accurate for as long as all the points are in the same plane.
 
 
 \subsection{Time-of-Flight Measurement}
-This is the most widely used range measurement technique. This measures the time taken
-when a signal is transmitted to the reflected signal is detected at the receiver. The
-signal might be everything from light, to sound, to radio waves. What kind of medium or
-signal which is utilized greatly affect the accuracy and errors of the range measurement. 
+This method of range determination is the most common, and utilizes the travel time of the
+emitted signal. The signal might be in light, radio or sound waves. The precision of the
+range greatly depend on the type of signal, the medium which it travels and the quality of
+the time-measuring device. By knowing the velocity of the emitted signal and assuming it
+is constant, the distance it travels can be determined with great accuracy according to 
+Equation \eqref{chap2:eq-tof}
+\begin{equation}
+    \label{chap2:eq-tof}
+    d = v \frac{t}{2}
+\end{equation}
 
 
 
-
-\section{Project-specific Sensors}
-In this section the sensors which have been used in various robot applications will be
-discussed and mapped out. The different abilities of the sensors are mapped out, major
-error sources are mapped out.
-
+\section{Various Sensors Used in Robotics}
+This section concerns the use of different kind of sensors in robotic applications. Only
+sensors which are compliant to the overall perspective will be dealt with. This includes
+laser range finders, ultrasound and Sonar sensors, Time-of-Flight cameras and
+stereo cameras. 
 
 \subsection{2D Sensors}
 
@@ -172,11 +190,14 @@ When looking at Laser Range Finder, there are 3 techniques for determining the d
 continuous wave} (FMCW). \cite{laser-ranging-critical-review}
 
 \paragraph{Optical Triangulation}
-Optical triangulation is performed by using a light source and a placed at known distance
-from each other, called the baseline. This is a triangulation setup which
-allows for the calculation of the intersection point between the lines. 
+This uses triangulation described above. A light source are placed at the one end of the
+baseline, and a light sensor at the other end which senses the reflected light from the
+light source. Since the baseline and the angle of the emitted light are known the distance
+to the point are easily calculated according to the formula
+\eqref{chap2:eq-triangulation}.
 
-
+The accuracy of this method depends greatly on the baseline. If the baseline is short the
+calculation of the range will be 
 
 This method has some fundamental limits. \cite{laser-ranging-critical-review} 
 
