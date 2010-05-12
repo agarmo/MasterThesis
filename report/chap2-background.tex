@@ -190,28 +190,34 @@ When looking at Laser Range Finder, there are 3 techniques for determining the d
 continuous wave} (FMCW). \cite{laser-ranging-critical-review}
 
 \paragraph{Optical Triangulation}
-This uses triangulation described above. A light source are placed at the one end of the
+Optical is very similar to triangulation described above and uses the same principle.
+A light source are placed at the one end of the
 baseline, and a light sensor at the other end which senses the reflected light from the
-light source. Since the baseline and the angle of the emitted light are known the distance
-to the point are easily calculated according to the formula
-\eqref{chap2:eq-triangulation}.
+light source. The principle is basically the same as in normal triangulation. But, due to
+the fact that a light source is used, and more closely a laser light source, the surface
+that the laser light hits, the dot detected by the photo detector at the other end of the
+baseline, needs to ''stay in focus``. If this is not done the laser dot will become a
+blurred disc and the uncertainty to the point will become larger. To force the dot to
+always be in focus, a special aligning of the lenses and photo detector are used, called 
+the \emph{Scheimpflug} condition. The interested reader are referred to
+\cite{laser-rangign-critcal-review}.
 
-The accuracy of this method depends greatly on the baseline. If the baseline is short the
-calculation of the range will be 
-
-This method has some fundamental limits. \cite{laser-ranging-critical-review} 
-
-This technique is mostly used when the measured distance is short and the need for
-extremely precise measurements. For example digitalization of 3D objects. 
-
-Not applicable to the project in question
+The laser dot is contaminated with speckle noise which makes it more difficult to find the
+exact center of the projected dot. This makes the determination of the along the third
+dimension a bit more tricky, because of the positional uncertainty introduced by the
+noise. Frequency of the light, angle and area of the collecting lenses and photo detector
+are parameters that influence the position uncertainty. 
 
 
 \paragraph{Pulsed Time-of-Flight}
-The laser light which is emitted are amplitude modulated, and the received signal is
-compared to the emitted signal and the phase delay is measured. This is then directly
-proportional to the distance the light traveled. 
+The technique referred to as pulsed time-of-flight refers to the time taken of a pulse
+train of laser light to be reflected back to the emitter. Light travels around $30$cm/ns,
+this means that to get $1$mm accuracy the accuracy of the timing devices should be
+$6.7$ps.
 
+The application and ranges that are going to be measured are dependant on what kind of
+laser which is selected. The energy in the laser pulse effects the amplitude of the
+reflected light and in turn affects the measurement accuracy. 
 
 \paragraph{Frequency Modulated Continuous Wave}
 
