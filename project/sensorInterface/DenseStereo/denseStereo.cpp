@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include <mex.h>
+#include <cstdio>
 
 #include "StereoVision.h"
 #include "StereoCamera.h"
@@ -49,7 +50,7 @@ void doCalibration(	StereoCamera *camera,
 		if(!camera->ready){
 			std::cout <<"Connecting to cameras..." << std::endl;
 			if(0 != camera->setup(resolution)){
-				mexErrMsgTxt("-FAILED\n");
+				std::cout << "-FAILED" <<std::endl;
 			}else{
 				//std::cout <<"...OK" << std::endl;
 				cvNamedWindow( "left");
@@ -64,7 +65,7 @@ void doCalibration(	StereoCamera *camera,
 				}
 				int c = cvWaitKey( 1 );
 				if( c == 27 ) {//if esc key break.
-					mexErrMsgTxt("StereoCamAPI: canceled by user\n");
+					std::cout << "StereoCamAPI: canceled by user" << std::endl;
 					break;
 				}
 			}
@@ -154,7 +155,7 @@ void get3DOutuput(){
  *
  *
  */
-
+/*
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
 	CvSize resolution = cvSize(640,480);
@@ -166,14 +167,14 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
     // Get input arguments
     if (nrhs == 0) {
-        mexErrMsgTxt("StereoDense: Need input argument");
+        printf("StereoDense: Need input argument\n");
     }
 
     const int BUFLEN = 256;
     char buf[BUFLEN]; //string buffer
 
     if (mxGetString(prhs[0], buf, BUFLEN) != 0) {
-        mexErrMsgTxt("StereoCamAPI: Could not read string.");
+        printf("StereoCamAPI: Could not read string.\n");
         //do cleanup
         delete camera;
         delete vision;
@@ -185,7 +186,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
     	//check if there are right number of output elements.
 
     	if(nlhs != 7){ //need seven output arguments for storing camera parameters
-    		mexErrMsgTxt("StereoCamAPI: Need 7 output argumetns\n"
+    		printf("StereoCamAPI: Need 7 output argumetns\n"
 				"Usage: <cam1 mat, cam2 mat, dist1, dist2, ext1, ext2, fundamental matrix\n");
 
     	}else{ //start the collection and distribution.
@@ -206,3 +207,4 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
 }
 
+*/

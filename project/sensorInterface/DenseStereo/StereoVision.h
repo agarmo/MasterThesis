@@ -71,6 +71,8 @@ public:
     bool getCalibrationDone(){return calibrationDone;}
     int getSampleCount(){return sampleCount;}
 
+    void reCalibrate(int cornersX, int cornersY);
+
 };
 
 

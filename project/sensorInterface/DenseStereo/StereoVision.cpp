@@ -55,6 +55,13 @@ void StereoVision::calibrationStart(int cornersX,int cornersY){
     calibrationStarted = true;
 }
 
+void StereoVision::reCalibrate(int cornersX, int cornersY){
+	calibrationStarted = false;
+	calibrationDone = false;
+	calibrationStart(cornersX, cornersY);
+
+}
+
 
 int StereoVision::calibrationAddSample(IplImage* imageLeft,IplImage* imageRight){
 
@@ -278,7 +285,8 @@ int StereoVision::stereoProcess(CvArr* imageSrcLeft,CvArr* imageSrcRight, int ma
     cvRemap( imageSrcRight, imagesRectified[1] , mx2, my2 );
 
     //chose algorithm
-    if (match == STEREO_MATCH_BY_BM){
+    switch(match) {
+    case STEREO_MATCH_BY_BM:
     	if(!imageDepth)
    	    	imageDepth = cvCreateMat( imageSize.height,imageSize.width, CV_16S );
   	    if(!imageDepthNormalized)
@@ -301,8 +309,10 @@ int StereoVision::stereoProcess(CvArr* imageSrcLeft,CvArr* imageSrcRight, int ma
 
 
     	cvReleaseStereoBMState(&BMState);
+    	break;
 
-    }else if (match == STEREO_MATCH_BY_GC){
+    case STEREO_MATCH_BY_GC:
+
     	if(!disp_gc[0])
    	    	disp_gc[0] = cvCreateMat( imageSize.height,imageSize.width, CV_16S );
   	    if(!disp_gc[1])
@@ -324,8 +334,10 @@ int StereoVision::stereoProcess(CvArr* imageSrcLeft,CvArr* imageSrcRight, int ma
   	    cvConvertScale(disp_gc[0], imageDepthNormalized, -16);
 
   	    cvReleaseStereoGCState(&GCState);
-
+  	    break;
     }
+
+
 
     return 0;
 }

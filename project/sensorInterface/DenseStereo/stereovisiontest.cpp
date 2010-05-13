@@ -23,7 +23,8 @@ CvMat* imageRectifiedPair;
 void displayOutput(StereoCamera * camera, StereoVision * vision){
 
     CvSize imageSize = vision->getImageSize();
-    if(!imageRectifiedPair) imageRectifiedPair = cvCreateMat( imageSize.height, imageSize.width*2,CV_8UC3 );
+    if(!imageRectifiedPair)
+    	imageRectifiedPair = cvCreateMat( imageSize.height, imageSize.width*2,CV_8UC3 );
 
     vision->stereoProcess(camera->getFramesGray(0), camera->getFramesGray(1), STEREO_MATCH_BY_BM);
 
@@ -33,10 +34,14 @@ void displayOutput(StereoCamera * camera, StereoVision * vision){
     cvCvtColor( vision->imagesRectified[0], &part, CV_GRAY2BGR );
     cvGetCols( imageRectifiedPair, &part, imageSize.width,imageSize.width*2 );
     cvCvtColor( vision->imagesRectified[1], &part, CV_GRAY2BGR );
-    for(int j = 0; j < imageSize.height; j += 16 )
-    	cvLine( imageRectifiedPair, cvPoint(0,j),cvPoint(imageSize.width*2,j),CV_RGB((j%3)?0:255,((j+1)%3)?0:255,((j+2)%3)?0:255));
-    cvShowImage( "rectified", imageRectifiedPair );
 
+    for(int j = 0; j < imageSize.height; j += 16 )
+    	cvLine( imageRectifiedPair, cvPoint(0,j),
+    			cvPoint(imageSize.width*2,j),
+    			CV_RGB((j%3)?0:255,((j+1)%3)?0:255,
+    					((j+2)%3)?0:255));
+
+    cvShowImage( "rectified", imageRectifiedPair );
 
     cvShowImage( "depth", vision->imageDepthNormalized );
 }
@@ -71,9 +76,9 @@ void create3dOutput(StereoCamera *camera, StereoVision * vision, IplImage * dest
 		imageRectifiedPair = cvCreateMat( imageSize.height, imageSize.width*2,CV_8UC3 );
 
 	//process the stereo
-	vision->stereoProcess(camera->getFramesGray(0), camera->getFramesGray(1), STEREO_MATCH_BY_BM);
+	//vision->stereoProcess(camera->getFramesGray(0), camera->getFramesGray(1), STEREO_MATCH_BY_BM);
 
-	cvShowImage("left", camera->frames[0]);
+	//cvShowImage("left", camera->frames[0]);
 
 
 	cvReprojectImageTo3D(vision->imageDepth, dest, vision->Q, 0);
@@ -83,7 +88,7 @@ void create3dOutput(StereoCamera *camera, StereoVision * vision, IplImage * dest
 
 
 
-/*int main(){
+int main(){
 
 	bool usefile = false;
 	bool saveCalibration = false;
@@ -94,7 +99,7 @@ void create3dOutput(StereoCamera *camera, StereoVision * vision, IplImage * dest
 
 	CvSize resolution = cvSize(640,480);
 
-	StereoCamera *camera = new StereoCamera();
+	StereoCamera *camera = new StereoCamera(resolution);
 
     StereoVision* vision = new StereoVision(resolution);
 
@@ -129,6 +134,10 @@ void create3dOutput(StereoCamera *camera, StereoVision * vision, IplImage * dest
 				int c = cvWaitKey( 1 );
 					if( c == 27 ) //if esc key break.
 						break;
+					else if (c == 'c'){
+						vision->reCalibrate(cornersX, cornersY);
+						std::cout << "Recalibrate" << std::endl;
+					}
 
 			}
 
@@ -149,7 +158,7 @@ void create3dOutput(StereoCamera *camera, StereoVision * vision, IplImage * dest
 
 					if(0 == result){
 						std::cout << "+OK" << std::endl;
-						if(vision->getSampleCount() >= 15){
+						if(vision->getSampleCount() >= 30){
 							vision->calibrationEnd(
 									STEREO_CALIBRATE_INDIVIDUAL_CAMERAS,
 									&D1, &C1, &D2, &C2, &F);
@@ -164,13 +173,14 @@ void create3dOutput(StereoCamera *camera, StereoVision * vision, IplImage * dest
 
 			}else{ // Display the depth output.
 				if(vision->getCalibrationDone()){
-					//displayOutput(camera, vision);
+					displayOutput(camera, vision);
 
 					if (img3d == 0)
 							img3d = cvCreateImage(resolution, IPL_DEPTH_16S, 3);
 
+					//displayOutput(camera, vision);
 					create3dOutput(camera, vision, img3d);
-					cvShowImage("depth", img3d);
+					cvShowImage("depth3d", img3d);
 
 				}
 			}
@@ -192,4 +202,3 @@ void create3dOutput(StereoCamera *camera, StereoVision * vision, IplImage * dest
 
     return 0;
 }
-*/
