@@ -10,6 +10,8 @@
 #include <string>
 #include <cstdio>
 
+#include <fstream>
+
 
 #include "StereoVision.h"
 #include "StereoCamera.h"
@@ -19,6 +21,8 @@
 
 int sampleTimeout;
 CvMat* imageRectifiedPair;
+
+std::string filename = "c:\\test.txt";
 
 void displayOutput(StereoCamera * camera, StereoVision * vision){
 
@@ -49,24 +53,57 @@ void displayOutput(StereoCamera * camera, StereoVision * vision){
 
 int calibrationLoad(StereoVision* vision, std::string filename)
 {
-    std::cout << "Loading calibration file..." << filename << std::endl;;
+    std::cout << "Loading calibration file..." << filename;
     if(0 == vision->calibrationLoad(filename.c_str())){
-        std::cout << "OK" << std::endl;
+        std::cout << " OK" << std::endl;
         return 0;
     }else{
-        std::cout << "-FAIL" << std::endl;
+        std::cout << " -FAIL" << std::endl;
         return 1;
     }
 }
 
 void calibrationSave(StereoVision* vision, std::string filename)
 {
-    std::cout << "Saving calibration file..." << filename << std::endl;
+    std::cout << "Saving calibration file..." << filename;
     if(0 == vision->calibrationSave(filename.c_str())){
-        std::cout << "OK" << std::endl;
+        std::cout << " OK" << std::endl;
     }else{
-        std::cout <<"-FAIL"<< std::endl;
+        std::cout <<" -FAIL"<< std::endl;
     }
+}
+
+void writeToFile(IplImage* _3dimage){
+
+	//open the file
+
+	std::ofstream File;
+
+	File.open(filename.c_str(), ios::app);
+
+	std::cout << "Starting to write file...";
+
+	if (File.is_open()){
+		//access the image data.
+		for (int y = 0; y < _3dimage->height; y++){
+			uchar * ptr = (uchar*)(_3dimage->imageData + y * _3dimage->widthStep);
+			for (int x = 0; x < _3dimage->width; x++){
+
+				File << (float)ptr[3*x] << "," <<
+						(float)ptr[3*x+1] << "," <<
+						(float)ptr[3*x+2];
+				if ( x == _3dimage->width-1)
+					File << " ";
+				else
+					File << ",";
+			}
+			File << std::endl;
+		}
+	}
+	File.close();
+	std::cout << " Done!" << std::endl;
+
+
 }
 
 
@@ -81,17 +118,20 @@ void create3dOutput(StereoCamera *camera, StereoVision * vision, IplImage * dest
 	//cvShowImage("left", camera->frames[0]);
 
 
-	cvReprojectImageTo3D(vision->imageDepth, dest, vision->Q, 0);
+	cvReprojectImageTo3D(vision->imageDepth, dest, vision->Q, true);
+	writeToFile(dest);
 
 	//cvShowImage( "depth", dest );
 }
 
 
-
-int main(){
+int main(int argc, char* argv[]){
 
 	bool usefile = false;
 	bool saveCalibration = false;
+
+	bool writefile = false;
+	int iterator = 0;
 
 	CvMat C1, C2, D1, D2, F;
 
@@ -137,6 +177,9 @@ int main(){
 					else if (c == 'c'){
 						vision->reCalibrate(cornersX, cornersY);
 						std::cout << "Recalibrate" << std::endl;
+					}else if (c == 's'){
+						writefile = true;
+						std::cout << "User chose to write file"<< std::endl;
 					}
 
 			}
@@ -175,12 +218,13 @@ int main(){
 				if(vision->getCalibrationDone()){
 					displayOutput(camera, vision);
 
-					if (img3d == 0)
-							img3d = cvCreateImage(resolution, IPL_DEPTH_16S, 3);
+					if (writefile && iterator <= 10){
+						if (img3d == 0)
+							img3d = cvCreateImage(resolution, IPL_DEPTH_32F, 3);
 
-					//displayOutput(camera, vision);
-					create3dOutput(camera, vision, img3d);
-					cvShowImage("depth3d", img3d);
+						create3dOutput(camera, vision, img3d);
+						iterator++;
+					}
 
 				}
 			}
