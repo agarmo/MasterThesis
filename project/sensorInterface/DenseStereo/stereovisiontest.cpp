@@ -9,20 +9,23 @@
 #include <iostream>
 #include <string>
 #include <cstdio>
+#include <cstdlib>
 
 #include <fstream>
+#include <iomanip> // for manipulating streams
+
+
 
 
 #include "StereoVision.h"
 #include "StereoCamera.h"
-
 
 #include <opencv/highgui.h>
 
 int sampleTimeout;
 CvMat* imageRectifiedPair;
 
-std::string filename = "c:\\test.txt";
+std::string filename = "c:\\test2.txt";
 
 void displayOutput(StereoCamera * camera, StereoVision * vision){
 
@@ -86,12 +89,12 @@ void writeToFile(IplImage* _3dimage){
 	if (File.is_open()){
 		//access the image data.
 		for (int y = 0; y < _3dimage->height; y++){
-			uchar * ptr = (uchar*)(_3dimage->imageData + y * _3dimage->widthStep);
+			uchar * ptr = (uchar*)(_3dimage->imageData + y*_3dimage->widthStep);
 			for (int x = 0; x < _3dimage->width; x++){
 
-				File << (float)ptr[3*x] << "," <<
-						(float)ptr[3*x+1] << "," <<
-						(float)ptr[3*x+2];
+				File << fixed << std::setprecision(1) << (int)ptr[3*x] << "," <<
+						fixed << std::setprecision(1) << (int)ptr[3*x+1] << "," <<
+						fixed << std::setprecision(1) << (int)ptr[3*x+2];
 				if ( x == _3dimage->width-1)
 					File << " ";
 				else
@@ -109,17 +112,23 @@ void writeToFile(IplImage* _3dimage){
 
 void create3dOutput(StereoCamera *camera, StereoVision * vision, IplImage * dest){
 	CvSize imageSize = vision->getImageSize();
-	if(!imageRectifiedPair)
-		imageRectifiedPair = cvCreateMat( imageSize.height, imageSize.width*2,CV_8UC3 );
+	//if(!imageRectifiedPair)
+		//imageRectifiedPair = cvCreateMat( imageSize.height, imageSize.width*2,CV_8UC3 );
 
 	//process the stereo
 	//vision->stereoProcess(camera->getFramesGray(0), camera->getFramesGray(1), STEREO_MATCH_BY_BM);
 
 	//cvShowImage("left", camera->frames[0]);
 
-
-	cvReprojectImageTo3D(vision->imageDepth, dest, vision->Q, true);
-	writeToFile(dest);
+	if (vision->Q == 0){
+		std::cout << "Q matrix not set."<< std::endl;
+		cvSetIdentity(vision->Q);
+	}else if( vision->imageDepth == 0){
+		std::cout << "Depth Image not set" << std::endl;
+	}else{
+		cvReprojectImageTo3D(vision->imageDepth, dest, vision->Q, true);
+		writeToFile(dest);
+	}
 
 	//cvShowImage( "depth", dest );
 }
@@ -180,8 +189,11 @@ int main(int argc, char* argv[]){
 					}else if (c == 's'){
 						writefile = true;
 						std::cout << "User chose to write file"<< std::endl;
+					}else if (c == 'l'){
+						std::cout << "Loading calibration... " << std::endl;
+						calibrationLoad(vision, "calibration1.xml");
+						std::cout << "Loading calibration... Done!" << std::endl;
 					}
-
 			}
 
 
@@ -203,7 +215,7 @@ int main(int argc, char* argv[]){
 						std::cout << "+OK" << std::endl;
 						if(vision->getSampleCount() >= 30){
 							vision->calibrationEnd(
-									STEREO_CALIBRATE_INDIVIDUAL_CAMERAS,
+									STEREO_CALIBRATE_BOTH_CAMERAS,
 									&D1, &C1, &D2, &C2, &F);
 							std::cout << "Calibration Done !" << std::endl;
 							if(saveCalibration)
@@ -220,11 +232,16 @@ int main(int argc, char* argv[]){
 
 					if (writefile && iterator <= 10){
 						if (img3d == 0)
-							img3d = cvCreateImage(resolution, IPL_DEPTH_32F, 3);
+							img3d = cvCreateImage( resolution, IPL_DEPTH_32F, 3 );
 
 						create3dOutput(camera, vision, img3d);
 						iterator++;
 					}
+					if (iterator > 10){
+						writefile = false;
+						iterator = 0;
+					}
+
 
 				}
 			}
