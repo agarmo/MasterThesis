@@ -244,103 +244,131 @@ This is the article which I'm going to cite. \cite{sr3000}
 Stereo vision is an inexpensive way of finding range measurements. The setup is two or
 more cameras some distance away from each other. This distance is called the
 \emph{baseline}. The camera images are then compared and a common reference point is
-found. The Difference between the images are then used together with the baseline distance
+found. The difference between the images are then used together with the baseline distance
 to triangulate the common reference point and then find the distance to the observed
 object. 
 
+The process of Stereo Imaging involves 4 steps when using two cameras \cite{openCV}:
+\begin{enumerate}
+    \item Remove radial and tangential lens distortion caused by inexpensive lenses and
+        image chips. This outputs \emph{undistorted} images. 
+    \item \emph{Rectify} the images. This adjusts the angles and distances between the cameras.
+        This outputs row-aligned images.
+    \item Find the same features in the left and right camera view. This process is called
+        finding \emph{stereo correspondences}. This outputs a \emph{disparity} map, which
+        is the difference in x-coordinate of the feature in the left and the right image. 
+    \item If the geometric configuration of the cameras are known, the disparity map can
+        be translated into depth map with the help of \emph{triangulation}. This final
+        step is called \emph{reprojection}.
+\end{enumerate}
+This steps will be described in detail below. 
+
 
 \paragraph{Pinhole Camera Model}
-	The camera properties or parameters can be divided into two categories; \textit{intrinsic} parameters and
-	\textit{extrinsic} parameters. The intrinsic parameters are constant parameters and vary from camera to
-	camera, and represent the focus distance and image distortion of the pixels located away from the centre of the
-	camera image. 
-	The extrinsic parameters relate the position of the point relative to camera coordinates. 
-	These parameters are of course dependant on the position of the camera and change with time. 	This imply that 
-	coordinates of a 2D point in the camera have to be transformed into a 3D point which can be used 
-	by the control system. Since 
-	we are going from less knowledge about a point to more knowledge about a point, some things are needed to be 
-	estimated or measured to gain the ability to solve the 2D to 3D problem exactly.\cite{robotbok}
+A camera model is needed to understand how light is captured on the image plane. To do
+this a \emph{pinhole camera} model is used to capture light form a point. This model
+assumes that only one light ray from each point travels trough a infinite small hole in
+a plane, called the \emph{focal} plane and hits a second plane, called \emph{image} plane.
+These two planes are placed a distance, $f$ from each other. Using elemental geometry the
+coordinates of the real world point imaged at the image plane can be calculated. 
+\begin{equation}
+    -x = f \frac{X}{Z}
+\end{equation}
+where
+\begin{equation}
+    P_i = \left [ \begin{array}{c}
+        x \\
+        y 
+    \end{array} \right]  \in \mathbb{R}^2 \quad \quad P_w = \left [
+    \begin{array}{c}
+        X \\
+        Y \\
+        Z \\ 
+    \end{array} \right] \in \mathbb{R}^3 
+\end{equation}
+\begin{figure}[hbtp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{pics/pinhole_model}
+    \caption{Pinhole Camera Model showing two dimensions}
+    \label{fig:ch2-pinhole}
+\end{figure}
 
-	Suppose a point in the world reference system, denoted by, $P_w \in \mathbb{R}^3$. The same point
-	represented in the camera frame, $P_c$ are related to $P_w$ by a rotation matrix, $\mathbf{R} \in
-	SO(3)$. This gives the following equation: 
-	\begin{equation}
-		P_w = \mathbf{R} P_c + O(t)
-	\end{equation}
-	where $O(t)$ is the origin of the camera frame. This means that the point in the camera view is
-	described by the equation
-	\begin{equation}
-		\label{eq:ch1-P_c}
-        \begin{aligned}
-		P_c &= \mathbf{R}^T (P_w - O(t)) \\
-		\mathbf{R}^T &= \mathbf{R}^{-1} 
-        \end{aligned}
-	\end{equation}
-
-	A pinhole camera model are used to capture $P_c$ to image coordinates, $P_i \in
-	\mathbb{R}^2$. 
-	The principle behind a pinhole camera is that all light beams passes through a
-	infinitesmall hole, or point, located in the origin of the camera frame.   
-	\begin{figure}[hbtp]
-		\centering
-		\includegraphics[width=0.5\textwidth]{pics/pinhole_model}
-		\caption{Pinhole Camera Model showing two dimensions}
-		\label{fig:ch2-pinhole}
-	\end{figure}
-			
-	As seen from Figure \ref{fig:ch2-pinhole} the image plane is located a distance $f$ from the image plane. 
-	The point is projected through the hole, and onto the image plane. The principal axis, i.e. the z-axis of the
-	camera is pointing
-	in the direction of the observed point. For simplicity the image plane is located in the front of the
-	pinhole (this is only possible in theoretical case, and would not be possible in a real camera application).
-    From this the perspective equations are derived. \cite{robotbok}
-	\begin{equation}
-		\label{eq:ch2-perspective}
-		P_i = \left[ \begin{array}{cc}
-					\frac{f}{z_c} & 0 \\
-					0	& \frac{f}{z_c} 
-				\end{array} \right] 
-				\left[ \begin{array}{c}
-					x_c \\
-					y_c
-					\end{array} \right]
-	\end{equation}
-	The Equation \eqref{eq:ch2-perspective} are the perspective equations, which transforms the observed 
-	point into image coordinates. 
+Figure \ref{chap2:fig-pinhole} shows the configuration with the pinhole located at
+the center and the image plane located at $f$. The x axis of the image is located
+upwards, while the real Z axis are the horizontal axis, that are called the
+\emph{optcal axis}. 
 
 
-\paragraph{Stereo Vision}
-    Now suppose we have 2 pinhole cameras located at a known distance $b$ from each other. 
-    If we know the focal length, $f$ of both cameras, we can use \emph{triangulation} to
-    determine the distance to a common point visible in both cameras. Figure
-    \ref{fig:ch2-stereo_geometry} shows the geometry. 
-    \begin{figure}[htbp]
-        \centering
-        %\includegraphics[width=0.5\textwidth]{pics/stereo_geometry}
-        \caption{The geometry of stereo vision ****FIKS FIGUR Lag Vektorgrafikk av den****}
-        \label{fig:ch2-stereo_geometry}
-    \end{figure}
-
-    Distance are inversely proportional to the disparity, and have a clearly nonlinear.
-    This means that there are small differences in depth when the disparity is large, and
-    when the disparity is small, the variance in depth will be large. This means that the
-    depth is more accurate when the object are close to the camera. 
-    \begin{figure}[htbp]
-        \centering
-        %\includegraphics[width=0.5\textwidth]{pics/disparity-depth}
-        \caption{The relationship between depth and disparity}
-        \label{fig:chap2-disparity-depth}
-    \end{figure}
 
 
-    
 
-    The distance to the common point in both cameras can now be calculated by 
-    \begin{equation}
-        D = f (L / (x+y) - 1)
-    \end{equation}
-    The value defined by $d = x+y$ is the amount that the object moves in pixels when
-    switching from one view to the other. This is called the \emph{disparity}.
+The camera properties or parameters can be divided into two categories; \textit{intrinsic} parameters and
+\textit{extrinsic} parameters. The intrinsic parameters are constant parameters and vary from camera to
+camera, and represent the focus distance and image distortion of the pixels located away from the centre of the
+camera image. This are
+
+
+
+
+
+A pinhole camera model are used to capture $P_c$ to image coordinates, $P_i \in
+\mathbb{R}^2$. 
+The principle behind a pinhole camera is that all light beams passes through a
+infinitesmall hole, or point, located in the origin of the camera frame.   
+
+As seen from Figure \ref{fig:ch2-pinhole} the image plane is located a distance $f$ from the image plane. 
+The point is projected through the hole, and onto the image plane. The principal axis, i.e. the z-axis of the
+camera is pointing
+in the direction of the observed point. For simplicity the image plane is located in the front of the
+pinhole (this is only possible in theoretical case, and would not be possible in a real camera application).
+From this the perspective equations are derived. \cite{robotbok}
+\begin{equation}
+    \label{eq:ch2-perspective}
+    P_i = \left[ \begin{array}{cc}
+        \frac{f}{z_c} & 0 \\
+        0	& \frac{f}{z_c} 
+    \end{array} \right] 
+    \left[ \begin{array}{c}
+        x_c \\
+        y_c
+    \end{array} \right]
+\end{equation}
+The Equation \eqref{eq:ch2-perspective} are the perspective equations, which transforms the observed 
+point into image coordinates. 
+
+
+\paragraph{Stereo Vision Geometry}
+Now suppose we have 2 pinhole cameras located at a known distance $b$ from each other. 
+If we know the focal length, $f$ of both cameras, we can use \emph{triangulation} to
+determine the distance to a common point visible in both cameras. Figure
+\ref{fig:ch2-stereo_geometry} shows the geometry. 
+\begin{figure}[htbp]
+    \centering
+    %\includegraphics[width=0.5\textwidth]{pics/stereo_geometry}
+    \caption{The geometry of stereo vision ****FIKS FIGUR Lag Vektorgrafikk av den****}
+    \label{fig:ch2-stereo_geometry}
+\end{figure}
+
+Distance are inversely proportional to the disparity, and have a clearly nonlinear.
+This means that there are small differences in depth when the disparity is large, and
+when the disparity is small, the variance in depth will be large. This means that the
+depth is more accurate when the object are close to the camera. 
+\begin{figure}[htbp]
+    \centering
+    %\includegraphics[width=0.5\textwidth]{pics/disparity-depth}
+    \caption{The relationship between depth and disparity}
+    \label{fig:chap2-disparity-depth}
+\end{figure}
+
+
+
+
+The distance to the common point in both cameras can now be calculated by 
+\begin{equation}
+    D = f (L / (x+y) - 1)
+\end{equation}
+The value defined by $d = x+y$ is the amount that the object moves in pixels when
+switching from one view to the other. This is called the \emph{disparity}.
 
 
 \paragraph{Matching}
