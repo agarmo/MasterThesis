@@ -7,11 +7,11 @@ classdef world
     properties %(SetAccess = private) % ?
     %% private attributes?
         nodes; % the nodes that are discovered. 
-        pipe_diameter; % The diameter of the pipeworld
     end
     
     properties
     %% public attributes?
+    pipe_diameter; % The diameter of the pipeworld
     
     end
     

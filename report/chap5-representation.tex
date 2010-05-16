@@ -2,18 +2,101 @@
 
 
 \chapter{Data Representation}
+This section will describe the world representation used in the implementation.
+
+\section{World Representation}
+The world representation should have a number of qualities. First it must represent the
+world in a satisfactory way. It should be easy to update and take up as little memory in
+the robots memory as possible. Third it should be easy to understand for a human operator
+without too much post-processing. 
+
+When choosing how to represent the world one must take into account how much reasoning and
+processing the robot should do with the sensor data. The more abstract world
+representation, the more reasoning and processing must be done at the robot. On the
+upside, abstract representations takes up less space in memory, and can be more
+computationally effective when it comes to path finding and planning, than the less
+abstract map representations. 
+
+The problem when a robot has to reason, is that it might take the wrong decisions, and the
+risk of erroneous map making are high. 
+
+\subsection{Nodes}
+The representation in this project is a kind of topological map. It is abstract in the way
+that the world are classified into given nodes. Known features of the world are recognized
+and represented as nodes in a graph. 
+
+This means that the world need to be classified into predefined nodes before the mission
+is started. In this project the nodes are junctions, or bends that are easily recognized
+because of their fundamental difference to the straight pipe segments. 
+
+The nodes should have a number of attributes describing how the node is different from the
+other nodes. These attributes are:
+\begin{itemize}
+    \item Node type
+    \item Number
+    \item Time stamp when discovered
+    \item Previous Node
+    \item Distance since last node
+    \item Orientation
+    \item Number of edges and the angles of those
+    \item List of anomalies
+\end{itemize}
+
+Most of this attributes are self-explaining, but the last attribute, \emph{list of
+anomalies} deserves a closer explanation. 
+
+Anomalies are those things that the robot should look after, and record. An anomaly are
+everything that is not expected. In a pipe environment the surroundings are assumed to be
+in some way, because they are designed that way. Everything that is not as expected should
+be recorded for later inspections. 
+
+This list will contain every anomaly from the previous node to the next one, where the
+list is stored. The list will contain a time stamp of when it was discovered, distance
+traveled from the previous node, and a remark why it was detected as an anomaly. 
+
+Since the anomalies will be detected before the node which will contain the list are
+detected, the list is temporary stored in the robots memory until the next node are
+detected. 
 
 
 \section{Map-building From the Sensor Data}
 
 
-\section{Sensor Data Processing}
+\subsection{Cylinder or Cone Fit from 3D Sensor Data}
+The cylinder fit is a Least-Squares Gauss-Newton algorithm. This algorithm are very
+useful since it does not require the calculation of the Second order derivatives, or the
+Hessian matrix. This calculations are very cumbersome and computationally expensive. 
+
+The point cloud which is the output from the Time-of-Flight camera are divided into
+sections with regard to the z-axis, i.e. the depth into the pipe. This intervals of 3D
+data are fed into the algorithm and produces a set of cylinders which are fitted to the
+pipe. The distance of the points from the proposed cylinder are output from the algorithm
+and are used for determining if the cylinder fit is a good fit. 
+
+\begin{figure}[htbp]
+    \centering
+   % \includegraphics[width=0.7\textwidth]{pics/cylinderfit}
+    \caption{The set of cylinders fitted to the point cloud}
+    \label{chap5:fig-cylinderfit}
+\end{figure}
+An example of a set of fitted cylinders are shown in Figure \ref{chap5:fig-cylinderfit}.
+One might see that the axis are off. This is because noise and the least squares nature of
+the fit. The noisy points will draw the cylinder off axis compared to the real one. 
 
 
-\subsection{Edge-detection Algorithms}
+\subsection{Line Fit and Arc Fit in 2D Sensor Data}
+Line fit algorithm is a least-squares line fit algorithm. For this to work properly, a
+selection of points assumed belonging to the line need to be fed into the algorithm. To
+select this points a histogram is formed for both x- and y-direction of the points. This
+will detect points which lie in a horizontal- and vertical lines. This points are selected
+and fed into the line fit algorithm. 
+
+This method involves a number of parameters and threshold values which need to be set and
+tuned by the user. 
 
 
-\subsection{Other Feature Extraction}
+
+\section{Positioning in the World Representation}
 
 
 

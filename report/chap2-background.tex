@@ -1,28 +1,184 @@
 %included in thesis.tex,
 
 
-\chapter{Background}
+
+\chapter{Background and Literature Study}
 This chapter will try to outline the basics needed to understand this report. Mathematical
 knowledge are crucial to understand the principles used in robot navigation and decision
-making. 
+making. The topics treated here include, general reference frames, homogeneous coordinate
+representations, camera modeling, feature matching, map representations and optimization
+criterions.
 
 
-\section{Outline}
+
+\section{Basics}
 
 \subsection{Reference Frames}
-There are a number of reference frames associated with this project. The global reference
-frame are the NED frame (North, East, Down). This is defined as the tangential plane
-defined where the object in question is, and defined to move with the object.
+	Movement must be described relative to something. This is the task of the reference systems. There are
+	4 important reference system. The ECI (Earth Centre Inertial) which is a truly inertial reference
+	frame, i.e. it is not accelerating. Its axis are pointing through the north pole and through the
+	equatorial line of the Earth, fixed toward stationary points in space. The centre is as the name
+	suggests in the centre of the Earth. 
+	
+	ECEF (Earth-Centre Earth-Fixed) is another reference frame. It is defined same as the ECI coordinate
+	system, but the axis are rotating with the same rate as the Earths rotation rate. This means that this frame
+	is not
+	strictly inertial, but the angular velocity of the Earths rotation are considered very small, and can
+	be neglected compared to other velocities in the same frame. Position on the earth are described by
+	\emph{longitude} and \emph{latitude}.
 
-The other frame in this project is the local \emph{Body-frame}. This frame is defined
-relative to the NED frame. Velocities and forces are usually defined in the body-frame. 
+	An important reference frame when considering local motion are the NED (North East Down) frame. This
+	frame is defined as the tangent plane on the current position, and moving with the object. The axis
+	are pointing towards north, east and down. This frame can be used in local, and small areas, but are
+	not valid for intercontinental travel. This frame will primarily be used in this report. 
 
-The last frame which is important is the \emph{Sensor-frames}. This is the frames which
-the sensor output are defined. 
+	The last but important frame are the Body frame, which is the local frame of the object of interest.
+	The body frame are defined as the x-axis along its forward movement, y-axis to the right of the
+	movement direction, and the last pointing downward, to complete the right-hand system. The
+	origin are defined in the Centre of Gravity of the object. This frame are convenient when
+	defining velocities, forces and moments. More on reference frames in \cite{fossen} and
+    \cite{forsell}.
+    \begin{figure}[htbp]
+        \centering
+       % \includegraphics[width=0.7\textwidth]{pics/referenceframse}
+        \caption{The different reference frames in this report}
+        \label{chap2:fig-ref-frames}
+    \end{figure}
+
+    The reference frames that will be considered in this report are the \emph{NED}- and
+    \emph{body} frames. In addition to these two frames there are the last, but not least
+    important frame, called the \emph{single-sensor} frame. This is where the output from
+    the sensors are defined. These output need to be transformed into the \emph{body} and
+    to the \emph{NED} frame to make sense for the control system and ultimately for the
+    user. 
+
+    The \emph{single-sensor} frames are where the individual sensors give readings. The
+    exact mount point relative to the centre-of-gravity need to be defined, to make the
+    transformation to other frames possible. The domain of the \emph{single-sensor} frames
+    are defined in accordance to the domain of the sensor, i.e. the domain of a Laser
+    Range Finder, which gives angles and ranges in the plane are two dimensional. 
+
+    \begin{figure}[htbp]
+        \centering
+        %\includegraphics[width=0.7\textwidth]{pics/singlesensorframes}
+        \caption{\emph{Single-Sensor} frames on PiKo}
+        \label{chap2:fig-single-sensor-frames}
+    \end{figure}
 
 
-\section{State-of-the-Art Literature study}
+\subsection{Homogeneous Transformation Coordinates}
+To represent transformations, i.e. rotations, translations, shear and scaling, it is
+practical to represent those transformations in matrix form. But it is not mathematically
+possible to represent both rotations and translations in the same matrix as long as it is
+contained in $\mathbb{R}^3$. ******REFERENCE******
 
+To overcome this problem, the coordinates are projected into a fourth dimensional space.
+All points and vectors gain an extra element which describes if the coordinate is a vector
+or a point. 
+\begin{equation}
+        \mathbf{v} = \left[ \begin{array}{c}
+                                    x_v \\
+                                    y_v \\
+                                    z_v \\
+                                    w_v  \end{array} \right]  =
+                     \left[ \begin{array}{c}
+                                    1 \\
+                                    0 \\
+                                    0 \\
+                                    0  \end{array} \right] \quad \quad
+        \mathbf{p} = \left[ \begin{array}{c}
+                                    x_p \\
+                                    y_p \\
+                                    z_p \\
+                                    w_p  \end{array} \right]  =
+                     \left[ \begin{array}{c}
+                                    1 \\
+                                    0 \\
+                                    0 \\
+                                    1  \end{array} \right] \quad \quad
+\end{equation}
+Here $\mathbf{v}$ is a vector with the fourth element as zero, while $\mathbf{p}$ is a
+point with the fourth element equal one.
+
+This leads us to the \emph{Transformation Matrix} which is a $4 \times 4$ matrix. For
+example a matrix representing rotation and translation will look like this
+\begin{equation}
+    \label{chap2:eq-TransformationMatrix}
+    \mathbf{T_{rt}} = \left [ \begin{array}{cccc}
+                                r_{xx} & r_{xy} & r_{xz} & t_x \\
+                                r_{yx} & r_{yy} & r_{yz} & t_y \\
+                                r_{zx} & r_{zy} & r_{zz} & t_z \\
+                                0  & 0  & 0  & 1  \end{array} \right]
+\end{equation}
+Here the $r_{ii}$ coefficients are rotation parameters and the $t_i$ coefficients are the
+translation parameters. The rotation coefficients are calculated from the Euler angles.
+
+Likewise, scaling might be performed by the following transformation matrix
+\begin{equation}
+    \label{chap2:eq-TransformationMatrixScaling}
+    \mathbf{T_S} = \left [ \begin{array}{cccc}
+                                S_x & 0 & 0 & 0 \\
+                                0 & S_y & 0 & 0 \\
+                                0 & 0 & S_z & 0 \\
+                                0 & 0 & 0 & 1 
+                                 \end{array} \right]
+\end{equation}
+All of this transformations might be combined into a single matrix by multiplying the
+matrices together, in the reverse of the order of which the transformations are carried
+out. 
+
+
+\section{Ranging Techniques}
+The measure of distances and ranges are important and there are various ways of doing
+this. Most techniques include the measure of time-of-flight of some signal and calculating
+the distance from the known travel velocity of the signal. This requires the signal
+emitted to be reflected, captured and processed at or close to the emitter. The signal is
+usually electromagnetic or sound based, which allows for different kinds of modulations to
+make the signal easier to recognize at the receiver.
+
+
+This section will first outline the usual range determination techniques then go into the
+more specific sensor characteristics in later sections.
+
+
+\subsection{Triangulation}
+The technique of triangulation is an old and well-known technique for range determination.
+Two points with known locations are used. The distance between the two points are called
+the \emph{baseline}. Instead of measuring the range to a third point directly the angles
+from the two ends of the baseline to a third point is used to calculate the range
+according to Equation \ref{chap2:eq-triangulation}. See Figure
+\ref{chap2:fig-triangulation}.
+\begin{equation}
+    \label{chap2:eq-triangulation}
+    d = b \frac{\sin{\alpha} \sin{\beta}}{\sin{\alpha + \beta}}
+\end{equation}
+\begin{figure}[htbp]
+    \caption{Triangulation setup}
+    \label{chap2:fig-triangulation}
+\end{figure}
+
+This technique is accurate for as long as all the points are in the same plane.
+
+
+\subsection{Time-of-Flight Measurement}
+This method of range determination is the most common, and utilizes the travel time of the
+emitted signal. The signal might be in light, radio or sound waves. The precision of the
+range greatly depend on the type of signal, the medium which it travels and the quality of
+the time-measuring device. By knowing the velocity of the emitted signal and assuming it
+is constant, the distance it travels can be determined with great accuracy according to 
+Equation \eqref{chap2:eq-tof}
+\begin{equation}
+    \label{chap2:eq-tof}
+    d = v \frac{t}{2}
+\end{equation}
+
+
+
+\section{Various Sensors Used in Robotics}
+This section concerns the use of different kind of sensors in robotic applications. Only
+sensors which are compliant to the overall perspective will be dealt with. This includes
+laser range finders, ultrasound and Sonar sensors, Time-of-Flight cameras and
+stereo cameras. 
 
 \subsection{2D Sensors}
 
@@ -34,29 +190,40 @@ When looking at Laser Range Finder, there are 3 techniques for determining the d
 continuous wave} (FMCW). \cite{laser-ranging-critical-review}
 
 \paragraph{Optical Triangulation}
-Optical triangulation is performed by using a light source and a placed at known distance
-from each other. This distance is called the baseline. This is a triangulation setup which
-allows for the calculation of the intersection point between the lines. 
+Optical is very similar to triangulation described above and uses the same principle.
+A light source are placed at the one end of the
+baseline, and a light sensor at the other end which senses the reflected light from the
+light source. The principle is basically the same as in normal triangulation. But, due to
+the fact that a light source is used, and more closely a laser light source, the surface
+that the laser light hits, the dot detected by the photo detector at the other end of the
+baseline, needs to ''stay in focus``. If this is not done the laser dot will become a
+blurred disc and the uncertainty to the point will become larger. To force the dot to
+always be in focus, a special aligning of the lenses and photo detector are used, called 
+the \emph{Scheimpflug} condition. The interested reader are referred to
+\cite{laser-rangign-critcal-review}.
 
-\begin{figure}[htbp]
-    \caption{Optical Triangulation setup}
-    \label{fig:optical-triangulation}
-\end{figure}
-***Lag figur*** TRENGER JEG DETTE?*****
-
-This method has some fundamental limits. \cite{laser-ranging-critical-review} 
-
-This technique is mostly used when the measured distance is short and the need for
-extremely precise measurements. For example digitalization of 3D objects.
+The laser dot is contaminated with speckle noise which makes it more difficult to find the
+exact center of the projected dot. This makes the determination of the along the third
+dimension a bit more tricky, because of the positional uncertainty introduced by the
+noise. Frequency of the light, angle and area of the collecting lenses and photo detector
+are parameters that influence the position uncertainty. 
 
 
 \paragraph{Pulsed Time-of-Flight}
-The laser light which is emitted are amplitude modulated, and the received signal is
-compared to the emitted signal and the phase delay is measured. This is then directly
-proportional to the distance the light traveled. 
+The technique referred to as pulsed time-of-flight refers to the time taken of a pulse
+train of laser light to be reflected back to the emitter. Light travels around $30$cm/ns,
+this means that to get $1$mm accuracy the accuracy of the timing devices should be
+$6.7$ps.
+
+The application and ranges that are going to be measured are dependant on what kind of
+laser which is selected. The energy in the laser pulse effects the amplitude of the
+reflected light and in turn affects the measurement accuracy.
+
 
 
 \paragraph{Frequency Modulated Continuous Wave}
+
+
 
 
 \subsubsection{Sonar}
@@ -82,8 +249,117 @@ to triangulate the common reference point and then find the distance to the obse
 object. 
 
 
+\paragraph{Pinhole Camera Model}
+	The camera properties or parameters can be divided into two categories; \textit{intrinsic} parameters and
+	\textit{extrinsic} parameters. The intrinsic parameters are constant parameters and vary from camera to
+	camera, and represent the focus distance and image distortion of the pixels located away from the centre of the
+	camera image. 
+	The extrinsic parameters relate the position of the point relative to camera coordinates. 
+	These parameters are of course dependant on the position of the camera and change with time. 	This imply that 
+	coordinates of a 2D point in the camera have to be transformed into a 3D point which can be used 
+	by the control system. Since 
+	we are going from less knowledge about a point to more knowledge about a point, some things are needed to be 
+	estimated or measured to gain the ability to solve the 2D to 3D problem exactly.\cite{robotbok}
 
-\subsection{Map Data Representation}
+	Suppose a point in the world reference system, denoted by, $P_w \in \mathbb{R}^3$. The same point
+	represented in the camera frame, $P_c$ are related to $P_w$ by a rotation matrix, $\mathbf{R} \in
+	SO(3)$. This gives the following equation: 
+	\begin{equation}
+		P_w = \mathbf{R} P_c + O(t)
+	\end{equation}
+	where $O(t)$ is the origin of the camera frame. This means that the point in the camera view is
+	described by the equation
+	\begin{equation}
+		\label{eq:ch1-P_c}
+        \begin{aligned}
+		P_c &= \mathbf{R}^T (P_w - O(t)) \\
+		\mathbf{R}^T &= \mathbf{R}^{-1} 
+        \end{aligned}
+	\end{equation}
+
+	A pinhole camera model are used to capture $P_c$ to image coordinates, $P_i \in
+	\mathbb{R}^2$. 
+	The principle behind a pinhole camera is that all light beams passes through a
+	infinitesmall hole, or point, located in the origin of the camera frame.   
+	\begin{figure}[hbtp]
+		\centering
+		\includegraphics[width=0.5\textwidth]{pics/pinhole_model}
+		\caption{Pinhole Camera Model showing two dimensions}
+		\label{fig:ch2-pinhole}
+	\end{figure}
+			
+	As seen from Figure \ref{fig:ch2-pinhole} the image plane is located a distance $f$ from the image plane. 
+	The point is projected through the hole, and onto the image plane. The principal axis, i.e. the z-axis of the
+	camera is pointing
+	in the direction of the observed point. For simplicity the image plane is located in the front of the
+	pinhole (this is only possible in theoretical case, and would not be possible in a real camera application).
+    From this the perspective equations are derived. \cite{robotbok}
+	\begin{equation}
+		\label{eq:ch2-perspective}
+		P_i = \left[ \begin{array}{cc}
+					\frac{f}{z_c} & 0 \\
+					0	& \frac{f}{z_c} 
+				\end{array} \right] 
+				\left[ \begin{array}{c}
+					x_c \\
+					y_c
+					\end{array} \right]
+	\end{equation}
+	The Equation \eqref{eq:ch2-perspective} are the perspective equations, which transforms the observed 
+	point into image coordinates. 
+
+
+\paragraph{Stereo Vision}
+    Now suppose we have 2 pinhole cameras located at a known distance $b$ from each other. 
+    If we know the focal length, $f$ of both cameras, we can use \emph{triangulation} to
+    determine the distance to a common point visible in both cameras. Figure
+    \ref{fig:ch2-stereo_geometry} shows the geometry. 
+    \begin{figure}[htbp]
+        \centering
+        %\includegraphics[width=0.5\textwidth]{pics/stereo_geometry}
+        \caption{The geometry of stereo vision ****FIKS FIGUR Lag Vektorgrafikk av den****}
+        \label{fig:ch2-stereo_geometry}
+    \end{figure}
+
+    Distance are inversely proportional to the disparity, and have a clearly nonlinear.
+    This means that there are small differences in depth when the disparity is large, and
+    when the disparity is small, the variance in depth will be large. This means that the
+    depth is more accurate when the object are close to the camera. 
+    \begin{figure}[htbp]
+        \centering
+        %\includegraphics[width=0.5\textwidth]{pics/disparity-depth}
+        \caption{The relationship between depth and disparity}
+        \label{fig:chap2-disparity-depth}
+    \end{figure}
+
+
+    
+
+    The distance to the common point in both cameras can now be calculated by 
+    \begin{equation}
+        D = f (L / (x+y) - 1)
+    \end{equation}
+    The value defined by $d = x+y$ is the amount that the object moves in pixels when
+    switching from one view to the other. This is called the \emph{disparity}.
+
+
+\paragraph{Matching}
+    To be able to calculate the distance one will need to detect the same point in two
+    different images. This is a difficult and a not straight-forward task for a computer.
+    Humans are superior when it comes to recognizing objects, but computers are not.
+
+    The process of finding the same point in two images are called matching, and can be
+    done in various ways. \cite{gonzalez}
+
+    The matching process is very dependant on features in the environment. If the
+    surroundings are featureless the matching becomes very difficult, and the
+    probabilities for bad matches are greater. This will cause erroneous distances to the
+    objects.
+
+
+
+
+\section{Map Data Representation}
 The representation of sensor data is important for the functionality of the robot. This is
 dependant on the amount of processing power and capacity that is available at the robot.
 The area which the robot is to map is also of great importance when choosing the
@@ -109,7 +385,7 @@ and office landscapes. This because a series of junctions might tell you where y
 than just the metric information, which might be quite erroneous. 
 
 
-\subsubsection{Occupancy Grid Maps}
+\subsection{Occupancy Grid Maps}
 Occupancy grid maps are a metric approach to the mapping problem and are widely used in 
 robotic mapping, mostly because of it is simple to implement and use. It was developed 
 by Elfes and Moravec in the mid 1980s, \cite{elfes}, \cite{moravec}. The method is quite 
@@ -130,7 +406,7 @@ cyclic environments. This because of the uncertainty in the sensor measurements 
 pose and odometry. 
 
 
-\subsubsection{Topological Maps}
+\subsection{Topological Maps}
 Object maps are topological maps and represents the sensed world in the form of predefined nodes and links
 between them. Each node has a set of attributes, like length, links to doors etc. This is
 a compact way to express the world and is much more computationally effective with larger
@@ -143,7 +419,7 @@ largest challenge with this is to make the robot aware of where it is. It needs 
 way to recognize its surroundings, and match it to the \'a priori map.
 
 
-\subsubsection{Mixed Approaches}
+\subsection{Mixed Approaches}
 This is when you take the best of both worlds. The easy and effective way of the metric
 maps, and mix them with the abstract topological maps. This will help reduce the size of
 the maps in the robots memory, and also make it more computationally effective because the
@@ -158,7 +434,7 @@ This requires lots of processing of the sensor and map data, and should be done 
 after the robot's mission is finished. 
 
 
-\subsection{Sensor Fusion Techniques}
+\section{Sensor Fusion Techniques}
 According to \cite{sensor-fusion-mobile-robots} theres a lot of ways to achieve sensor
 fusion in mobile robotics. The use of multiple sensors are favorable because the readings
 can be fused to make a better estimate of the current situation. 
@@ -188,7 +464,7 @@ to use different measurement principles which have different capabilities.
 \end{itemize}
 
 
-\subsubsection{Low-level Fusion}
+\subsection{Low-level Fusion}
 The term low-level fusion is often used when the sensor data is directly integrated
 resulting in parameters and state estimates of the model. This methods are mostly purely
 mathematical. This method involves the Kalman Filter, and other Bayesian approaches. In
@@ -199,18 +475,19 @@ This methods are probabilistic and requires that you know something about the
 statistical properties of the sensors and the \'a priori model. 
 
 
-\subsubsection{High-level Fusion}
+\subsection{High-level Fusion}
 
 
 
-\subsubsection{Interpolation Techniques}
+\subsection{Interpolation Techniques}
 
 
 
-\subsubsection{Probabilistic Techniques}
+\subsection{Probabilistic Techniques}
 
 
-\subsection{Feature Extraction}
+
+\section{Feature Extraction}
 The need for feature extraction should be obvious when dealing with autonomous robot
 navigation. For the robot to know where it is it needs to recognize its surroundings. This
 is a difficult step, because computers are not known to be very good at this, as the human
@@ -229,7 +506,21 @@ that the robot will travel through.
 \cite{theilemann-breivik}
 
 
-\subsection{Real World Applications}
+
+\subsection{Surface Fit Algorithms}
+
+
+\subsubsection{Gauss-Newton Optimization}
+
+
+\subsubsection{RANSAC Algorithm}
+
+
+\subsubsection{M-SAC Criterion}
+
+
+
+\section{Real World Applications}
 
 Remember MAKRO! The German snake robot used for sewer inspections. 
 

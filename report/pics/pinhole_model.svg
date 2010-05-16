@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="388.03558"
+   height="349.12863"
+   id="svg2388"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="pinhole_model.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   version="1.0">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="256.34234"
+     inkscape:cy="99.701822"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1670"
+     inkscape:window-height="944"
+     inkscape:window-x="0"
+     inkscape:window-y="33" />
+  <defs
+     id="defs2390">
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lstart"
+       style="overflow:visible">
+      <path
+         id="path3278"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.97309,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z"
+         transform="matrix(1.1,0,0,1.1,1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow2Lend"
+       style="overflow:visible">
+      <path
+         id="path3281"
+         style="font-size:12px;fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.97309,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z"
+         transform="matrix(-1.1,0,0,-1.1,-1.1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lstart"
+       style="overflow:visible">
+      <path
+         id="path3260"
+         d="M 0,0 L 5,-5 L -12.5,0 L 5,5 L 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="matrix(0.8,0,0,0.8,10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend"
+       style="overflow:visible">
+      <path
+         id="path3263"
+         d="M 0,0 L 5,-5 L -12.5,0 L 5,5 L 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <inkscape:perspective
+       id="perspective2396"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       sodipodi:type="inkscape:persp3d" />
+  </defs>
+  <metadata
+     id="metadata2393">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1"
+     transform="translate(-221.19087,-264.94784)">
+    <path
+       id="path2420"
+       d="M 234.21386,529.50504 C 592.2996,529.50504 594.35757,529.50504 594.35757,529.50504"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-end:url(#Arrow2Lend);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="/home/anders/Documents/Studier/fordypningsprosjekt/auv-pipe/template/pics/pinhole_model2.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       id="path2424"
+       d="M 264.28571,267.60388 C 264.28571,558.69191 264.28571,558.69191 264.28571,558.69191"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow2Lstart);stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="/home/anders/Documents/Studier/fordypningsprosjekt/auv-pipe/template/pics/pinhole_model2.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       id="path2458"
+       d="M 367.85715,382.36218 C 367.85715,613.07647 367.85715,613.07647 367.85715,613.07647"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="/home/anders/Documents/Studier/fordypningsprosjekt/auv-pipe/template/pics/pinhole_model2.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <path
+       id="path2464"
+       d="M 537.85714,436.6479 C 263.57143,529.50504 263.57143,529.50504 263.57143,529.50504"
+       style="fill:#ff7f2a;fill-rule:evenodd;stroke:#0000ff;stroke-width:1.00099909;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       inkscape:export-filename="/home/anders/Documents/Studier/fordypningsprosjekt/auv-pipe/template/pics/pinhole_model2.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       id="text2466"
+       y="552.36218"
+       x="591.42859"
+       style="font-size:16px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/anders/Documents/Studier/fordypningsprosjekt/auv-pipe/template/pics/pinhole_model2.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         y="552.36218"
+         x="591.42859"
+         id="tspan2468"
+         sodipodi:role="line">Z<tspan
+   style="font-size:14px"
+   id="tspan3330">c</tspan></tspan></text>
+    <text
+       id="text2470"
+       y="281.64789"
+       x="220.71431"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/anders/Documents/Studier/fordypningsprosjekt/auv-pipe/template/pics/pinhole_model2.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         y="281.64789"
+         x="220.71431"
+         id="tspan2472"
+         sodipodi:role="line"
+         style="font-size:16px">X<tspan
+   style="font-size:14px"
+   id="tspan3328">c</tspan></tspan></text>
+    <text
+       id="text2476"
+       y="545.2193"
+       x="248.57143"
+       style="font-size:16px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/anders/Documents/Studier/fordypningsprosjekt/auv-pipe/template/pics/pinhole_model2.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         y="545.2193"
+         x="248.57143"
+         id="tspan2478"
+         sodipodi:role="line">O</tspan></text>
+    <text
+       id="text2480"
+       y="551.64789"
+       x="372.85715"
+       style="font-size:16px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans;-inkscape-font-specification:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/anders/Documents/Studier/fordypningsprosjekt/auv-pipe/template/pics/pinhole_model2.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         style="-inkscape-font-specification:Bitstream Vera Sans"
+         y="551.64789"
+         x="372.85715"
+         id="tspan2482"
+         sodipodi:role="line">f</tspan></text>
+    <path
+       d="M 541.42855,436.64789 A 2.8571429,2.8571429 0 1 1 535.71427,436.64789 A 2.8571429,2.8571429 0 1 1 541.42855,436.64789 z"
+       sodipodi:ry="2.8571429"
+       sodipodi:rx="2.8571429"
+       sodipodi:cy="436.64789"
+       sodipodi:cx="538.57141"
+       id="path3256"
+       style="fill:#ff7f2a;stroke:#0000ff;stroke-opacity:1"
+       sodipodi:type="arc"
+       inkscape:export-filename="/home/anders/Documents/Studier/fordypningsprosjekt/auv-pipe/template/pics/pinhole_model2.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <text
+       id="text3258"
+       y="432.36218"
+       x="542.14282"
+       style="font-size:16px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/anders/Documents/Studier/fordypningsprosjekt/auv-pipe/template/pics/pinhole_model2.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         y="432.36218"
+         x="542.14282"
+         id="tspan3260"
+         sodipodi:role="line">Pc</tspan></text>
+    <text
+       id="text3262"
+       y="585.93359"
+       x="379.28574"
+       style="font-size:16px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/anders/Documents/Studier/fordypningsprosjekt/auv-pipe/template/pics/pinhole_model2.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         y="585.93359"
+         x="379.28574"
+         id="tspan3264"
+         sodipodi:role="line">Image Plane</tspan></text>
+    <text
+       id="text3266"
+       y="489.50504"
+       x="335.71426"
+       style="font-size:16px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       xml:space="preserve"
+       inkscape:export-filename="/home/anders/Documents/Studier/fordypningsprosjekt/auv-pipe/template/pics/pinhole_model2.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><tspan
+         style="writing-mode:lr-tb"
+         y="489.50504"
+         x="335.71426"
+         id="tspan3268"
+         sodipodi:role="line">X<tspan
+   style="font-size:14px"
+   id="tspan3332">i</tspan></tspan></text>
+  </g>
+</svg>

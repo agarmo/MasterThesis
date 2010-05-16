@@ -1,0 +1,49 @@
+All todos which have to be done should be here. They should be added whenever possible.
+
+
+Data Fusion - Fuse the data from the different sensors.
+    Test different fusion schemes - Using LRF for some parameters and ToF for others
+    Projecting into different domains - Project the 3D sensors into the 2D domain and
+                            other way around.
+    Interpolation         - Using interpolation between the 3D and 2D sensors.
+    
+
+Testing - What tests I need to do
+    Node recognition test - How does the algorithm recognize the different nodes
+    Anomaly tests         - How does different kind of anomalies, irregular and regular
+                            surfaced obstacles work
+    Long pipe test        - To see how the fitting algorithm works with long pipes.
+
+
+Node Detection/Recognition - Be able to detect what kind pipe junction one is at.
+    Surface Fit -           Be able to match the data with the nodes
+    Curve Fit algorithms  - Find different algorithms, or find one and implement. 
+    Make a model          - Find a model to represent the pipes. Cylinder?
+    Data Filtering        - Run some kind of low-pass filter on the ToF-data.
+    Plotting              - Plotting of the world.
+    
+
+Stereo Camera - Be able to give out distances from the stereo camera.
+    Calibrate the camera  - Using the camera calibration toolbox in matlab to get the
+                            intrisic parameters and rectification parameters
+    Dense Stereo Matching - Write the program which dumps the disparity maps to disk
+    Disparity Calculations- Write a matlab script which calculates the depth maps from the
+                            given disparity maps.
+
+
+Report - Finish writing the report
+    Stereo cam background - Need more background on the stereo camera. Matching,
+                            calibration, and rectification.
+    LRF background        - Background and error sources of the LRF.
+    Ranging measurements  - More detailed background on how to measure ranges.
+    Sensor Fusion         - How to fuse sensor measurements. 
+    Topological maps      - Describe how this works
+
+    Algorithms            - Describe the algorithms implemented. 
+    Implementation issues - How the project was implemented. Describe Open CV library,
+                            drivers etc.
+    Discussion            - Discussing the tests and why it was this way
+    Conclusion            - Conclude the thesis.
+    Pictures              - Lots of pictures and figures.
+
+
