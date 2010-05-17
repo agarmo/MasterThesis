@@ -272,13 +272,13 @@ a plane, called the \emph{focal} plane and hits a second plane, called \emph{ima
 These two planes are placed a distance, $f$ from each other. Using elemental geometry the
 coordinates of the real world point imaged at the image plane can be calculated. 
 \begin{equation}
-    -x = f \frac{X}{Z}
+    -x_i = f \frac{X}{Z}
 \end{equation}
 where
 \begin{equation}
     P_i = \left [ \begin{array}{c}
-        x \\
-        y 
+        x_i \\
+        y_i 
     \end{array} \right]  \in \mathbb{R}^2 \quad \quad P_w = \left [
     \begin{array}{c}
         X \\
@@ -294,50 +294,76 @@ where
 \end{figure}
 
 Figure \ref{chap2:fig-pinhole} shows the configuration with the pinhole located at
-the center and the image plane located at $f$. The x axis of the image is located
+Origo and the image plane located at $f$. Where the pinhole is are often termed
+\emph{center of projection}. The x axis of the image is located
 upwards, while the real Z axis are the horizontal axis, that are called the
-\emph{optcal axis}. 
+\emph{optcal axis}. This lead us to the next parameters which need to be defined.
 
-
-
-
-
-The camera properties or parameters can be divided into two categories; \textit{intrinsic} parameters and
-\textit{extrinsic} parameters. The intrinsic parameters are constant parameters and vary from camera to
-camera, and represent the focus distance and image distortion of the pixels located away from the centre of the
-camera image. This are
-
-
-
-
-
-A pinhole camera model are used to capture $P_c$ to image coordinates, $P_i \in
-\mathbb{R}^2$. 
-The principle behind a pinhole camera is that all light beams passes through a
-infinitesmall hole, or point, located in the origin of the camera frame.   
-
-As seen from Figure \ref{fig:ch2-pinhole} the image plane is located a distance $f$ from the image plane. 
-The point is projected through the hole, and onto the image plane. The principal axis, i.e. the z-axis of the
-camera is pointing
-in the direction of the observed point. For simplicity the image plane is located in the front of the
-pinhole (this is only possible in theoretical case, and would not be possible in a real camera application).
-From this the perspective equations are derived. \cite{robotbok}
+The optical axis should ideally always be aligned with the center of projection. Due to
+manufacturing inaccuracies this is rarely the case, therefor we need two more parameters
+in to complete the pinhole model equations. This parameters are $c_x$ and $c_y$ which
+describes the offset of the optical axis from the center of projection. Also the need for
+different focal lengths in $x$ and $y$ might also be a necessity, because the individual
+pixels on a typical low-cost image chip is rectangular rather than square. Now the
+equations relating real-world coordinates to image coordinates can be written.
+\cite{openCV}
 \begin{equation}
-    \label{eq:ch2-perspective}
-    P_i = \left[ \begin{array}{cc}
-        \frac{f}{z_c} & 0 \\
-        0	& \frac{f}{z_c} 
-    \end{array} \right] 
-    \left[ \begin{array}{c}
-        x_c \\
-        y_c
-    \end{array} \right]
+    x_i = f_x \frac{X}{Z} + c_x \quad \quad y_i = f_y \frac{Y}{Z} + c_y
 \end{equation}
-The Equation \eqref{eq:ch2-perspective} are the perspective equations, which transforms the observed 
-point into image coordinates. 
+
+The equations above are the \emph{projective} transformations, and are convenient to
+write using homogeneous coordinates and arrange the parameters into a single $3\times 3$
+matrix. This matrix is sometimes called the \emph{camera intrinsic} matrix. 
+
+\paragraph{Lens Distortion}
+Because very little light goes through the pinhole, and to make the camera practical for
+real world use, lenses are used to bend, i.e. focus more light to the projective plane.
+This allows for faster imaging of the world, but is also the source of more distortions
+and inaccuracies. 
+
+There are two types of lens distortions, \emph{radial} and \emph{tangential}. Radial
+distortions are due to the lens construction. Most distortion occurs towards the edges of
+the lens. This can be seen in pictures as ``barrel'' or ``fish-eye'' effects. These
+effects are more present in cheap cameras which does not have the fancy lenses and optics
+that the more high-end cameras have. There is also other types of distortions in imaging
+systems, but they have typical lesser effects on the images, and will not be taken into
+account. 
+
+To model radial lens distortions the approach described by Brown in
+\cite{lens-calibration} are used. The radial distortion are in practice small and can be
+described by the two first terms of a Taylor series expansion around the center of the
+lens. If the lens have high radial distortion, like fish-eye lenses a third term are
+appended. The radial location of the point on the image plane can in general be described
+like the equations below. 
+\begin{equation}
+\begin{aligned}
+    x_{corrected} &= x_i ( 1 + k_1 r^2 + k_2 r^4 + k_3 r^6 ) \\
+    y_{corrected} &= y_i ( 1 + k_1 r^2 + k_2 r^4 + k_3 r^6 ) 
+\end{aligned}
+\end{equation}
+
+Tangential distortion is due to manufacturing defects which causes the lens not to be
+perfectly parallel to the imaging plane. This causes the image to become more like a
+trapezoid. This can be modeled by equations \eqref{chap2:eq-tangential-distortion}. The
+derivation of this equations can be found in \cite{brown66}.
+\begin{equation}
+    \label{chap2:eq-tangential-distortion}
+    \begin{aligned}
+        x_{corrected} &= x_i + (2 p_1 y_i + p_2 (r^2 + 2 x_i^2)) \\
+        y_{corrected} &= y_i + ( p_1 (r^2 + 2 y_i^2) + 2 p_2 x_i))
+    \end{aligned}
+\end{equation}
+The parameters $p_1$ and $p_2$ are the tangential distortion parameters. This parameters
+gives enough information about the lens and camera to make corrections to the picture and
+make the matching method easier and the measurements more accurate. This calibrations will
+be shown in Chapter \ref{chap3-sensors} for the selected stereo cameras. 
 
 
-\paragraph{Stereo Vision Geometry}
+
+\paragraph{Epipolar Geometry}
+
+
+
 Now suppose we have 2 pinhole cameras located at a known distance $b$ from each other. 
 If we know the focal length, $f$ of both cameras, we can use \emph{triangulation} to
 determine the distance to a common point visible in both cameras. Figure
