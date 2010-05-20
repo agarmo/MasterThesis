@@ -284,6 +284,9 @@ int StereoVision::stereoProcess(CvArr* imageSrcLeft,CvArr* imageSrcRight, int ma
     cvRemap( imageSrcLeft, imagesRectified[0] , mx1, my1 );
     cvRemap( imageSrcRight, imagesRectified[1] , mx2, my2 );
 
+    CvStereoBMState *BMState = cvCreateStereoBMState();
+  	CvStereoGCState * GCState = cvCreateStereoGCState(16, 2);
+
     //chose algorithm
     switch(match) {
     case STEREO_MATCH_BY_BM:
@@ -292,7 +295,6 @@ int StereoVision::stereoProcess(CvArr* imageSrcLeft,CvArr* imageSrcRight, int ma
   	    if(!imageDepthNormalized)
    	    	imageDepthNormalized = cvCreateMat( imageSize.height,imageSize.width, CV_8U );
 
-    	CvStereoBMState *BMState = cvCreateStereoBMState();
     	BMState->preFilterSize=41;
     	BMState->preFilterCap=31;
     	BMState->SADWindowSize=41;
@@ -318,7 +320,6 @@ int StereoVision::stereoProcess(CvArr* imageSrcLeft,CvArr* imageSrcRight, int ma
   	    if(!disp_gc[1])
    	    	disp_gc[1] = cvCreateMat( imageSize.height,imageSize.width, CV_16S );
 
-  	    CvStereoGCState * GCState = cvCreateStereoGCState(16, 2);
 
   	    cvFindStereoCorrespondenceGC(imagesRectified[0],
   	    		imagesRectified[1],
