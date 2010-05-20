@@ -16,7 +16,6 @@
 
 
 
-
 #include "StereoVision.h"
 #include "StereoCamera.h"
 
@@ -80,18 +79,38 @@ void writeToFile(IplImage* _3dimage){
 
 	//open the file
 
-	std::ofstream File;
+	FILE *File;
 
-	File.open(filename.c_str(), ios::app);
+	File = fopen(filename.c_str(), "a");
+
+	std::cout << "Check image atributes" << std::endl;
+
+	if (_3dimage->depth == IPL_DEPTH_16S)
+		std::cout << "Depth of image is signed 16 bit integer" << std::endl;
+	else if (_3dimage->depth == IPL_DEPTH_32F)
+		std::cout << "Depth of image is 32 bit float" << std::endl;
+	else if (_3dimage->depth == IPL_DEPTH_8S)
+		std::cout << "Depth of image is signed 8 bit integer" << std::endl;
+
+	std::cout << "Number of channels in the image is " << _3dimage->nChannels << std::endl;
+
+	if( _3dimage->dataOrder == IPL_DATA_ORDER_PIXEL)
+		std::cout << "The dataorder of the image is Ordered Pixel" << std::endl;
+	else if (_3dimage->dataOrder == IPL_DATA_ORDER_PLANE)
+		std::cout << "The dataorder of the image is Ordered Plane" << std::endl;
+
+
+
 
 	std::cout << "Starting to write file...";
 
-	if (File.is_open()){
+
+	if (File != NULL){
 		//access the image data.
 		for (int y = 0; y < _3dimage->height; y++){
-			uchar * ptr = (uchar*)(_3dimage->imageData + y*_3dimage->widthStep);
+			float * ptr = (float*)(_3dimage->imageData + y*_3dimage->widthStep);
 			for (int x = 0; x < _3dimage->width; x++){
-
+/*
 				File << fixed << std::setprecision(1) << (int)ptr[3*x] << "," <<
 						fixed << std::setprecision(1) << (int)ptr[3*x+1] << "," <<
 						fixed << std::setprecision(1) << (int)ptr[3*x+2];
@@ -99,11 +118,15 @@ void writeToFile(IplImage* _3dimage){
 					File << " ";
 				else
 					File << ",";
+
+					*/
+				fprintf(File, "%f,%f,%f,", (float)ptr[3*x], (float)ptr[3*x+1], (float)ptr[3*x+2]);
+
 			}
-			File << std::endl;
+			fprintf(File, "\n");
 		}
 	}
-	File.close();
+	fclose(File);
 	std::cout << " Done!" << std::endl;
 
 
@@ -126,7 +149,16 @@ void create3dOutput(StereoCamera *camera, StereoVision * vision, IplImage * dest
 	}else if( vision->imageDepth == 0){
 		std::cout << "Depth Image not set" << std::endl;
 	}else{
-		cvReprojectImageTo3D(vision->imageDepth, dest, vision->Q, true);
+
+		CvMat *realDisp = cvCreateMat(vision->imageDepth->height,
+				vision->imageDepth->width,
+				CV_16SC1);
+		cvConvertScale( vision->imageDepth, realDisp, 1.0/16, 0 );
+
+		cvReprojectImageTo3D(realDisp, dest, vision->Q, true);
+//		cvSave("c:\\reprojection_matrix_Q.xml", vision->Q);
+//		cvSave("c:\\resultImage3d.xml", dest);
+
 		writeToFile(dest);
 	}
 
@@ -230,14 +262,14 @@ int main(int argc, char* argv[]){
 				if(vision->getCalibrationDone()){
 					displayOutput(camera, vision);
 
-					if (writefile && iterator <= 10){
+					if (writefile && iterator <= 4){
 						if (img3d == 0)
 							img3d = cvCreateImage( resolution, IPL_DEPTH_32F, 3 );
 
 						create3dOutput(camera, vision, img3d);
 						iterator++;
 					}
-					if (iterator > 10){
+					if (iterator > 4){
 						writefile = false;
 						iterator = 0;
 					}
