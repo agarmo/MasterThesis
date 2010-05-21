@@ -48,8 +48,8 @@ StereoCamera::~StereoCamera()
 int StereoCamera::setup(CvSize imageSize){
     this->imageSize = imageSize;
 
-    captures[0] = cvCaptureFromCAM(0);
-    captures[1] = cvCaptureFromCAM(1);
+    captures[0] = cvCaptureFromCAM(1);
+    captures[1] = cvCaptureFromCAM(2);
 
 /*    frames[0] = cvCreateImage(imageSize,IPL_DEPTH_8U,3);
     framesGray[0] = cvCreateImage(imageSize,IPL_DEPTH_8U,1);
