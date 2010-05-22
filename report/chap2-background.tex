@@ -360,6 +360,40 @@ be shown in Chapter \ref{chap3-sensors} for the selected stereo cameras.
 
 
 \paragraph{Epipolar Geometry}
+To describe the stereo rig and geometry between the left and right cameras, the term
+\emph{epipolar geometry} is introduced. Epipolar geometry exists between any two cameras.
+The different center of projections, $O_r$ and $O_l$, and corresponding
+projective planes, $\Pi_r$ and $\Pi_l$ and the term \emph{epipole} on the projective plane
+$\Pi_r$, $e_r$ can now be defined as the image of the center of projection of the other 
+camera, $O_l$. Suppose the point, $P$ are viewed from both cameras, and have the image
+location, $p_l$ and $p_r$ in the left and right view, respectively. The line from the left
+epipole, $e_l$ to $p_l$ and the line from $e_r$ to $p_r$ are called the \emph{epipolar
+lines}. The planes made by the observed real world point, $P$ and the center of
+projections, $O_r$ and $O_l$ are called the \emph{epipolar planes}. See Figure
+\ref{chap2:fig-epipolarGeometry}
+\begin{figure}[htbp]
+    \centering
+    %\includegraphics[width=0.5\textwidth]{pics/stereo_geometry}
+    \caption{The epipolar geometry}
+    \label{chap2:fig-epipolarGeometry}
+\end{figure}
+
+This allows for the following facts which simplifies the computations a great deal.
+\cite{epipolar}
+\begin{itemize}
+    \item Every 3D point in view of the cameras is constrained in an epipolar plane that
+        intersects each image in an epipolar line.
+    \item The \emph{epipolar constraint} says that a given feature in one image must lie
+        along the corresponding epipolar line in the other view.
+    \item The epipolar constraint means that the two-dimensional search for matching
+        features simplifies to a one-dimensional search along the epipolar lines once the
+        epipolar geometry of the stereo rig is known.
+    \item The order is preserved. If two points are visible in both images and occur
+        horizontally in that order in one image, they occur in the same order in the other
+        image.
+\end{itemize}
+
+\paragraph{The Essential and Fundamental Matrices}
 
 
 
@@ -367,13 +401,6 @@ Now suppose we have 2 pinhole cameras located at a known distance $b$ from each 
 If we know the focal length, $f$ of both cameras, we can use \emph{triangulation} to
 determine the distance to a common point visible in both cameras. Figure
 \ref{fig:ch2-stereo_geometry} shows the geometry. 
-\begin{figure}[htbp]
-    \centering
-    %\includegraphics[width=0.5\textwidth]{pics/stereo_geometry}
-    \caption{The geometry of stereo vision ****FIKS FIGUR Lag Vektorgrafikk av den****}
-    \label{fig:ch2-stereo_geometry}
-\end{figure}
-
 Distance are inversely proportional to the disparity, and have a clearly nonlinear.
 This means that there are small differences in depth when the disparity is large, and
 when the disparity is small, the variance in depth will be large. This means that the
