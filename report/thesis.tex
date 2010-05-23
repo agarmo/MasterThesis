@@ -13,7 +13,7 @@
 \usepackage[english]{babel}
 \usepackage[usenames, dvipsnames]{color}
 \usepackage[perpage]{footmisc}
-\usepackage[round, sort, numbers, authoryear]{natbib}
+%\usepackage[round, sort, numbers, authoryear]{natbib}
 \usepackage{ifthen}
 \usepackage{multicol} % for pages with multiple text columns, e.g. References
 \setlength{\columnsep}{20pt} % space between columns; default 10pt quite narrow
@@ -464,6 +464,7 @@
 \begin{tiny} % tiny(5) < scriptsize(7) < footnotesize(8) < small (9)
 
 \bibliographystyle{plain} % Title is link if provided
+%\bibliographystyle{Latex/Classes/PhDbiblio-url} % bold + www link if provided
 \renewcommand{\bibname}{References} % changes the header; default: Bibliography
 
 \bibliography{references} % adjust this to fit your BibTex file

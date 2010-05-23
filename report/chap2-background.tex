@@ -394,17 +394,85 @@ This allows for the following facts which simplifies the computations a great de
 \end{itemize}
 
 \paragraph{The Essential and Fundamental Matrices}
+This matrices contains information about the translation and rotation which relate the
+two cameras. The Essential matrix describes this translation and rotation in physical
+space, while the Fundamental matrix also contains information about the intrinsics of the
+two cameras, thereby describing the rotations and translations in pixel related
+coordinates.
+
+The derivation of the Essential matrix is interesting and is given here for reference.
+Suppose a point $P$ related in the left camera coordinates, i.e. $P_l$ and the right
+camera is located at $T$. The coordinates of $P_l$ in the right camera coordinates will
+then be.
+\begin{equation}
+    \label{chap2:eq-Pr}
+    P_r = R (P_l - T)
+\end{equation}
+Now, the epipolar plane is introduced. All points, $\mathbf{x}$ that lay on the plane with normal vector
+$\mathbf{n}$ and passing through $\mathbf{a}$ obeys the equation,
+\begin{equation*}
+    (\mathbf{x} - \mathbf{a}) \cdot \mathbf{n} = 0
+\end{equation*}
+The cross product of $T$ and $P_l$ then becomes the normal vector of the epipolar plane,
+because the epipolar plane includes both this vectors. Equation \eqref{chap2:eq-Pr} can be
+rewritten as $P_l - T = R^{-1} P_r$ and including the cross product yields 
+\begin{equation}
+    (R^{-1} P_r)^T (T \times P_l) = 0
+\end{equation}
+The cross product can be expressed as a product between matrices by introducing the
+skew-symmetric matrix $S$. \cite{modsim}
+\begin{equation}
+    S = \left [ \begin{array}{ccc}
+                0 & -T_z & T_y \\
+                T_z & 0 & -T_x \\
+                -T_y & T_x & 0 \\ \end{array} \right]
+\end{equation}
+The essential matrix might now be defined with $R^{-1} = R^T$ and moving it behind $P_r$.
+\begin{equation}
+    E = RS 
+\end{equation}
+which gives the equation
+\begin{equation}
+    \label{chap2:eq-fundamental}
+    P_r^T E P_l = 0
+\end{equation}
+$P_r$ and $P_l$ are the real world 3D coordinates, and can be transformed to 2D
+coordinates by the perspective transformation derived by the pinhole camera model. 
+
+The relation between the Essential matrix and the Fundamental matrix can be showed with
+help of the camera intrinsic matrix $M$, because we know that $q = Mp$, where $q$ are
+pixel coordinates and $p$ are the 2D world coordinates. Substituting for $P$ in Eqauation
+\eqref{chap2:eq-fundamental} gives: \cite{openCV}
+\begin{equation}
+    q_r^T(M_r^{-1})^T E M_l^{-1} q_l = 0
+\end{equation}
+The definition of the fundamental matrix, $F$ is then
+\begin{equation}
+    F = (M_r^{-1})^T E M_l^{-1}
+\end{equation}
+Both matrices are $3\times3$ and have rank two with seven parameters.
+
+
+\paragraph{Finding Stereo Correspondences}
+Now that the mathematics which describes points in the different views to each other, the
+case of matching the same points together can begin. This is obviously only possible for
+visual areas that the two camera views overlap. 
+
+There are couple of different matching algorithms. The most common are \emph{block
+matching} algorithms. In \cite{konolige} a practical implementation of the block
+matching algorithm are described. This algorithms use sum of absolute difference (SAD) windows to match same
+same points in the two views. This algorithm work only on undistorted, rectified stereo
+images. It first normalizes the image brightness which enhances textures. Then the search
+for correspondences are carried out along the horizontal epipolar lines using the sum of
+absolute difference window. After this the results are filtered to eliminate bad stereo
+matches. 
+
+Another common matching algorithm are \emph{graph cut} algorithms. 
 
 
 
-Now suppose we have 2 pinhole cameras located at a known distance $b$ from each other. 
-If we know the focal length, $f$ of both cameras, we can use \emph{triangulation} to
-determine the distance to a common point visible in both cameras. Figure
-\ref{fig:ch2-stereo_geometry} shows the geometry. 
-Distance are inversely proportional to the disparity, and have a clearly nonlinear.
-This means that there are small differences in depth when the disparity is large, and
-when the disparity is small, the variance in depth will be large. This means that the
-depth is more accurate when the object are close to the camera. 
+
+
 \begin{figure}[htbp]
     \centering
     %\includegraphics[width=0.5\textwidth]{pics/disparity-depth}
