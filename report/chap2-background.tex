@@ -465,7 +465,9 @@ same points in the two views. This algorithm work only on undistorted, rectified
 images. It first normalizes the image brightness which enhances textures. Then the search
 for correspondences are carried out along the horizontal epipolar lines using the sum of
 absolute difference window. After this the results are filtered to eliminate bad stereo
-matches. 
+matches. This algorithm works best in highly textured environments, like outdoor
+environments, and will prove less effective in structured surroundings like office
+corridors and inside smooth pipelines. 
 
 Another common matching algorithm are \emph{graph cut} algorithms. 
 
@@ -473,39 +475,37 @@ An extensive review of the different matching algorithms and their computational
 can be seen in \cite{stereo-algorithms}.
 
 
-
-
-
+\paragraph{Disparity and depth calculations}
+When finally the stereo correspondences are found, the \emph{disparity} can be calculated.
+The disparity is the difference in pixels coordinates from of the matched feature from one
+image to the other. This disparity is inversely proportional to the depth. This means that
+the depth perception of the stereo rig is better when relatively close to the cameras, as
+Figure \ref{chap2:fig-disparity-depth} shows.
 \begin{figure}[htbp]
     \centering
     %\includegraphics[width=0.5\textwidth]{pics/disparity-depth}
     \caption{The relationship between depth and disparity}
-    \label{fig:chap2-disparity-depth}
+    \label{chap2:fig-disparity-depth}
+\end{figure}
+
+Many robotic applications using stereo cameras utilizes the disparity maps directly,
+because they usually just require the detection of obstacles. ****REFERENCES ON THIS****
+
+The 3D coordinates of the point can be calculated form the disparities given by the
+matching algorithms. This is the process of \emph{reprojection}. Using triangulation
+between the two known camera locations the depth can be derived accordingly to 
+\begin{equation}
+    D = f (T / d - 1)
+\end{equation}
+
+\begin{figure}[htbp]
+    \centering
+    %\includegraphics[width=0.5\textwidth]{pics/stereo-triangulation}
+    \caption{Triangulation in the stereo rig}
+    \label{chap2:fig-stereo-triangulation}
 \end{figure}
 
 
-
-
-The distance to the common point in both cameras can now be calculated by 
-\begin{equation}
-    D = f (L / (x+y) - 1)
-\end{equation}
-The value defined by $d = x+y$ is the amount that the object moves in pixels when
-switching from one view to the other. This is called the \emph{disparity}.
-
-
-\paragraph{Matching}
-    To be able to calculate the distance one will need to detect the same point in two
-    different images. This is a difficult and a not straight-forward task for a computer.
-    Humans are superior when it comes to recognizing objects, but computers are not.
-
-    The process of finding the same point in two images are called matching, and can be
-    done in various ways. \cite{gonzalez}
-
-    The matching process is very dependant on features in the environment. If the
-    surroundings are featureless the matching becomes very difficult, and the
-    probabilities for bad matches are greater. This will cause erroneous distances to the
-    objects.
 
 
 
