@@ -508,8 +508,6 @@ between the two known camera locations the depth can be derived accordingly to
 
 
 
-
-
 \section{Map Data Representation}
 The representation of sensor data is important for the functionality of the robot. This is
 dependant on the amount of processing power and capacity that is available at the robot.
@@ -555,6 +553,21 @@ Occupancy maps are not the most computationally effective way to represent the w
 especially when it is big. It is cumbersome and may lead to problems when dealing with
 cyclic environments. This because of the uncertainty in the sensor measurements and robots
 pose and odometry. 
+
+
+\subsection{Quad- and Oct-trees}
+Quadtrees can be used to represent a 2D space by recursively dividing the space into
+exactly four rectangles or squares. If this rectangles or squares does not include
+interesting information then it will not be divided further. This dividing continues until
+the smallest possible square is achieved. This creates a tree structure which is easily
+traversed and searched if necessary. 
+
+\begin{figure}[htbp]
+    \centering
+   %\includegraphics[width=0.5\textwidth]{pics/quad-tree}
+    \caption{A Quadtree representation}
+    \label{chap2:fig-quadtree}
+\end{figure}
 
 
 \subsection{Topological Maps}
