@@ -288,13 +288,18 @@ There are a number of challenges when using this approach
     \item ``Wiggling'' because of imperfections when creating the sinusoidal signals.
     \item Errors due to intensity measurements. Various sensor electronics might influence
         the measured intensity and give wrong readings.
-    \item ``Flying Pixelse'' occurs when a pixel in the camera oversees a region with
+    \item ``Flying Pixels'' occurs when a pixel in the camera oversees a region with
         large depth variances, e.g. at object boundaries, because of superimposed signals. 
     \item Motion artifacts might occur because the phase images are captured sequentially
         quick motion might cause artifacts.
     \item Multiple reflections in highly reflective environments will cause erroneous
         distance measurements.
 \end{itemize}
+
+Standard lenses are used to capture the reflected light, which means that intrinsic
+calibration should be carried out to specify the projection axis and distortion parameters
+of the lens. See sections below for lens calibration and distortion coefficient
+estimation.
 
 
 \paragraph{Optical Shutter Approaches}
