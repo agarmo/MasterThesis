@@ -299,19 +299,30 @@ There are a number of challenges when using this approach
 Standard lenses are used to capture the reflected light, which means that intrinsic
 calibration should be carried out to specify the projection axis and distortion parameters
 of the lens. See sections below for lens calibration and distortion coefficient
-estimation.
+estimation. \cite{time-of-flight-comp-graphics}
 
 
 \paragraph{Optical Shutter Approaches}
+Light travels roughly at $c \approx 3 \times 10^8$ meters per seconds. This translates to
+that light uses $7$ pico seconds to travel one millimeter. Imagine a light pulse emitted
+at time $t$. This pulse travels in a spherical pattern and hits a 3D shape. The light wall
+will be reflected back in a distorted pattern.\cite{optical-shutter} 
+A shutter in front of the CCD chip then
+shuts out the rest of the light wall pattern. This will then produce a shape of the object
+which can be used to calculate the distance, based on the times the shutter is open,
+according to the following relation \cite{time-of-flight-comp-graphics}
+\begin{equation}
+    d = (1 - \alpha) d_{min} + \alpha d_{max}, \quad \quad \alpha =
+    \frac{I_{gate}}{I_{total}}
+\end{equation}
+where $I_{gate}$ is the pixel intensity which arrives when the shutter is open, and
+$I_{total}$ is the total amount of reflected light. Distances outside $d_{min}$ and
+$d_{max}$ cannot be measured in the exposure. Therefor this techniques require multiple
+exposure to get the desired depth resolution. 
 
+This method is also prone to the challenges stated for the intensity modulation approach
+as well. 
 
-
-
-
-This is the article which I'm going to cite. \cite{sr3000} ***************should be moved to the sensor
-specific section************
-
-And this one \cite{time-of-flight-comp-graphics}. 
 
 
 \subsubsection{Stereo Vision}
