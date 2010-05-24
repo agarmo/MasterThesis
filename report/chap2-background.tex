@@ -236,8 +236,77 @@ reflected light and in turn affects the measurement accuracy.
 
 
 \subsubsection{Time-of-Flight Cameras}
-This is the article which I'm going to cite. \cite{sr3000}
+The research and application of Time-of-Flight cameras have increased significantly during the last four
+years. A Time-of-Flight camera is a compact device which makes it suitable to mount on
+mobile platforms, and thereby using it in navigation and localization applications. 
 
+The most used ranging techniques by the cameras are \emph{intensity modulation} approaches and
+\emph{optical shutter} technology. The first one is used by the best known manufacturers,
+like MESA and PMD. While the optical shutter approach is less expensive and have been used
+by Zcam, which now have been sold to Microsoft. 
+
+
+\paragraph{Intensity Modulation Approach}
+This approach uses modulated near infrared light (NIR), $g$ which is reflected to and
+captured by a CCD chip then correlated with the reference signal, $r$. 
+\begin{equation}
+    c(\tau) = g \otimes r = \lim_{T \rightarrow \inf} \int^{T/2}_{-T/2} g(t) r(t + \tau) dt
+\end{equation}
+where the signals, $g$ and $r$ might be
+\begin{equation}
+    g(t) = \cos{\omega t}, \quad \quad r(t) = b + a \cos{(\omega t + \phi)}
+\end{equation}
+where $\phi$ is the phase offset because of the travel time of the signal, $b$ is a
+correlation bias, $a$ is the amplitude and $\omega$ is the modulation frequency. Solving
+the integral yields 
+\begin{equation}
+    c(\tau) = \frac{a}{2} \cos{(\omega \tau + \phi )} + b
+\end{equation}
+which is the correlation function. 
+
+The demodulation is usually done by sampling the correlation function at 4 equally spaced
+phase offsets. The following relation can now be written
+\begin{equation}
+    \begin{aligned}
+        \phi &= \tan^{-1} (\frac{A_3 - A_1}{A_0 - A_2}) \\
+        I &= \frac{A_0 + A_1 + A_2 + A_3}{4} \\
+        a &= \frac{\sqrt{(A_3 - A_1)^2 + (A_0 - A_2)^2}}{2}
+    \end{aligned}
+\end{equation}
+where $A_i = c(i \frac{\pi}{2})$ for $ i = 0,..,3$ and $I$ is the intensity of the returned NIR
+signal. From this the distance can be calculated using the phase delay $\phi$. 
+\begin{equation}
+    d = \frac{c}{4 \pi \omega} \phi
+\end{equation}
+
+There are a number of challenges when using this approach
+\cite{time-of-flight-comp-graphics}
+\begin{itemize}
+    \item The resolution of the sensors are small compared to standard RGB or grayscale
+        sensors. Current resolution on present day time-of-flight cameras are $204 \times
+        204$. 
+    \item ``Wiggling'' because of imperfections when creating the sinusoidal signals.
+    \item Errors due to intensity measurements. Various sensor electronics might influence
+        the measured intensity and give wrong readings.
+    \item ``Flying Pixelse'' occurs when a pixel in the camera oversees a region with
+        large depth variances, e.g. at object boundaries, because of superimposed signals. 
+    \item Motion artifacts might occur because the phase images are captured sequentially
+        quick motion might cause artifacts.
+    \item Multiple reflections in highly reflective environments will cause erroneous
+        distance measurements.
+\end{itemize}
+
+
+\paragraph{Optical Shutter Approaches}
+
+
+
+
+
+This is the article which I'm going to cite. \cite{sr3000} ***************should be moved to the sensor
+specific section************
+
+And this one \cite{time-of-flight-comp-graphics}. 
 
 
 \subsubsection{Stereo Vision}
