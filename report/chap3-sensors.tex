@@ -40,18 +40,54 @@ Microsoft the accuracy in depth will be about 1 cm, and practical ranges will be
 To work with stereo images the captured images need to be rectified, i.e. the images need
 to be corrected for distortion introduced by the camera lenses. This is a part of
 calibrating the camera, meaning that the intrinsic parameters of the camera are
-determined. That is distortion coefficients, and other camera parameters. 
+determined and the lens distortion parameters described in Chapter \ref{chap2}.
 
-Figure \ref{cahp3:fig-lensdist} below shows how the camera lenses of the Stereo camera distorts the pictures
-towards the edges of the lens. 
-
+To determine the parameters the \emph{Camera Calibration Toolbox} for Matlab is used
+\cite{camera-calib-toolbox}. 20 image pairs are captured of a checker board in various
+distances and orientation from the stereo rig. This images for left and right camera are
+processed individually to calculate the distortions of the individual camera. 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{pics/left_comp_dist}
-    \includegraphics[width=0.8\textwidth]{pics/right_comp_dist}
-    \caption{The left and right camera distortion due to lens nonlinearities}
-    \label{chap3:fig-lensdist}
+    \includegraphics[width=0.8\textwidth]{pics/left7}
+    \caption{Seventh left image in the calibration sequence}
+    \label{chap2:fig-checkerboard}
 \end{figure}
+
+Figure \ref{chap3:fig-comp-lensdist} below shows how the camera lenses of the Stereo camera distorts the pictures
+towards the edges of the lens. 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.47\textwidth]{pics/left_comp_dist}
+    \includegraphics[width=0.47\textwidth]{pics/right_comp_dist}
+    \caption{The left and right camera distortion due to lens nonlinearities}
+    \label{chap3:fig-comp-lensdist}
+\end{figure}
+The Figure clearly shows that the principal axis are offset from the center of the images,
+and that it is opposite for the left and right images. This means that the view field of
+the two cameras will be quite different, and result in a reduced field-of-view for the
+total stereo rig.
+
+The intrinsic parameters for the cameras are summarized in the table below
+\begin{table}
+  \centering
+    \begin{tabular}{|c|c|c|} 
+        \hline
+                & Left Camera       & Right Camera \\
+        \hline
+        $f_x$   & $877.11\pm 2.94$  & $880.28\pm 3.08$  \\
+        $f_y$   & $876.49\pm 2.88$  & $879.20\pm 2.96$  \\
+        \hline
+        $c_x$   & $350.00\pm 6.32$  & $338.54\pm 6.21$ \\
+        $c_y$   & $214.30\pm 4.65$ & $267.59\pm 4.35$  \\
+        \hline
+    \end{tabular}
+    \caption{Intrinsic parameters of the stereo rig in pixel related units including
+    uncertainties}
+    \label{chap3:tab-intrinsic-stereo}
+\end{table}
+
+
+
 
 This distortion can be removed and are called rectifying the image. This makes common
 features in the two images aligned horizontally. This makes it much easier for the matching
