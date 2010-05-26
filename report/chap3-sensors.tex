@@ -52,6 +52,35 @@ processed individually to calculate the distortions of the individual camera.
     \caption{Seventh left image in the calibration sequence}
     \label{chap2:fig-checkerboard}
 \end{figure}
+The four extreme-most corners of the checkerboard is selected in each image, and an
+internal algorithm detects the corners of the squares in each image. This gives an initial
+guess on how the distortion parameters are. The reprojection error is then minimized with
+regard to the distortion parameters using a nonlinear gradient decent algorithm. For more
+information on how this is carried out, see \cite{heikkila}.
+
+The distortion parameters for both cameras are summarized in Table
+\ref{chap3:tab-distortion-coeffs}.
+\begin{table}
+  \centering
+    \begin{tabular}{|c|c|c|} 
+        \hline
+                & Left Camera       & Right Camera \\
+        \hline
+        $k_1$   & $-0.10292 \pm 0.3794$            & $-0.5450 \pm 0.02456$  \\
+        $k_2$   & $-0.22555 \pm 0.49387$            & $-0.38334 \pm 0.13037$  \\
+        $h_3$   & $ 0$                          & $0$                  \\
+        \hline
+        $p_1$   & $-0.00361 \pm 0.00141$    & $-0.00033 \pm 0.00115$ \\
+        $p_2$   & $0.00206 \pm 0.00174$     & $ 0.000491 \pm 0.00243$  \\
+        \hline
+    \end{tabular}
+    \caption{The distortion parameters discussed in Section \ref{chap2:sec-distortion}}
+    \label{chap3:tab-distortion-coeffs}
+\end{table}
+
+
+
+
 
 Figure \ref{chap3:fig-comp-lensdist} below shows how the camera lenses of the Stereo camera distorts the pictures
 towards the edges of the lens. 
@@ -67,7 +96,9 @@ and that it is opposite for the left and right images. This means that the view 
 the two cameras will be quite different, and result in a reduced field-of-view for the
 total stereo rig.
 
-The intrinsic parameters for the cameras are summarized in the table below
+The intrinsic parameters for the cameras are summarized in Table
+\ref{chap3:tab-intrinsic-stereo}. The values are all in pixel coordinates. The real focal
+distances can be calculated by knowing the pixel-to-length ratio.
 \begin{table}
   \centering
     \begin{tabular}{|c|c|c|} 
