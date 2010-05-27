@@ -7,10 +7,10 @@
 \section{Comparisons Between the Proposed Sensors}
 For this project, some of the sensors was not decided. This gave the ability to chose a
 sensor, based on cost, resolution, accuracy and delivery date. The manufacturers that were
-considered where the Japanese Hokuyo and American SICK. This two companies are to the
+considered where the Japanese \emph{Hokuyo} and American \emph{SICK}. This two companies are to the
 authors knowledge the leading manufacturers of laser range finders, small enough to be
 mounted on small robotic platforms. The various models and key parameters are summarized
-in Table \ref{chap3:tab-sensors}
+in Table \ref{chap3:tab-sensors}.
 \begin{table}[htbp]
     \begin{tabular}{|c|c|c|c|c|c|}
         \hline
@@ -38,7 +38,8 @@ frequency. This means that the frequency of the 2D sensor is not that important.
 important thing is that it is as accurate as possible. Also, the Hokuyo sensors are much
 cheaper than the ones from SICK which gives them the advantage.
 
-Because of favourable size, weight, accuracy and cost the Hokuyo \emph{URG-04LX} was chosen.
+Because of favourable size, weight, accuracy and cost the Hokuyo \emph{URG-04LX} was
+chosen. The sensor will be discussed in Section \ref{chap3:sec-urg}.
 
 \subsection{3D Sensors}
 There are many different depth sensors available at the consumer market. This section will
@@ -59,6 +60,7 @@ Microsoft the accuracy in depth will be about 1 cm, and practical ranges will be
 
 
 \section{Laser Range Finder Hokuyo URG-04LX}
+\label{chap3:sec-urg}
 The laser range finder which were selected to this application was the \emph{Hokuyo
 URG-04X}. It uses an infrared laser to sweep a view field of $240^\circ$ ten times a
 second. The full $360^\circ$ circle are segmented using ten bit, which gives angular
@@ -80,10 +82,16 @@ Figure \ref{chap3:fig-urg-sector}.
     \label{chap3:fig-urg-sector}
 \end{figure}
 
+The sensor can not measure below 20 mm because it is not practical, and the range codes
+from 0--19 are error codes. The codes can describe if the intensity of the reflected light
+is too low or too high which indicates erroneous results. A detailed summary of the
+error codes and what they mean can be found in Appendix \ref{app:urg-error}.
 
 
 \subsection{Noise- and Error Sources}
-
+Major error sources of the URG where discussed in Section \ref{chap2:lrf-error}. It is
+possible to read both range and intensity of the reflected signal from the URG. The
+intensity can be used as a quality control of the range value. 
 
 
 
