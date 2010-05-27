@@ -68,8 +68,8 @@ resolution of $\frac{360}{2^{10}} = 0.3515$. The ranges have twelve bit resoluti
 bit representing a millimeter, which gives the total measurable length of $2^{12} = 4096$.
 \begin{figure}[htbp]
     \centering
-   % \includegraphics[width=0.7\textwidth]{pics/lrf-urg}
-    \caption{The Hokuyo URG-04X}
+    \includegraphics[width=0.5\textwidth]{pics/urg04lx}
+    \caption{The Hokuyo URG-04X. http://www.hokuyo.com}
     \label{chap3:fig-urg}
 \end{figure}
 The effective area which gives range readings are the sector form the 44th step to
@@ -98,6 +98,16 @@ intensity can be used as a quality control of the range value.
 
 
 \section{Stereo Camera Minoru 3D WebCam}
+The stereo camera chosen for the project is the first commercially available 3D Webcam.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.4\textwidth]{pics/minoru3d}
+    \caption{The Minoru 3D WebCam. http://www.minoru3d.com}
+    \label{chap3:fig-minoru}
+\end{figure}
+It is actually just two cheap webcams and a USB hub in the same casing. The camera is
+available for about 900 NOK, so both optics and CCD chips are expected to be of poor
+quality.
 
 
 \subsection{Camera Calibration}
@@ -218,13 +228,16 @@ array of 55 LEDs and captured at a spherical PMD chip. The spatial resolution of
 are $176\times144$ with a field-of-view of $47.5^\circ \times 39.6^\circ$. 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{pics/sr3000}
-    \caption{The SwissRanger-3000 Time-of-Flight Camera}
+    \includegraphics[width=0.5\textwidth]{pics/sr3000}
+    \caption{The SwissRanger-3000 Time-of-Flight Camera. http://www.mesa-imaging.ch}
     \label{chap3:fig-sr3000}
 \end{figure}
 The amplitude modulation frequency are set to 20 MHz which gives a non-ambiguity range of
 7.5 meters. If the modulation frequency is lowered the maximum measured distance might be
-larger, but this distance is good for the application of the project.
+larger, but this distance is good for the application of the project. 
+
+Since the camera needs lots of cooling because of the LEDs and electronics the camera are
+mounted on a stem of aluminium, to secure the airflow through the camera. 
 
 The camera outputs standard Cartesian coordinates or spherical coordinates and the
 intensity, which is comparable to a standard gray scale camera. Figure 
@@ -267,7 +280,8 @@ $40 \times 40 \mu m^2$ and 8 mm focal distance.
     \caption{The lens distortion for SwissRanger 3000}
     \label{chap3:fig-sr3000-comp-lensdist}
 \end{figure}
-T
+From the Figure \ref{chap3:fig-sr3000-comp-lensdist} the distortion due to lens are shown.
+*****COMMMENT ON THIS WHEN THE PLOT IS HEREÆ*******
 
 
 \subsection{Depth Calibration}
@@ -276,7 +290,13 @@ T
 
 
 \subsection{Noise- and Error Sources}
-
+As stated in Section \ref{chap2:sec-tof} the complete picture of the distances are
+captured fist when 4 successive exposures are complete. This means that fast moving
+objects will cause distance errors because the object might have moved between the
+exposures. Another source of errors are multiple reflections and highly reflective
+surfaces which will cause errors because too much light is reflected. The same is the case
+with surfaces which absorbs most of the light. This surfaces will appear farther away than
+they really are. 
 
 
 
