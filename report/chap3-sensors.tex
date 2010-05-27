@@ -97,7 +97,7 @@ intensity can be used as a quality control of the range value.
 
 
 
-\section{Stereo Camera}
+\section{Stereo Camera Minoru 3D WebCam}
 
 
 \subsection{Camera Calibration}
@@ -180,8 +180,11 @@ distances can be calculated by knowing the pixel-to-length ratio.
     uncertainties}
     \label{chap3:tab-intrinsic-stereo}
 \end{table}
-
-
+The focus distances in the x and y-direction are slightly different in both cameras. This
+suggests that the pixels of two cameras are not exactly square. The principal axis in both
+cameras are also in very different places. This is problematic because a stereo rig should
+be horizontally aligned to give the best results. Because for the off-center principal
+axis the field-of-view of the stereo rig will be quite reduced.
 
 
 This distortion can be removed and are called rectifying the image. This makes common
@@ -195,16 +198,21 @@ The depth resolution which can be expected from the Stereo cam are,
     \Delta Z = \frac{Z^2}{f T}\Delta d
 \end{equation}
 where $\Delta d$ is the smallest increment in disparity, $f$ is the focal distance, and
-$T$ is the baseline.
+$T$ is the baseline. This is determined in the implementation in this case the OpenCV
+library. This is useful when calibrating the stereo rig, and when testing the program,
+because it tells what kind of ranges one can expect from the rig.
 
 
 \subsection{Noise- and Error Sources}
+The major source of errors connected with stereo cameras are bad feature matches. This
+will cause bogus distances. This is heavily correlated with the amount of noise captured
+by the imaging sensors and other disturbances.
 
 
 
 
-\section{Time-of-Flight Camera}
-The time of flight camera gives out either Cartesian coordinates or intensity. This
+\section{Time-of-Flight Camera MESA SwissRanger-3000}
+The time of flight camera gsjekkives out either Cartesian coordinates or intensity. This
 intensity is the amplitude of the returned laser light. Figure
 \ref{chap3:fig-tof-amppicture} shows a typical amplitude plot of the inside of a pipe.
 \begin{figure}[htbp]
@@ -222,7 +230,8 @@ intensity is the amplitude of the returned laser light. Figure
 
 
 \subsection{Noise- and Error Sources}
-*******LIST THE ERROR SOURCES AND HOW TO SUPPRESS THEM**********
+
+
 
 
 
