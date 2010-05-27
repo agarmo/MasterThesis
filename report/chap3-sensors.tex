@@ -124,7 +124,7 @@ information on how this is carried out, see \cite{heikkila}.
 
 The distortion parameters for both cameras are summarized in Table
 \ref{chap3:tab-distortion-coeffs}.
-\begin{table}
+\begin{table}[htbp]
   \centering
     \begin{tabular}{|c|c|c|} 
         \hline
@@ -163,7 +163,7 @@ total stereo rig.
 The intrinsic parameters for the cameras are summarized in Table
 \ref{chap3:tab-intrinsic-stereo}. The values are all in pixel coordinates. The real focal
 distances can be calculated by knowing the pixel-to-length ratio.
-\begin{table}
+\begin{table}[htbp]
   \centering
     \begin{tabular}{|c|c|c|} 
         \hline
@@ -212,8 +212,22 @@ by the imaging sensors and other disturbances.
 
 
 \section{Time-of-Flight Camera MESA SwissRanger-3000}
-The time of flight camera gsjekkives out either Cartesian coordinates or intensity. This
-intensity is the amplitude of the returned laser light. Figure
+The 3D sensor chosen for the project is the MESA SwissRanger-3000 Time-of-Flight Camera.
+This is based on amplitude modulation of near-infrared light (850 nm), which is emitted from an
+array of 55 LEDs and captured at a spherical PMD chip. The spatial resolution of the camera
+are $176\times144$ with a field-of-view of $47.5^\circ \times 39.6^\circ$. 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{pics/sr3000}
+    \caption{The SwissRanger-3000 Time-of-Flight Camera}
+    \label{chap3:fig-sr3000}
+\end{figure}
+The amplitude modulation frequency are set to 20 MHz which gives a non-ambiguity range of
+7.5 meters. If the modulation frequency is lowered the maximum measured distance might be
+larger, but this distance is good for the application of the project.
+
+The camera outputs standard Cartesian coordinates or spherical coordinates and the
+intensity, which is comparable to a standard gray scale camera. Figure 
 \ref{chap3:fig-tof-amppicture} shows a typical amplitude plot of the inside of a pipe.
 \begin{figure}[htbp]
     \centering
@@ -224,9 +238,41 @@ intensity is the amplitude of the returned laser light. Figure
 
 
 \subsection{Intrinsic Parameter Calibration}
+The intrinsic parameters are determined the same way as for the individual cameras in the
+stereo rig. This is to determine the lens distortions and principal axis, see Table
+\ref{chap3:tab-intrinsic-sr3000}.
+\begin{table}[htbp]
+  \centering
+    \begin{tabular}{|c|c|c|} 
+        \hline
+                & SR-3000       & Given by Manufacturer \\
+        \hline
+        $f_x$   & $ $  & $200$  \\
+        $f_y$   & $ $  & $200$  \\
+        \hline
+        $c_x$   & $ $  & $88$ \\
+        $c_y$   & $ $ & $72$  \\
+        \hline
+    \end{tabular}
+    \caption{Intrinsic parameters of the ToF-camera in pixel related units including
+    uncertainties}
+    \label{chap3:tab-intrinsic-sr3000}
+\end{table}
+The focal distances given from the manufacturer are calculated using the pixel size of
+$40 \times 40 \mu m^2$ and 8 mm focal distance.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{pics/sr3000_comp_dist}
+    \caption{The lens distortion for SwissRanger 3000}
+    \label{chap3:fig-sr3000-comp-lensdist}
+\end{figure}
+T
 
 
 \subsection{Depth Calibration}
+
+
 
 
 \subsection{Noise- and Error Sources}
