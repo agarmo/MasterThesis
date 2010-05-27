@@ -4,16 +4,43 @@
 \chapter{Sensors}
 \label{chap3-sensors}
 
-\section{2D Sensors}
+\section{Comparisons Between the Proposed Sensors}
+For this project, some of the sensors was not decided. This gave the ability to chose a
+sensor, based on cost, resolution, accuracy and delivery date. The manufacturers that were
+considered where the Japanese Hokuyo and American SICK. This two companies are to the
+authors knowledge the leading manufacturers of laser range finders, small enough to be
+mounted on small robotic platforms. The various models and key parameters are summarized
+in Table \ref{chap3:tab-sensors}
+\begin{table}[htbp]
+    \begin{tabular}{|c|c|c|c|c|c|}
+        \hline
+        Sensor              & LMS-100 & LMS-200 & UTM-30LX & URG-04LX & URG-04LX-URG01 \\
+        \hline
+        Max Range           & 20 m    & 80 m    & 30 m     & 4 m      & 5.6 m          \\
+        Accuracy            & 12 mm   & 30 mm   & 30 mm    & 10 mm    & 30 mm          \\
+        Field-of-View       & $270^\circ$ &$180^\circ$  & $270^\circ$ & $240^\circ$ & $240^\circ$  \\
+        Angular Resolution  & $0.25-0.5^\circ$  & $0.25-1^\circ$ & $0.25^\circ$ & $0.36^\circ$ & $0.36^\circ$  \\
+        Scan Frequency      & 50 Hz   & 75 Hz   &  40 Hz   & 10 Hz    & 10 Hz          \\
+        Weight              & 1.1 Kg  & 4.5 Kg  & 210 g    & 160 g    & 160 g          \\
+        Power Consumption   & Not Specified & Not Specified  & $<8 $ W & $~2.5$W  &$~2.5$W  \\
+        \hline
+        Cost                & \$5500  & \$5000  & \$5000   & \$2400   & \$1100         \\
+        \hline
+    \end{tabular}
+    \caption{Comparison between the proposed sensors}
+    \label{chap3:tab-sensors}
+\end{table}
 
-\subsection{Laser Range Finder}
+The LMS-100 and LMS-200 are relatively large sensors compared to the ones from Hokuyo. The
+scanning frequency of the SICK range finders are quicker, but because PiKo is not that
+fast and taken into account that the 3D sensor which will have much greater scanning
+frequency. This means that the frequency of the 2D sensor is not that important. The most
+important thing is that it is as accurate as possible. Also, the Hokuyo sensors are much
+cheaper than the ones from SICK which gives them the advantage.
 
+Because of favourable size, weight, accuracy and cost the Hokuyo \emph{URG-04LX} was chosen.
 
-\subsubsection{Noise- and Error Sources}
-
-
-
-\section{3D Sensors}
+\subsection{3D Sensors}
 There are many different depth sensors available at the consumer market. This section will
 outline some of them, and describe the \emph{MESA Imagining} SR-3000 in more detail.
 The development of depth-sensing cameras and devices have accelerated the last years
@@ -31,12 +58,41 @@ Microsoft the accuracy in depth will be about 1 cm, and practical ranges will be
 
 
 
+\section{Laser Range Finder Hokuyo URG-04LX}
+The laser range finder which were selected to this application was the \emph{Hokuyo
+URG-04X}. It uses an infrared laser to sweep a view field of $240^\circ$ ten times a
+second. The full $360^\circ$ circle are segmented using ten bit, which gives angular
+resolution of $\frac{360}{2^{10}} = 0.3515$. The ranges have twelve bit resolution, each
+bit representing a millimeter, which gives the total measurable length of $2^{12} = 4096$.
+\begin{figure}[htbp]
+    \centering
+   % \includegraphics[width=0.7\textwidth]{pics/lrf-urg}
+    \caption{The Hokuyo URG-04X}
+    \label{chap3:fig-urg}
+\end{figure}
+The effective area which gives range readings are the sector form the 44th step to
+725th step, where the sector starts at $60^\circ$ if zero degrees is right backwards. See
+Figure \ref{chap3:fig-urg-sector}.
+\begin{figure}[htbp]
+    \centering
+    %\includegraphics[widht=0.7\textwidth]{pics/urg-sector}
+    \caption{The sweep sector of the URG-04X}
+    \label{chap3:fig-urg-sector}
+\end{figure}
 
 
-\subsection{Stereo Camera}
+
+\subsection{Noise- and Error Sources}
 
 
-\subsubsection{Camera Calibration}
+
+
+
+
+\section{Stereo Camera}
+
+
+\subsection{Camera Calibration}
 To work with stereo images the captured images need to be rectified, i.e. the images need
 to be corrected for distortion introduced by the camera lenses. This is a part of
 calibrating the camera, meaning that the intrinsic parameters of the camera are
@@ -125,7 +181,7 @@ features in the two images aligned horizontally. This makes it much easier for t
 algorithm because it only need to match vertically.
 
 
-\subsubsection{Depth resolution}
+\subsection{Depth resolution}
 The depth resolution which can be expected from the Stereo cam are,
 \begin{equation}
     \Delta Z = \frac{Z^2}{f T}\Delta d
@@ -134,12 +190,12 @@ where $\Delta d$ is the smallest increment in disparity, $f$ is the focal distan
 $T$ is the baseline.
 
 
-\subsubsection{Noise- and Error Sources}
+\subsection{Noise- and Error Sources}
 
 
 
 
-\subsection{Time-of-Flight Camera}
+\section{Time-of-Flight Camera}
 The time of flight camera gives out either Cartesian coordinates or intensity. This
 intensity is the amplitude of the returned laser light. Figure
 \ref{chap3:fig-tof-amppicture} shows a typical amplitude plot of the inside of a pipe.
@@ -151,38 +207,16 @@ intensity is the amplitude of the returned laser light. Figure
 \end{figure}
 
 
+\subsection{Intrinsic Parameter Calibration}
 
-\subsubsection{Noise- and Error Sources}
+
+\subsection{Depth Calibration}
+
+
+\subsection{Noise- and Error Sources}
 *******LIST THE ERROR SOURCES AND HOW TO SUPPRESS THEM**********
 
 
-
-
-\section{Comparisons Between the Proposed Sensors}
-\begin{table}[htbp]
-    \centering
-    \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
-        \hline
-        Sensor & Range & Accuracy & FoV & Ang Res & Weight & Scan Freq & Power Cons &  Cost \\
-        \hline
-        LMS-100 & 20 m & 12 mm &  $270^{\circ}$ & $0.25-0.5^{\circ}$  & 1.1 kg    & 50 Hz & Not specified  & \$5500 \\
-        \hline
-        LMS-200 & 80 m & 30 mm &  $180^{\circ}$  & $0.25-1^{\circ}$  & 4.5 kg    & 75 Hz & Not specified &  \$5000 \\
-        \hline
-        UTM-30LX & 30 m & 30 mm & $270^{\circ}$ & $0.25^{\circ}$  & 210 g     & 40 Hz  &$<8$ W   &  \$5000 \\
-        \hline
-        URG-04LX & 4 m & 10 mm & $240^{\circ}$ & $0.36^{\circ}$ & 160 g  & 10 Hz & ca 2.5 W &  \$2400 \\
-        \hline
-        URG-04LX-URG01 & 5.6 m & 30 mm & $240^{\circ}$ & $0.36^{\circ}$ & 160 g & 10 Hz & ca 2.5 W & \$1100 \\
-        \hline
-        SR3000-ToF Camera & 7.5 m & 30 mm & $47.5$ x $ 39.6 ^\circ$ & 176 x 144 & -  & 25
-        fps & 18 W max & \$10000 \\
-        \hline
-    \end{tabular}
-    \caption{Comparison between the proposed sensors}
-    \label{tab-chap3-sensors}
-\end{table}
-***FIX TABLE \ref{tab-chap3-sensors}********
 
 
 \section{Sensor Configurations}
