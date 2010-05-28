@@ -5,14 +5,43 @@ In this chapter implementation specific issues are treated. Figure
 \ref{chap6:fig-implementation} shows the three-layer implementation of the project.
 \begin{figure}[htbp]
     \centering
- %   \includegraphics[width=0.7\textwidth]{pics/implemntation}
+    \includegraphics[width=0.4\textwidth]{pics/implementation}
     \caption{Three-layer implementation}
     \label{chap6:fig-implementation}
 \end{figure}
+The \emph{low-level} layer reads and converts the raw sensor data into common data which can be
+interpreted by the \emph{middle} layer. This layer handles all the ''washing`` of the
+sensor data, and applies the reasoning and tries to recognize the environment. The third
+and last layer is the \emph{world} layer which handles the global data, where the robot is
+and where it should move next. 
 
+The project is implemented in both \emph{C/C++} and Matlab. The sensor layer are
+implemented in \emph{C/C++} while the other layers are implemented in Object-Oriented
+Matlab. 
 
 \section{Low-level Interfaces}
-The low-level interfaces from the sensors are implemented in 
+The low-level interfaces from the sensors are implemented in \emph{C/C++} and uses the
+supplied sensor APIs. The SwissRanger 3000 API were used directly in Matlab. The Hokuyo
+API was a little more tricky to use. A Matlab interface function were implemented to get
+the sensor data directly into Matlab.
+
+\subsection{Stereo Camera Implementation}
+For the stereo camera, a program was written using the \emph{OpenCV} library. A open
+source computer vision library, initially developed by Intel. This library have many
+excellent and optimized functions for grabbing images, camera calibration, image rectification
+and stereo matching. This produced a disparity map, which again where reprojected into 3D
+by the \emph{cvReprojectTo3D()}-function. This coordinate images where saved to disk and
+read into Matlab for further processing. 
+
+
+\begin{algorithm}
+\caption{The Stereo Matching Procedure}
+    \begin{algorithmic}
+    
+
+
+    \end{algorithmic}
+\end{algorithm}
 
 
 \section{Mid-level Implantations}
@@ -43,7 +72,5 @@ in the z-direction of which the cylinder is fitted to the data.*************FIX*
 The world representation are implemented as objects in Matlab.
 
 
-
-\section{Structure of the Implementation}
 
 

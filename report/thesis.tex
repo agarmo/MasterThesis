@@ -20,6 +20,12 @@
 \usepackage[nottoc]{tocbibind} % correct page numbers for bib in TOC, nottoc suppresses an entry for TOC itself
 %\usepackage{nextpage}
 
+
+\usepackage{algorithmic}
+\usepackage{algorithm}
+
+\numberwithin{algorithm}{chapter}
+
 \usepackage[utf8x]{inputenc}
 
 %:-------------------------- Glossary/Abbrev./Symbols -----------------------
@@ -30,6 +36,9 @@
 \renewcommand{\nomlabel}[1]{\textbf{#1}} % make abbreviations bold
 \makenomenclature % used to be \makeglossary
 \newcommand{\g}{\footnote{For all abbreviations see the glossary on page \pageref{nom}.}} % type "\g" to refer to glossary
+
+
+
 
 % used to be for sorting into categories:
 %\renewcommand\nomgroup[1]{%
