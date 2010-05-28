@@ -260,11 +260,11 @@ stereo rig. This is to determine the lens distortions and principal axis, see Ta
         \hline
                 & SR-3000       & Given by Manufacturer \\
         \hline
-        $f_x$   & $ $  & $200$  \\
-        $f_y$   & $ $  & $200$  \\
+        $f_x$   & $212.52 \pm 14.91 $  & $200$  \\
+        $f_y$   & $213.94 \pm 14.96 $  & $200$  \\
         \hline
-        $c_x$   & $ $  & $88$ \\
-        $c_y$   & $ $ & $72$  \\
+        $c_x$   & $88.63 \pm 5.00$  & $88$ \\
+        $c_y$   & $ 62.96 \pm 5.67 $ & $72$  \\
         \hline
     \end{tabular}
     \caption{Intrinsic parameters of the ToF-camera in pixel related units including
@@ -274,6 +274,13 @@ stereo rig. This is to determine the lens distortions and principal axis, see Ta
 The focal distances given from the manufacturer are calculated using the pixel size of
 $40 \times 40 \mu m^2$ and 8 mm focal distance.
 
+The calibration method is the same as for the stereo cameras. The intensity images from
+the camera are captured, converted to 8-bit integer values and histogram normalized to
+enhance give better contrast. This makes the finding of the checkerboard corners easier in
+the calibration process. Since the spatial resolution of the camera are small, noise and
+inaccurate sampling make the corner selection problematic. This shows itself on the large
+uncertainties int in the focal distances. 
+
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.7\textwidth]{pics/sr3000_comp_dist}
@@ -281,7 +288,9 @@ $40 \times 40 \mu m^2$ and 8 mm focal distance.
     \label{chap3:fig-sr3000-comp-lensdist}
 \end{figure}
 From the Figure \ref{chap3:fig-sr3000-comp-lensdist} the distortion due to lens are shown.
-*****COMMMENT ON THIS WHEN THE PLOT IS HEREÆ*******
+The principal axis are off center in the y-direction, this might be the case, but can also
+be inaccuracies caused by the calibration. 
+
 
 
 \subsection{Depth Calibration}

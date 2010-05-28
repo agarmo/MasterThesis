@@ -1,0 +1,29 @@
+%% lateral calibration of the SR3000
+
+[dev] = sr_open(); % open the connection
+
+k = 1;
+
+while(1)
+    
+    sr_acquire(dev);
+    img = sr_getimage(dev,1);
+    
+    if w == 1 % keypress
+        
+        disp('Saving picture')
+        
+        imwrite(img, sprintf('%s%d.bmp', 'amp',k), 'bmp');
+        
+        k = k+1
+    end
+    if w == 0
+        disp('Mouse clicked, exiting')
+        break;
+    end
+    
+    
+    w = waitforbuttonpress;
+    
+    
+end
