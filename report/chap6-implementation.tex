@@ -64,17 +64,21 @@ sensor data. The main task is to find lines in the 2D sensor data, and cylinder 
 the 3D data. 
 
 \subsection{Analysis of 3D Sensor Data}
+The 3D data are first filtered with regard to corresponding the intensity image. Pixels
+with intensities larger or lower than a threshold value will be filtered away and set to
+zero. 
 
-
-
-\subsubsection{Filtering of ToF Data}
-
+After this the coordinates are sorted on ascending depth value, and all trivial points,
+i.e. zero points are taken out of the coordinate list. The new list with coordinates
+including only interesting points will be divided into 10 equally spaced bins in the depth
+direction. Each of this bins are sent to the surface fit algorithm which is a
+\emph{Least-Squares Guass-Newton steepest decent}-algorithm. 
 
 \subsubsection{Surface Fit Algorithm}
-
-
-\paragraph{Guass-Newton Least Squares}
-
+The algorithm which is used are the \emph{EUROMETROS}\cite{eurometros} Matlab library developed by
+\emph{National Physics Laboratory(NPL)} in the United Kingdom. The algorithm provides the
+estimated radii, and directions of the data sets. Also the distance of the data set to the
+estimated cylinders are output, which is a measurement on how good the cylinder fit is. 
 
 \paragraph{Issues}
 The algorithm is sensitive to edge data. This can be controlled with limiting the interval
