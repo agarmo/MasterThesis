@@ -107,7 +107,9 @@ The stereo camera chosen for the project is the first commercially available 3D 
 \end{figure}
 It is actually just two cheap webcams and a USB hub in the same casing. The camera is
 available for about 900 NOK, so both optics and CCD chips are expected to be of poor
-quality.
+quality. Also, the left and right camera shutters does not synchronize, \cite{nma-web}
+suggests it might be as much as 16.5 milliseconds which might cause problems in fast
+moving environments. 
 
 
 \subsection{Camera Calibration}
@@ -218,6 +220,10 @@ The major source of errors connected with stereo cameras are bad feature matches
 will cause bogus distances. This is heavily correlated with the amount of noise captured
 by the imaging sensors and other disturbances.
 
+As said above, the left and right cameras does not synchronize, and because of the
+capturing process is sequential the images are not captured at the same time, this might
+give raise to erroneous range measurements. 
+
 
 
 
@@ -289,8 +295,8 @@ uncertainties int in the focal distances.
 \end{figure}
 From the Figure \ref{chap3:fig-sr3000-comp-lensdist} the distortion due to lens are shown.
 The principal axis are off center in the y-direction, this might be the case, but can also
-be inaccuracies caused by the calibration. 
-
+be inaccuracies caused by the calibration. Except for this off-center principal axis, the
+pixel distortion due to the lens is small.
 
 
 \subsection{Depth Calibration}
