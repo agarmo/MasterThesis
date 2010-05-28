@@ -212,9 +212,9 @@ are parameters that influence the position uncertainty.
 
 \paragraph{Pulsed Time-of-Flight}
 The technique referred to as pulsed time-of-flight refers to the time taken of a pulse
-train of laser light to be reflected back to the emitter. Light travels around $30$cm/ns,
-this means that to get $1$mm accuracy the accuracy of the timing devices should be
-$6.7$ps.
+train of laser light to be reflected back to the emitter. Light travels around 30 cm/ns,
+this means that to get 1 mm accuracy the accuracy of the timing devices should be
+6.7 ps.
 
 The application and ranges that are going to be measured are dependant on what kind of
 laser which is selected. The energy in the laser pulse effects the amplitude of the
@@ -223,7 +223,17 @@ reflected light and in turn affects the measurement accuracy.
 
 
 \paragraph{Frequency Modulated Continuous Wave}
-
+This technique modulates the optical power of the laser diode with a constant frequency.
+A sine wave of frequency $f_{r}$ is modulated to the laser diodes DC current. This signal
+is reflected and gathered. The range can be calculated according to the following
+relation, which is the phase shift between the modulated and reflected signal.
+\begin{equation}
+    \begin{aligned}
+        D &= \frac{1}{2} c\frac{\Delta \phi}{2 \pi} f_{r} \\
+    \end{aligned}
+\end{equation}
+The unambiguous distance is when $\Delta \phi = 2 \pi$ which limits the measurable
+distance to $\Lambda = c f_r /2$. \cite{laser-ranging-critical-review}.
 
 
 
