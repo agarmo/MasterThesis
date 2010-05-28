@@ -63,6 +63,9 @@ layer is in charge of doing the reasoning, and draw out important information fo
 sensor data. The main task is to find lines in the 2D sensor data, and cylinder shapes in
 the 3D data. 
 
+This functionality are implemented in a Matlab class called the \emph{SensorInterpreter}.
+
+
 \subsection{Analysis of 3D Sensor Data}
 The 3D data are first filtered with regard to corresponding the intensity image. Pixels
 with intensities larger or lower than a threshold value will be filtered away and set to
@@ -88,7 +91,16 @@ in the z-direction of which the cylinder is fitted to the data.*************FIX*
 \section{High-level Implementations}
 
 \subsection{World Representation}
-The world representation are implemented as objects in Matlab.
+The world representation are implemented as objects in Matlab. Each node in the world
+representation described in Chapter \ref{chap5} are implemented as a class in Matlab. 
+\begin{figure}[htbp]
+    \centering
+    %\includegraphics[width=0.6\textwidth]{pics/world-uml}
+    \caption{UML of the world representation}
+    \label{chap6:fig-world-uml}
+\end{figure}
+
+
 
 
 
