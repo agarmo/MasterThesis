@@ -33,20 +33,35 @@ and stereo matching. This produced a disparity map, which again where reprojecte
 by the \emph{cvReprojectTo3D()}-function. This coordinate images where saved to disk and
 read into Matlab for further processing. 
 
-
 \begin{algorithm}
-\caption{The Stereo Matching Procedure}
+\caption{The Stereo Capture Procedure}
+\label{chap6:alg-stereomatch}
     \begin{algorithmic}
-    
-
-
+    \STATE \textbf{begin}
+    \STATE Connect to Cameras
+    \FOR{no of images $<$ 20}
+        \STATE Capture images of Checkerboard and find corners
+    \ENDFOR
+    \STATE Calculate the distortion parameters using Healy's Method.
+    \WHILE{Not Quitting}
+        \STATE Capture images
+        \STATE Rectify Images
+        \STATE Stereo matching using Block Matching 
+        \STATE Reproject disparity map to 3DImage
+        \STATE Dump 3D Coordinates to Disk
+    \ENDWHILE
+    \STATE \textbf{end}
     \end{algorithmic}
 \end{algorithm}
+This program calibrates the cameras, rectifies the images, finds stereo correspondences
+and reprojects them to 3D coordinates.
 
 
 \section{Mid-level Implantations}
-
-
+The middle layers goal is to process and interpret the sensor data to best ability. This
+layer is in charge of doing the reasoning, and draw out important information form the
+sensor data. The main task is to find lines in the 2D sensor data, and cylinder shapes in
+the 3D data. 
 
 \subsection{Analysis of 3D Sensor Data}
 
