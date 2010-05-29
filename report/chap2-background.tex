@@ -216,26 +216,50 @@ train of laser light to be reflected back to the emitter. Light travels around 3
 this means that to get 1 mm accuracy the accuracy of the timing devices should be
 6.7 ps.
 
+Only a single laser pulse is necessary for the determination of the range with centimeter
+precision this technique is suitable for fast measurements and range sweeps. If the
+measurements are averaged millimeter precision might be acquired. 
+
 The application and ranges that are going to be measured are dependant on what kind of
 laser which is selected. The energy in the laser pulse effects the amplitude of the
 reflected light and in turn affects the measurement accuracy.
 
+Major sources of inaccuracies in a pulsed time-of-flight range finders are timing jitter,
+nonlinearities, walk and drift. Jitter in timing is the source of precision errors in the
+system. Precision also deteriorates as the distance increase and the reflected pulse
+amplitude decrease proportional to the square of the distance\cite{pulsed-tof}.
+Walk errors are due to shape variations in the pulse, which will create errors in the
+timing measurement. 
+
+
+
 
 
 \paragraph{Frequency Modulated Continuous Wave}
-This technique modulates the optical power of the laser diode with a constant frequency.
-A sine wave of frequency $f_{r}$ is modulated to the laser diodes DC current. This signal
-is reflected and gathered. The range can be calculated according to the following
-relation, which is the phase shift between the modulated and reflected signal.
+This technique have been used in in applications such as, surface profiling, tomography
+reflectography and positioning. This is a technique which have large dynamic range and
+high resolution at short range sensing. The principle is that a laser diode is applied
+with a frequency periodically shifted by $\Delta f$. The signal is usually done with
+applying a saw-tooth biased current to a wavelength-tunable laser diode. This saw-tooth
+signal is also sent to be mixed with the reflected signal. The phase difference in the
+reference signal and the reflected signal is $\tau = 2 R / c$ where $R$ is the range of
+the traveled signal. The range is proportional to the intermediate frequency, i.e. the
+frequency difference due to the travel time
 \begin{equation}
-    \begin{aligned}
-        D &= \frac{1}{2} c\frac{\Delta \phi}{2 \pi} f_{r} \\
-    \end{aligned}
+    f_i = \Delta f \tau /t_m = 2 \Delta f R /c t_m
 \end{equation}
-The unambiguous distance is when $\Delta \phi = 2 \pi$ which limits the measurable
-distance to $\Lambda = c f_r /2$. \cite{laser-ranging-critical-review}.
+$t_m$ is the ramp period of the saw-tooth signal. 
 
+Both $\tau$ and $f_i$ can be measured, which one that is measured depends on the required
+range and resolution. If the intermediate frequency is measured the resolution is best,
+since the ramp time can be chosen freely, the need for high speed electronics are not
+necessary, and a simple frequency counter in the kilohertz domain can be used to give the
+sensor millimeter resolution.
 
+Limitations of this technique is that the frequency characteristics of the laser diode is
+seldom linear, which will result in a nonlinear reference signal, which leads to
+variations in the intermediate frequency measurement.
+\cite{laser-ranging-critical-review}.
 
 \subsubsection{Sonar}
 
