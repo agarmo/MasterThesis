@@ -797,7 +797,37 @@ that the robot will travel through.
 \subsection{Surface Fit Algorithms}
 
 
-\subsubsection{Gauss-Newton Optimization}
+\subsubsection{Leasts-Squares Gauss-Newton Optimization}
+Least-squares method is a common way to optimize and fit data sets to a proposed model.
+The idea is to minimize the objective function 
+\begin{equation}
+    f(x) = \frac{1}{2} \sum_{j = 1}^m r^2_j (x)
+\end{equation}
+where the $r_j(x) \in \mathbb{R}^n \rightarrow \mathbb{R}$ is called the \emph{residual} and
+is generally a linear or nonlinear function. This function can be written as a vector then
+the Jacobian can be defined as
+\begin{equation}
+    J (x) = \left[ \frac{\partial r_j}{\partial x_i} \right]
+\end{equation}
+The Jacobian is a $m \times n$-matrix. Using this the Hessian, i.e. the second order
+derivative of $f$ can be expressed as
+\begin{align}
+    \nabla f(x) &= \sum_{j = 1}^m r_j(x) \nabla r_j(x) = J(x)^T r(x) \\
+    \nabla^2 f(x) &= \sum_{j=1}^m \nabla r_j (x) \nabla r_j(x)Å T + \sum_{j=0}^m r_j(x)
+    \nabla^2 r_j(x) = J(x)^T J(x) + \sum_{j= 0}^m r_j(x) \nabla^2 r_j(x)
+\end{align}
+This allows for that the Hessian, which usually is very cumbersome and computationally
+intensive to calculate can be approximated by the Jacobian. This is especially true when
+the residual terms are small.
+
+The Gauss-Newton method uses is a modified Newton method that uses line search to find the
+best fit. Standard Newton methods are based on solving $\nabla^2 f(x_k) p = -\nabla
+f(x_k)$ with regard to $p$ to find the search direction. The Gauss-Newton approach uses
+the approximation $\nabla^2 f_k \approx  J_k^T J_k$, which gives the following equation to
+solve
+\begin{equation}
+    J_k^T J_k p_k = - J_k^T r_k
+\end{equation}
 
 
 \subsubsection{RANSAC Algorithm}
