@@ -806,9 +806,12 @@ the three dimensional position and the radius, while the $t$-vector would have 2
 parameters representing the angles around two of the axes, in this case the spherical
 coordinates.
 
-
-
-
+In this project the world is considered as the pipe network, which have the general from
+of cylinders. One can parametrize a cylinder with the axis parallel to the z-axis according to 
+\begin{equation}
+    f = ( x_0 + r  \cos \theta, y_0 + r \sin \theta, z_0 + z  )^T
+\end{equation}
+This gives the parameter vector, $\alpha = [x_0, y_0, z_0, r ]^T$ and $t = [\theta, z]^T$.
 
 
 \subsubsection{Leasts-Squares Gauss-Newton Optimization}
