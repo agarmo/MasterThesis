@@ -795,6 +795,20 @@ that the robot will travel through.
 
 
 \subsection{Surface Fit Algorithms}
+Suppose a point on a 3D surface can be expressed as
+\begin{equation}
+    \mathbf{x} = f(\alpha, t)
+\end{equation}
+$\alpha$ is a parameter of size $p$ characterizing the nature of the surface, i.e. the
+radius of a circle. $t$ is the positional parameters which fixes the position of the point
+on the surface. For a sphere, the parameters vector, $\alpha$ would have four parameters,
+the three dimensional position and the radius, while the $t$-vector would have 2
+parameters representing the angles around two of the axes, in this case the spherical
+coordinates.
+
+
+
+
 
 
 \subsubsection{Leasts-Squares Gauss-Newton Optimization}
@@ -815,6 +829,7 @@ derivative of $f$ can be expressed as
     \nabla f(x) &= \sum_{j = 1}^m r_j(x) \nabla r_j(x) = J(x)^T r(x) \\
     \nabla^2 f(x) &= \sum_{j=1}^m \nabla r_j (x) \nabla r_j(x)Å T + \sum_{j=0}^m r_j(x)
     \nabla^2 r_j(x) = J(x)^T J(x) + \sum_{j= 0}^m r_j(x) \nabla^2 r_j(x)
+    \label{chap2:eq-hessian}
 \end{align}
 This allows for that the Hessian, which usually is very cumbersome and computationally
 intensive to calculate can be approximated by the Jacobian. This is especially true when
@@ -828,7 +843,33 @@ solve
 \begin{equation}
     J_k^T J_k p_k = - J_k^T r_k
 \end{equation}
+The approximation of the Hessian saves quite a lot computational time and the impact on
+the direction is not that great. Also, around the solution $x^*$ the first term in
+\eqref{chap2:eq-hessian} will dominate the other factors. This will cause the convergence
+rate of the algorithm to be equal to those of the standard Newton methods, which is
+quadratically. 
 
+$p_k$ is guaranteed to be a descent direction when $J_k$ has full row rank and the
+gradient $\nabla f_k$ is nonzero. The Gauss-Newton also has the advantage that the
+nonlinear objective function might be divided into linear subproblems and solved
+individually. This means that the search direction, $p_k$ is the solution of
+\begin{equation}
+    \min{p} \frac{1}{2} || J_k p + r_k ||^2
+\end{equation}
+
+
+
+
+***********************************
+This method can be used for fitting a cylinder to a 3D point set by using the objective
+function 
+\begin{equation}
+    f (x) = \sum_{j = 1}^m ( (x - x_0)^2 + (y - y_0)^2 + (z - z_0) - R^2 - (r_{xj}^2 +
+    r_{yj}^2 + r_{zj}))^2
+\end{equation}
+
+
+*************************
 
 \subsubsection{RANSAC Algorithm}
 
