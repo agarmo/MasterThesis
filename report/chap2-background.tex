@@ -830,6 +830,7 @@ where $\hat{\mathbf{p}} = \mathbf{p} - \sigma \mathbf{n}$. This distance is robu
 mathematical singularities and is less computationally intensive than taking the square
 root of something. The function which is to be minimized then becomes
 \begin{equation}
+    \label{chap2:eq-ls-cylinder-min}
     \sum_i \tilde{d}^2(\mathbf{s}, \mathbf{p}_i)
 \end{equation}
 The cylinder can be completely described and parametrized with the \emph{direction cosines} the radius, and
@@ -883,21 +884,27 @@ individually. This means that the search direction, $p_k$ is the solution of
     \min{p} \frac{1}{2} || J_k p + r_k ||^2
 \end{equation}
 
+The term which is minimized is \eqref{chap2:eq-ls-cylinder-min} subject to the direction
+of the cylinder axis, the radius and the start position center of the axis. 
 
-
-
-***********************************
-This method can be used for fitting a cylinder to a 3D point set by using the objective
-function 
-\begin{equation}
-    f (x) = \sum_{j = 1}^m ( (x - x_0)^2 + (y - y_0)^2 + (z - z_0) - R^2 - (r_{xj}^2 +
-    r_{yj}^2 + r_{zj}))^2
-\end{equation}
-
-
-*************************
 
 \subsubsection{RANSAC Algorithm}
+Standard fitting techniques uses the whole dataset when fitting a function to it. This
+means that it assumes that errors and ``wild points'' in the dataset can be averaged out.
+Said in another way, the correctness of the dataset is a function of the size of the
+dataset. When for example in computer vision, graphical primitives such as planes, and
+cylinders are in the same scene, it is difficult to know which points in the dataset
+correspond to which graphical primitive. Therefor, one will need to sort out which points
+``belong'' to the different primitives. If a least-squares approach is used the fitting
+procedure to the primitives would not be very successful because this method will assume
+that all points have some relation to the fitted primitive. \cite{ransac}
+
+
+RANSAC is an acronym of \emph{RANdom Sample And Concensus}. This algorithm is a
+non-deterministic algorithm which is robust to ``wild points'' in the dataset. This is
+practical when the datasets are polluted with noise and measurements errors.
+
+
 
 
 \subsubsection{M-SAC Criterion}
