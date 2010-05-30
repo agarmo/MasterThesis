@@ -911,13 +911,19 @@ line. The model parameters are computed using only the points from the MSS.
 
 The next step is the \emph{test}-step, which determines the amount of points from the
 whole dataset which are consistent with the parameters computed form the MSS set. This set
-of points are called the \emph{consensus set} (CS). The algorithm terminates when the 
-probability of generating a better consensus set drops below a certain threshold, i.e.
-more points can be added to the consensus set.\cite{ransac-dummies}
+of points are called the \emph{consensus set} (CS). The algorithms search for points
+terminates when the probability of generating a better consensus set drops below a certain threshold, i.e.
+more points can be added to the consensus set. The distance from the points in CS to the 
+fitted model is used as a measure on how good the model is. This model is kept as the best
+fit up to date. \cite{ransac-dummies}
 
+This is done a finite number of times and dependant on the number of \emph{inliers}, i.e.
+a point that are defined to belong to the model, the model is compared to the present best
+fit or rejected.
 
-
-
+To ensure that RANSAC gives the best fit model, the number of iterations to find the best
+fit must be large enough. Since the selection of the initial MSS is done randomly, one
+cannot guarantee that the MSS only consists of inlier points. 
 
 
 \subsubsection{M-SAC Criterion}
