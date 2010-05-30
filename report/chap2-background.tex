@@ -797,21 +797,44 @@ that the robot will travel through.
 \subsection{Surface Fit Algorithms}
 Suppose a point on a 3D surface can be expressed as
 \begin{equation}
-    \mathbf{x} = f(\alpha, t)
+    \mathbf{x} = f(\mathbf{s}, t)
 \end{equation}
-$\alpha$ is a parameter of size $p$ characterizing the nature of the surface, i.e. the
+$\mathbf{s}$ is a parameter of size $p$ characterizing the nature of the surface, i.e. the
 radius of a circle. $t$ is the positional parameters which fixes the position of the point
-on the surface. For a sphere, the parameters vector, $\alpha$ would have four parameters,
+on the surface. For a sphere, the parameters vector, $\mathbf{s}$ would have four parameters,
 the three dimensional position and the radius, while the $t$-vector would have 2
 parameters representing the angles around two of the axes, in this case the spherical
 coordinates.
 
-In this project the world is considered as the pipe network, which have the general from
-of cylinders. One can parametrize a cylinder with the axis parallel to the z-axis according to 
+The surface fit problem can be sated as a least-squares minimization problem. The
+objective function to be minimized is then the distance form the data set to a cylinder
+surface. The distance can be given as 
 \begin{equation}
-    f = ( x_0 + r  \cos \theta, y_0 + r \sin \theta, z_0 + z  )^T
+    d( \mathbf{s}, \mathbf{p})  = | ( \mathbf{p} - (\sigma + \frac{1}{k} \mathbf{n})
+    \times \mathbf{a})| - \frac{1}{k}
 \end{equation}
-This gives the parameter vector, $\alpha = [x_0, y_0, z_0, r ]^T$ and $t = [\theta, z]^T$.
+$\mathbf{p}$ is an arbitrary point, $\sigma \mathbf{n}$ is the point which is the closest
+point on the cylinder to the origin, $\frac{1}{k}$ is the radius of the cylinder, and $\mathbf{a}$ is the
+direction vector of the cylinder. $\mathbf{n}$ obeys the relation $\mathbf{a} \cdot
+\mathbf{n} = 0$. 
+
+\cite{ls-fit-cylinder} proposes to use an approximation to the distance, both because it
+simplifies and the computational difficulties because of the square root vanishes, but
+also to avoid computational singularities when calculating the distance. The proposed
+expression to be minimized then becomes
+\begin{equation}
+    \tilde{d} = \frac{k}{2} |\hat{\mathbf{p}} \times \mathbf{a} | ^2 - \hat{\mathbf{p}} \cdot
+    \mathbf{n}
+\end{equation}
+where $\hat{\mathbf{p}} = \mathbf{p} - \sigma \mathbf{n}$. This distance is robust to
+mathematical singularities and is less computationally intensive than taking the square
+root of something. The function which is to be minimized then becomes
+\begin{equation}
+    \sum_i \tilde{d}^2(\mathbf{s}, \mathbf{p}_i)
+\end{equation}
+The cylinder can be completely described and parametrized with the \emph{direction cosines} the radius, and
+the position of the axis. The various minimization algorithms can be used and will be
+discussed in the next section.
 
 
 \subsubsection{Leasts-Squares Gauss-Newton Optimization}
