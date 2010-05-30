@@ -903,6 +903,19 @@ that all points have some relation to the fitted primitive. \cite{ransac}
 RANSAC is an acronym of \emph{RANdom Sample And Concensus}. This algorithm is a
 non-deterministic algorithm which is robust to ``wild points'' in the dataset. This is
 practical when the datasets are polluted with noise and measurements errors.
+The RANSAC algorithm is basically a two step process, which is repeated until some
+criterion is fulfilled. The first step is called the \emph{hypothesize}-step which selects
+the \emph{minimal sample set} (MSS). This is the absolute minimum required to represent
+the fitted model, i.e. for a 2D line, two points are needed to uniquely define the
+line. The model parameters are computed using only the points from the MSS.
+
+The next step is the \emph{test}-step, which determines the amount of points from the
+whole dataset which are consistent with the parameters computed form the MSS set. This set
+of points are called the \emph{consensus set} (CS). The algorithm terminates when the 
+probability of generating a better consensus set drops below a certain threshold, i.e.
+more points can be added to the consensus set.\cite{ransac-dummies}
+
+
 
 
 
