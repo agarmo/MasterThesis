@@ -931,17 +931,36 @@ this to find the number of iterations
 \begin{equation}
     \hat{T}_{iter} = \left \lceil \frac{\log \epsilon}{\log (1 - q)} \right\rceil
 \end{equation}
-In general the number $q$ is difficult to know beforehand.
-
+In general the number $q$ is difficult to calculate, according to \cite{ransac-dummies}
+the probability can be approximated by 
+\begin{equation}
+    q = \prod_{i = 0}^{k-1} \frac{N_I - i}{N - i} \approx \left ( \frac{N_i}{N} \right)^k
+\end{equation}
+where $N_I$ is the total number of inilers, $N$ is the total number of points in the
+dataset, and $k$ is the number of times one will try to pick a set of inliers. This can be
+approximated because $k$ most probably are much much smaller than both $N$ and $N_I$. A
+estimate of the number of inliers can be found, using the number of inliers found
+up-to-date. \cite{ransac-dummies}
 
 
 \subsubsection{M-SAC Criterion}
 
 
 
-\section{Real World Applications}
+\section{State-of-the-Art Pipe Inspection Robots}
+The German MAKRO project \cite{MAKRO-project} uses a multi-segmented robot, each segment 
+having three degrees of freedom, panning, tilting and rotation. This is a complete
+research project to create a fully autonomous sewer inspection robot. The robot is
+equipped with various sensors including, a stereo camera rig for dense stereo
+reconstruction of the pipe structure. Proximity IR sensors directed perpendicular to the
+motion axis to sense the pipe walls, and an ultrasound sensor directed forward for
+position measurements. An experimental set-up with a laser to project a predetermined
+pattern on the surroundings together with one of the cameras to calculate the direction of
+th sewer pipe axis. 
 
-Remember MAKRO! The German snake robot used for sewer inspections. 
+The control system is based on an AI machine learning method called \emph{Q-Learning}.
 
+
+axis. 
 
 
