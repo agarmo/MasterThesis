@@ -899,7 +899,6 @@ correspond to which graphical primitive. Therefor, one will need to sort out whi
 procedure to the primitives would not be very successful because this method will assume
 that all points have some relation to the fitted primitive. \cite{ransac}
 
-
 RANSAC is an acronym of \emph{RANdom Sample And Concensus}. This algorithm is a
 non-deterministic algorithm which is robust to ``wild points'' in the dataset. This is
 practical when the datasets are polluted with noise and measurements errors.
@@ -923,7 +922,17 @@ fit or rejected.
 
 To ensure that RANSAC gives the best fit model, the number of iterations to find the best
 fit must be large enough. Since the selection of the initial MSS is done randomly, one
-cannot guarantee that the MSS only consists of inlier points. 
+cannot guarantee that the MSS only consists of inlier points. The probability of
+selecting $h$ sets which are polluted by \emph{outliers} is $(1 - q)^h$, where $q$ is the
+number of inliers in the dataset. The idea is to pick a $h$ large enough that the
+probability that all the sets are contaminated by outliers will be lower than a certain
+value, $\epsilon$ called the \emph{alarm rate}, $(1 - q)^h \leq \epsilon$. Reorganizing
+this to find the number of iterations
+\begin{equation}
+    \hat{T}_{iter} = \left \lceil \frac{\log \epsilon}{\log (1 - q)} \right\rceil
+\end{equation}
+In general the number $q$ is difficult to know beforehand.
+
 
 
 \subsubsection{M-SAC Criterion}
