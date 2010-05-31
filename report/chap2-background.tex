@@ -482,6 +482,19 @@ gives enough information about the lens and camera to make corrections to the pi
 make the matching method easier and the measurements more accurate. This calibrations will
 be shown in Chapter \ref{chap3-sensors} for the selected stereo cameras. 
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.45\textwidth]{pics/left_tang_dist}
+    \includegraphics[width=0.45\textwidth]{pics/right_tang_dist}
+    \caption{The tangential distortion for the left and right camera of the Minoru 3D
+    webcam}
+    \label{chap2:fig-tang-dist}
+\end{figure}
+Figure \ref{chap2:fig-tang-dist} show a plot for the left and right camera of the stereo
+rig. As seen from the figure, the cameras are supposed to be identical, but the tangential
+distortion can be very different, and clearly show the need to estimate and rectify the
+images. 
+
 
 \paragraph{Epipolar Geometry}
 To describe the stereo rig and geometry between the left and right cameras, the term
@@ -979,7 +992,11 @@ gas-pipeline structure, with L-shaped and T-shaped junctions arranged in a 3D di
 arrangement and showed promising results. 
 
 
-\cite{Kairo-II}
+\emph{Kario-II} is a multi-segmented robot, typically made up of 6 drive segments with
+active wheels and 5 joints between these segments which each have 3 degrees of freedom,
+making a total of 21 degrees of freedom of the robot. \cite{Kairo-II} provides a control
+strategy of controlling and path planning for the full 21 DOF model in unstructured and
+dynamic environments.******* 
 
 
 \cite{KANTARO} describes \emph{KANTARO}, a single segement, sewer-pipe inspection robot 
@@ -988,10 +1005,12 @@ junctions and able to go down 5 cm steps. The robot consists of a platform of 4 
 and a payload box placed on top. The robot is equipped with a CCD camera with ``fish eye''
 lens and proper lighting together with a laser scanner. This laser scanner is custom made
 for and uses the optical triangulation principle and produces measurements with accuracy
-of about 1 mm. 
-
-
+of about 1 mm. KANTARO have been tested in a dry sewer test environment, traversing
+L-bends, T-junctions with high stability, according to the authors. But much work is still
+to be done with regard to make this robot robust enough for the real world. 
 
 \cite{KURT}
+
+
 
 
