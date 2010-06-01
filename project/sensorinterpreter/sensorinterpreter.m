@@ -98,86 +98,86 @@ classdef sensorinterpreter
         %% Internal Calculation Function
 function [this, radius, closestRadius, indexMin] = fuseSensors(this, threshold)
             % find pralell lines, start with lines assumed along the pipe.
-            directions = this.LRF_paramsy.a_urg;
-            
-            equalToLine1 = zeros(size(directions,1),1);
-            
-            %should start with line nearest to origin.
-            
-            %compare the first with the others
-            for i = 2:size(directions, 1)
-                if compareValue(directions(i,1), directions(1,1), threshold) == 0
-                    if compareValue(directions(i,2), directions(1,2), threshold) == 0
-                        disp('line 1 and line %i are within the threshold')
-                        equalToLine1(i) = 1;
-                    else
-                        disp('Not equal');
-                    end
-                end
-            end
-            
-            %then find the ones that are closes togheter
-            
-            distanceToLine1 = zeros(size(directions,1),1);
-            distanceToLine1(1) = Inf;
-            for i = 2:size(directions, 1)
-                if equalToLine1(i) == 1
-                    %calculat the distance from centeroids at x=0
-                    distanceToLine1(i) = norm([0, this.LRF_paramsy.x0_urg(i,2)]-...
-                        [0, this.LRF_paramsy.x0_urg(1,2)]);
-                end
-            end
-            
-            %find the smalles distance assume this is at the center of the
-            %pipe.
-            [minDist, indexMin] = min(distanceToLine1);
-            if minDist == 0
-                disp('No paralell lines found');
-            else
-                disp('Found paralell lines');
-                radius = this.LRF_height/2 + (minDist^2)/(8*this.LRF_height);
-                indexMin
-                distanceToLine1
+            if ~isempty(this.LRF_paramsy.a_urg)
+                directions = this.LRF_paramsy.a_urg;
                 
-                closestRadius = inf;
+                equalToLine1 = zeros(size(directions,1),1);
                 
-                %compare the distance to the calculated radiuses.
-                for i = 1:size(this.ToF_params.rk,1)
-                    switch compareValue(this.ToF_params.rk(i), radius, threshold/10)
-                        case 0
-                            disp('Found a radius whitihn 10 % of threshold of radius');
-                            
-                            closestRadius = this.ToF_params.rk(i);
-                        case -1
-                            disp('Found a radius smaller than radius');
-                            if abs(radius - this.ToF_params.rk(i)) < 0.03
-                                closestRadius = this.ToF_params.rk(i);
-                            end
-                        case 1
-                            disp('Found a radius larger than radius')
-                            if abs(this.ToF_params.rk(i) - radius) < 0.03
-                                closestRadius = this.ToF_params.rk(i);
-                            end
-                        otherwise
-                            disp('Unkonwn error')
+                %should start with line nearest to origin.
+                
+                %compare the first with the others
+                for i = 2:size(directions, 1)
+                    if compareValue(directions(i,1), directions(1,1), threshold) == 0
+                        if compareValue(directions(i,2), directions(1,2), threshold) == 0
+                            disp('line 1 and line %i are within the threshold')
+                            equalToLine1(i) = 1;
+                        else
+                            disp('Not equal');
+                        end
                     end
                 end
                 
-                % Add the cylinder to the back of the ToF_params.
+                %then find the ones that are closes togheter
                 
-                % find direction
+                distanceToLine1 = zeros(size(directions,1),1);
+                distanceToLine1(1) = Inf;
+                for i = 2:size(directions, 1)
+                    if equalToLine1(i) == 1
+                        %calculat the distance from centeroids at x=0
+                        distanceToLine1(i) = norm([0, this.LRF_paramsy.x0_urg(i,2)]-...
+                            [0, this.LRF_paramsy.x0_urg(1,2)]);
+                    end
+                end
                 
-                
-                
-                direction = [ (this.LRF_paramsy.a_urg(1,2)+this.LRF_paramsy.a_urg(indexMin,2)/2), 0,...
-                             -(this.LRF_paramsy.a_urg(1,1)+this.LRF_paramsy.a_urg(indexMin,1)/2)];
-                x0 = [0, this.LRF_height/2,0.2];
-               
-                
-                               
-                
-                
-                [X, Y, Z] = cylinder(radius*ones(2,1), 125); % plot the cone.
+                %find the smalles distance assume this is at the center of the
+                %pipe.
+                [minDist, indexMin] = min(distanceToLine1);
+                if minDist == 0
+                    disp('No paralell lines found');
+                    radius = 0;
+                    closestRadius = 0;
+                    indexMin = 0;
+                else
+                    disp('Found paralell lines');
+                    radius = this.LRF_height/2 + (minDist^2)/(8*this.LRF_height);
+                    indexMin
+                    distanceToLine1
+                    
+                    closestRadius = inf;
+                    
+                    %compare the distance to the calculated radiuses.
+                    for i = 1:size(this.ToF_params.rk,1)
+                        switch compareValue(this.ToF_params.rk(i), radius, threshold/10)
+                            case 0
+                                disp('Found a radius whitihn 10 % of threshold of radius');
+                                
+                                closestRadius = this.ToF_params.rk(i);
+                            case -1
+                                disp('Found a radius smaller than radius');
+                                if abs(radius - this.ToF_params.rk(i)) < 0.03
+                                    closestRadius = this.ToF_params.rk(i);
+                                end
+                            case 1
+                                disp('Found a radius larger than radius')
+                                if abs(this.ToF_params.rk(i) - radius) < 0.03
+                                    closestRadius = this.ToF_params.rk(i);
+                                end
+                            otherwise
+                                disp('Unkonwn error')
+                        end
+                    end
+                    
+                    % Add the cylinder to the back of the ToF_params.
+                    
+                    % find direction
+                    
+                    
+                    
+                    direction = [ (this.LRF_paramsy.a_urg(1,2)+this.LRF_paramsy.a_urg(indexMin,2)/2), 0,...
+                        -(this.LRF_paramsy.a_urg(1,1)+this.LRF_paramsy.a_urg(indexMin,1)/2)];
+                    x0 = [0, this.LRF_height/2,0.2];
+                 
+                    [X, Y, Z] = cylinder(radius*ones(2,1), 125); % plot the cone.
                     
                     
                     % find rotation axis and transformation matrix
@@ -208,23 +208,25 @@ function [this, radius, closestRadius, indexMin] = fuseSensors(this, threshold)
                             Zny(j, i) = (tf(3, 1:4)*[X(j,i); Y(j,i); Z(j,i); 1]);
                         end
                     end
-                    
-                    figure;
-                    set(gcf, 'Renderer', 'opengl');
-                    plot3(this.ToF_data(:,3), this.ToF_data(:,1), this.ToF_data(:,2), '.');
-                    hold on;
+                end
+                figure;
+                set(gcf, 'Renderer', 'opengl');
+                plot3(this.ToF_data(:,3), this.ToF_data(:,1), this.ToF_data(:,2), '.');
+                hold on;
+                if minDist ~= 0
                     surface(Zny./tf(4,4), Xny./tf(4,4), Yny./tf(4,4));
-                    hold off;
-                    axis equal;
-                    xlabel('Depth');
-                    ylabel('Camera X-direction');
-                    zlabel('Camera Y-direction');
-                    grid on
+                end
+                hold off;
+                axis equal;
+                xlabel('Depth');
+                ylabel('Camera X-direction');
+                zlabel('Camera Y-direction');
+                grid on
             end
+        
             
-                        
-        end
-  
+end
+
   
   function type = matchPipeProfile(this)
             
@@ -411,7 +413,7 @@ function [this, radius, closestRadius, indexMin] = fuseSensors(this, threshold)
             hold on;
             for k = 1:size(this.ToF_params.x0k, 1)
                 
-                if this.ToF_params.rk(k) > 2*(this.verden.pipe_diameter)/2
+                if this.ToF_params.rk(k) > 2*(this.verden.pipe_diameter)/2 || this.ToF_params.rk(k) < 0
                     warning('Radius errenous. Skipping...');
                 else
                     %% start constructing the cylinder from the given parameters.
