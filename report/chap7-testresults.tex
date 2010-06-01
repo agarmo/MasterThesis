@@ -82,7 +82,7 @@ shows the bottle used in the test cases.
 Some of the results are shown here. The ones that differ most from each other. The
 complete list of plots is shown in the Appendix. 
 
-\subsection{Long Pipe Test at Position 1}
+\subsection{Long Pipe Test at Position One}
 Figures \ref{chap7:fig-longpipe-tof-3d}--\ref{chap7:fig-longpipe-urg-2d} shows the test of
 the long pipe scenario. Figure \ref{chap7:fig-longpipe-tof-dist} shows the distance from each
 point in the data set from the time-of-flight camera to the surface fitted cylinders. The
@@ -97,6 +97,12 @@ parameters for this test are shown in Table \ref{chap7:tab-longpipe}.
         Vertical Histogram Bin Size & 0.5 \\
         Horizontal Point Threshold & 50 \\
         Vertical point Threshold & 30 \\
+        \hline
+        Cylinder fit Interval & 0.3 \\
+        Low-intensity Threshold & 500 \\
+        High-intensity Threshold & 15 000 \\
+        \hline
+        Parallel line threshold & 0.01 \\
         \hline
     \end{tabular}
     \caption{Test parameters for the long pipe test}
@@ -122,8 +128,27 @@ parameters for this test are shown in Table \ref{chap7:tab-longpipe}.
     \label{chap7:fig-longpipe-urg-2d}
 \end{figure}
 
+\subsection{Control Case at Position Two Looking at Position One}
+This this test shows how the algorithms preforms in the ideal case when placed inside the
+pipe. The parameters where mostly the same as for the long pipe test.
 
-
-
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{pics/pos21-control-tof-3d}
+    \caption{The point cloud and fitted cylinders taken from the time-of-flight camera}
+    \label{chap7:fig-pso21-control-tof-3d}
+\end{figure}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{pics/pos21-control-tof-dist}
+    \caption{The distance of the points from the fitted cylinders}
+    \label{chap7:fig-pos21-control-tof-dits}
+\end{figure}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{pics/pos21-control-urg-2d}
+    \caption{The data from the URG Laser Range Finder with fitted lines}
+    \label{chap7:fig-pos21-control-urg-2d}
+\end{figure}
 
 
