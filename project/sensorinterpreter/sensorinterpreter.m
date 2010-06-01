@@ -33,6 +33,7 @@ classdef sensorinterpreter
         LRF_data; % input: angles and ranges 2xN
         LRF_paramsy; % structs for holding data asociated with line fit
         LRF_paramsx; 
+        LRF_height; % The height of the measurement plane.
         
 %         FittedStructures_2D; % Structures for gathering 2d structures
 %         FittedStructures_3D; % structures for gathering 3d Structures
@@ -67,6 +68,7 @@ classdef sensorinterpreter
                 object.ToF_params = struct('x0k', [], 'ank',  [], 'rk', [],...
                     'dk', [], 'length_d', [], 'a_parmk', [], 'x0', []);
                             
+                object.LRF_height = 0.07; % 7 cm above ground.
                 
             elseif nargin == 2
                 
@@ -94,18 +96,18 @@ classdef sensorinterpreter
         
         
         %% Internal Calculation Function
-  function [this, minDist, closestRadius, indexMin] = fuseSensors(this, threshold)
-
+function [this, radius, closestRadius, indexMin] = fuseSensors(this, threshold)
             % find pralell lines, start with lines assumed along the pipe.
             directions = this.LRF_paramsy.a_urg;
+            
             equalToLine1 = zeros(size(directions,1),1);
+            
             %should start with line nearest to origin.
+            
             %compare the first with the others
             for i = 2:size(directions, 1)
-                if (abs(directions(i, 1)) >= (abs(directions(1, 1))-threshold)) &&...
-                        (abs(directions(i, 1)) <= (abs(directions(1,1))+threshold))
-                    if (abs(directions(i, 2)) >= (abs(directions(1, 2))-threshold)) &&...
-                            (abs(directions(i, 2)) <= (abs(directions(1,2))+threshold))
+                if compareValue(directions(i,1), directions(1,1), threshold) == 0
+                    if compareValue(directions(i,2), directions(1,2), threshold) == 0
                         disp('line 1 and line %i are within the threshold')
                         equalToLine1(i) = 1;
                     else
@@ -113,7 +115,9 @@ classdef sensorinterpreter
                     end
                 end
             end
+            
             %then find the ones that are closes togheter
+            
             distanceToLine1 = zeros(size(directions,1),1);
             distanceToLine1(1) = Inf;
             for i = 2:size(directions, 1)
@@ -123,25 +127,103 @@ classdef sensorinterpreter
                         [0, this.LRF_paramsy.x0_urg(1,2)]);
                 end
             end
+            
             %find the smalles distance assume this is at the center of the
-            %pipe. 
+            %pipe.
             [minDist, indexMin] = min(distanceToLine1);
             if minDist == 0
                 disp('No paralell lines found');
             else
                 disp('Found paralell lines');
+                radius = this.LRF_height/2 + (minDist^2)/(8*this.LRF_height);
+                indexMin
+                distanceToLine1
+                
+                closestRadius = inf;
+                
                 %compare the distance to the calculated radiuses.
-                calculatedRadius = minDist/2; % assume that the laser is measuring exactly in the middel of the pipe.
-                closestRadius = 0;
-                for j = 1:size(this.ToF_params.rk)
-                    % TODO check this
-                    if this.ToF_params.rk(j) >= closestRadius && this.ToF_params.rk(j) <= abs(calculatedRadius+0.05)
-                        closestRadius = this.ToF_params.rk(j);
+                for i = 1:size(this.ToF_params.rk,1)
+                    switch compareValue(this.ToF_params.rk(i), radius, threshold/10)
+                        case 0
+                            disp('Found a radius whitihn 10 % of threshold of radius');
+                            
+                            closestRadius = this.ToF_params.rk(i);
+                        case -1
+                            disp('Found a radius smaller than radius');
+                            if abs(radius - this.ToF_params.rk(i)) < 0.03
+                                closestRadius = this.ToF_params.rk(i);
+                            end
+                        case 1
+                            disp('Found a radius larger than radius')
+                            if abs(this.ToF_params.rk(i) - radius) < 0.03
+                                closestRadius = this.ToF_params.rk(i);
+                            end
+                        otherwise
+                            disp('Unkonwn error')
                     end
                 end
-                closestRadius
+                
+                % Add the cylinder to the back of the ToF_params.
+                
+                % find direction
+                
+                
+                
+                direction = [ (this.LRF_paramsy.a_urg(1,2)+this.LRF_paramsy.a_urg(indexMin,2)/2), 0,...
+                             -(this.LRF_paramsy.a_urg(1,1)+this.LRF_paramsy.a_urg(indexMin,1)/2)];
+                x0 = [0, this.LRF_height/2,0.2];
+               
+                
+                               
+                
+                
+                [X, Y, Z] = cylinder(radius*ones(2,1), 125); % plot the cone.
+                    
+                    
+                    % find rotation axis and transformation matrix
+                    rot_axis = cross(this.a0, direction')
+                    if norm(rot_axis) > eps
+                        rot_angle = asin(norm(rot_axis))
+                        if(dot(this.a0, direction')< 0)
+                            rot_angle = pi-rot_angle;
+                        end
+                    else
+                        rot_axis = this.a0
+                        rot_angle = 0
+                    end
+                    
+                    Rxyz = makehgtform('axisrotate', rot_axis, rot_angle);
+                    Txyz = makehgtform('translate', x0');
+                    
+                    tf = Txyz*Rxyz;
+                    
+                    Xny = zeros(2, size(X,2));
+                    Yny = zeros(2, size(Y,2));
+                    Zny = zeros(2, size(Z,2));
+                    % Transform cylinder to right scale and position
+                    for i = 1:126
+                        for j = 1:2
+                            Xny(j, i) = (tf(1, 1:4)*[X(j,i); Y(j,i); Z(j,i); 1]);
+                            Yny(j, i) = (tf(2, 1:4)*[X(j,i); Y(j,i); Z(j,i); 1]);
+                            Zny(j, i) = (tf(3, 1:4)*[X(j,i); Y(j,i); Z(j,i); 1]);
+                        end
+                    end
+                    
+                    figure;
+                    set(gcf, 'Renderer', 'opengl');
+                    plot3(this.ToF_data(:,3), this.ToF_data(:,1), this.ToF_data(:,2), '.');
+                    hold on;
+                    surface(Zny./tf(4,4), Xny./tf(4,4), Yny./tf(4,4));
+                    hold off;
+                    axis equal;
+                    xlabel('Depth');
+                    ylabel('Camera X-direction');
+                    zlabel('Camera Y-direction');
+                    grid on
             end
-  end
+            
+                        
+        end
   
   
   function type = matchPipeProfile(this)
@@ -318,7 +400,7 @@ classdef sensorinterpreter
         
         % This shows what the view should be like with the previous sensor
         % readings. This should open a plot with the the given view.
-        function [] = showSynthesizedView(this)
+        function [rot_axis, rot_angle] = showSynthesizedView(this)
             
             rot_axis = zeros(3, size(this.ToF_params.x0k, 1));
             rot_angle = zeros(size(this.ToF_params.x0, 1), 1);
@@ -351,21 +433,24 @@ classdef sensorinterpreter
                     Sz = makehgtform('scale',[1;1;this.interval] );
                     Txyz = makehgtform('translate', this.ToF_params.x0k(k,:));
                     Rxyz = makehgtform('axisrotate', rot_axis(:,k), rot_angle(k));
+                    Tz = makehgtform('translate', [0;0;-(this.interval/2)]);
                     
                     tf = Txyz*Rxyz*Sz;
-                    
+                    Xny = zeros(2, size(X,2));
+                    Yny = zeros(2, size(Y,2));
+                    Zny = zeros(2, size(Z,2));
                     
                     % Transform cylinder to right scale and position
                     for i = 1:size(X,2)
                         for j = 1:2
-                            X(j, i) = tf(1, 1:3)*[X(j,i); Y(j,i); Z(j,i)] + tf(1,4);
-                            Y(j, i) = tf(2, 1:3)*[X(j,i); Y(j,i); Z(j,i)] + tf(2,4);
-                            Z(j, i) = tf(3, 1:3)*[X(j,i); Y(j,i); Z(j,i)] + tf(3,4);
+                            Xny(j, i) = (tf(1, 1:4)*[X(j,i); Y(j,i); Z(j,i); 1]);
+                            Yny(j, i) = (tf(2, 1:4)*[X(j,i); Y(j,i); Z(j,i); 1]);
+                            Zny(j, i) = (tf(3, 1:4)*[X(j,i); Y(j,i); Z(j,i); 1]);
                         end
+                        
                     end
+                    h(k) = surface(Zny./tf(4,4), Xny./tf(4,4), Yny./tf(4,4));
                     
-                    
-                    h(k) = surface(Z, X, Y);
                     
                 end
                 
