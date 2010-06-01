@@ -73,7 +73,7 @@ for i = 1:size(intensity, 1)
         end
     end
 end
-clear intencity;
+clear intensity;
 clear discard;
 
 
@@ -126,7 +126,7 @@ clear pos_vec;
 
 %% start data recognition
 
-oversetter = oversetter.find3Dcylinders(0.3,[0;0;1])
+oversetter = oversetter.find3Dcylinders(0.5,[0;0;1])
 
 oversetter = oversetter.find2Dlines(30,50,0.5,0.1)
 
