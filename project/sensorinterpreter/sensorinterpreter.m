@@ -94,15 +94,12 @@ classdef sensorinterpreter
         
         
         %% Internal Calculation Function
-        
-        function [minDist, indexMin] = fuseSensors(this, threshold)
+  function [this, minDist, closestRadius, indexMin] = fuseSensors(this, threshold)
+
             % find pralell lines, start with lines assumed along the pipe.
             directions = this.LRF_paramsy.a_urg;
-            
             equalToLine1 = zeros(size(directions,1),1);
-            
             %should start with line nearest to origin.
-            
             %compare the first with the others
             for i = 2:size(directions, 1)
                 if (abs(directions(i, 1)) >= (abs(directions(1, 1))-threshold)) &&...
@@ -116,9 +113,7 @@ classdef sensorinterpreter
                     end
                 end
             end
-            
             %then find the ones that are closes togheter
-            
             distanceToLine1 = zeros(size(directions,1),1);
             distanceToLine1(1) = Inf;
             for i = 2:size(directions, 1)
@@ -128,33 +123,30 @@ classdef sensorinterpreter
                         [0, this.LRF_paramsy.x0_urg(1,2)]);
                 end
             end
-            %find the smalles distance
+            %find the smalles distance assume this is at the center of the
+            %pipe. 
             [minDist, indexMin] = min(distanceToLine1);
             if minDist == 0
                 disp('No paralell lines found');
             else
                 disp('Found paralell lines');
-                            
                 %compare the distance to the calculated radiuses.
                 calculatedRadius = minDist/2; % assume that the laser is measuring exactly in the middel of the pipe.
-                
                 closestRadius = 0;
                 for j = 1:size(this.ToF_params.rk)
-                    
-                    if this.ToF_params.rk(j) >= closestRadius && this.ToF_params.rk(j) <= calculatedRadius
-                        closestRadius = =this.ToF_
+                    % TODO check this
+                    if this.ToF_params.rk(j) >= closestRadius && this.ToF_params.rk(j) <= abs(calculatedRadius+0.05)
+                        closestRadius = this.ToF_params.rk(j);
                     end
-                        
-                    
                 end
+                closestRadius
             end
-                       
+  end
+  
+  
+  function type = matchPipeProfile(this)
             
-        end
-        
-        function type = matchPipeProfile(this)
-            
-        end
+  end
         
         
         %% find lines in 2d data

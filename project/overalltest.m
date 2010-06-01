@@ -11,11 +11,8 @@ oversetter = oversetter.setWorld(verden);
 
 %% urg
 disp('Loading urg file...')
-<<<<<<< HEAD
-urg = csvread('datadump/data/urg-pos1-control.txt');
-=======
 urg = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\urg-pos1-longpipe.txt');
->>>>>>> 3ba18ca6c2ddf688381292c4f7abf635e8fe595f
+
 disp('Loading urg file... Done!')
 ranges = hokuyo_parse_range(urg,1,size(urg)); % parses the ranges and angles in rad and meters
 
@@ -34,19 +31,44 @@ clear ranges;
 
 %% tof
 disp('Loading ToF file...')
-<<<<<<< HEAD
-temp = csvread('datadump/data/tof-pos1-control.txt');
-=======
 temp = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\tof-pos1-longpipe.txt');
->>>>>>> 3ba18ca6c2ddf688381292c4f7abf635e8fe595f
+intensity = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\amptof-pos1-longpipe.txt');
 disp('Loading ToF file... Done!')
+
+low_intensity = 500;
+high_intensity = 20000;
+
+discard = zeros(size(intensity,1), size(intensity,2));
+for i = 1:size(intensity, 1)
+    for j = 1:size(intensity, 2)
+        if intensity(i,j) <= low_intensity
+            discard(i,j) = 1;
+        elseif intensity(i,j) >= high_intensity
+            discard(i,j) = 1;
+        end        
+    end
+end
+
+
 i = size(temp);
- 
+
 xall = temp(1:i/3,:);
 yall = temp(i/3+1:2/3*i,:);
 zall = temp(2/3*i+1:end,:);
 
 clear temp;
+
+for i = 1:size(intensity, 1)
+    for j = 1:size(intensity, 2)
+        if discard(i, j) == 1
+            xall(i,j) = 0;
+            yall(i,j) = 0;
+            zall(i,j) = 0;
+        end
+    end
+end
+
+
 
 % Start the filtering.
 start = 10;
