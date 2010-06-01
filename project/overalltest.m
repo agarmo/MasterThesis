@@ -36,19 +36,24 @@ intensity = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\ampto
 disp('Loading ToF file... Done!')
 
 low_intensity = 500;
-high_intensity = 20000;
+high_intensity = 15000;
 
+discarded_points = 0;
 discard = zeros(size(intensity,1), size(intensity,2));
 for i = 1:size(intensity, 1)
     for j = 1:size(intensity, 2)
         if intensity(i,j) <= low_intensity
             discard(i,j) = 1;
+            discarded_points = discarded_points+1;
+            %disp('Discarding point low intensity value')
         elseif intensity(i,j) >= high_intensity
             discard(i,j) = 1;
+            discarded_points = discarded_points+1;
+            %disp('Discarding point high intensity value')
         end        
     end
 end
-
+discarded_points
 
 i = size(temp);
 
