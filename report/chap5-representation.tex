@@ -131,13 +131,49 @@ and fed into the line fit algorithm.
         \REQUIRE $(r, \theta)$ from Laser Range Finder
         \STATE average $r, \theta$ over $n$ samples
         \STATE convert $r, \theta \rightarrow$ $x, y$ 
+        \STATE with regard to $y$ construct histogram with $hist_y$ intervals
+        \FOR{each $Bin$ in $HitogramY$}
+            \IF{Number of points in $Bin$ $>$ $NoPointsY$}
+                \STATE Pass these points to the Least-Squares Line Fit Alg $\rightarrow$ $a_y$, $b_y$
+            \ENDIF
+        \ENDFOR
+        \STATE with regard to $x$ construct histogram with $hist_x$ intervals
+        \FOR{each $Bin$ in $HitogramX$}
+            \IF{Number of points in $Bin$ $>$ $NoPointsX$}
+                \STATE Pass these points to the Least-Squares Line Fit Alg $\rightarrow$ $a_x$, $b_x$
+            \ENDIF
+        \ENDFOR
     \end{algorithmic}
 \end{algorithm}
+Parameters needed to be set by the user is, the histogram bin sizes, $hits_x$ and
+$hits_y$. The more points will fit into the bins, and the lines will be more prone to
+other points that does not ``belong'' to the wall points. The other parameters are the
+threshold parameters for how many points there need to be in a histogram bin to pass them
+to the line fit, $NoPointsX$ and $NoPointsY$.
 
-This method involves a number of parameters and threshold values which need to be set and
-tuned by the user. 
-
-
+From these lines the radius and direction of the pipe can be found. The position of the
+Laser Range finder is assumed known, particularly the height above the ground are needed
+to calculate the radius of the pipe. The following relation is used.
+\begin{equation}
+    \begin{aligned}
+        r^2 &= P_2^2 + (\frac{d}{2})^2 \\
+        r &= P_1 + P_2  \quad \rightarrow \quad P_2 = r - P_1\\
+    \end{aligned}
+\end{equation}
+Where $r$ is the radius of the pipe, $P_1$ is the distance from the measurement plane to
+the lowest point in the pipe, $P_2$ is the distance form the center of the pipe to the
+measurement plane and $d$ is the distance between the matched line segments. Substituting
+for $P_2$ and rearranging
+\begin{equation}
+    \begin{aligned}
+        r^2& = (r - P_1)^2 + (\frac{d}{2})^2 = r^2 - 2 r P_1 + P_1^2 + (\frac{d}{2})^2 \\
+        2 r P_1 &= P_1^2 + (\frac{d}{2})^2 \\
+        r &= \frac{P_1}{2} + \frac{d^2}{8 P_1}
+    \end{aligned}
+\end{equation}
+This requires that two lines can be matched to be approximately parallel for the distance
+$d$ to be calculated. Therefor the direction of all the lines are compared to all the
+other lines and those parallel within some threshold, $ParallelThreshold$ are selected. 
 
 \section{Positioning in the World Representation}
 
