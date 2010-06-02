@@ -117,12 +117,22 @@ ToF-camera sensor frame, and the initial axis which unless other is said is alon
 z-axis, i.e. into the pipe seen from the camera.
 
 
-\subsection{Line Fit and Arc Fit in 2D Sensor Data}
+\subsection{Line Fit in 2D Sensor Data}
 Line fit algorithm is a least-squares line fit algorithm. For this to work properly, a
 selection of points assumed belonging to the line need to be fed into the algorithm. To
 select this points a histogram is formed for both x- and y-direction of the points. This
 will detect points which lie in a horizontal- and vertical lines. This points are selected
 and fed into the line fit algorithm. 
+
+\begin{algorithm}[htbp]
+    \caption{2D Line Fit algorithm}
+    \label{chap5:alg-2dlinefit}
+    \begin{algorithmic}
+        \REQUIRE $(r, \theta)$ from Laser Range Finder
+        \STATE average $r, \theta$ over $n$ samples
+        \STATE convert $r, \theta \rightarrow$ $x, y$ 
+    \end{algorithmic}
+\end{algorithm}
 
 This method involves a number of parameters and threshold values which need to be set and
 tuned by the user. 
