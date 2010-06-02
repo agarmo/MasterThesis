@@ -173,10 +173,17 @@ for $P_2$ and rearranging
 \end{equation}
 This requires that two lines can be matched to be approximately parallel for the distance
 $d$ to be calculated. Therefor the direction of all the lines are compared to all the
-other lines and those parallel within some threshold, $ParallelThreshold$ are selected. 
+other lines and those parallel within some threshold, $ParallelThreshold$ are selected.
+
 
 \section{Positioning in the World Representation}
+How the control system positions itself in the environment is very important for the
+control system. Because the system need to know where it is, and where it has been, to be
+able to determine where it will go. 
 
-
-
+Given the case that the \emph{SensorInterpreter} is capable of identifying and matching
+the nodes correct, this can be used as landmark when determining global position. The
+graph which have been created, can be matched with the \`a priori map, based on what kind
+of nodes that have been passed, the taken path of the robot can be matched given that the
+\`a priori map is accurate with regard to the location and order of the nodes. 
 
