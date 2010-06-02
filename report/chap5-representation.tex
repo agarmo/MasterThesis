@@ -154,13 +154,11 @@ to the line fit, $NoPointsX$ and $NoPointsY$.
 From these lines the radius and direction of the pipe can be found. The position of the
 Laser Range finder is assumed known, particularly the height above the ground are needed
 to calculate the radius of the pipe. The following relation is used.
-\begin{equation}
-    \begin{aligned}
-        r^2 &= P_2^2 + (\frac{d}{2})^2 \\
-        r &= P_1 + P_2  \quad \rightarrow \quad P_2 = r - P_1\\
-    \end{aligned}
-\end{equation}
-Where $r$ is the radius of the pipe, $P_1$ is the distance from the measurement plane to
+\begin{align}
+    r^2 &= P_2^2 + (\frac{d}{2})^2 \\
+    r &= P_1 + P_2  \quad \rightarrow \quad P_2 = r - P_1
+\end{align}
+       Where $r$ is the radius of the pipe, $P_1$ is the distance from the measurement plane to
 the lowest point in the pipe, $P_2$ is the distance form the center of the pipe to the
 measurement plane and $d$ is the distance between the matched line segments. Substituting
 for $P_2$ and rearranging
