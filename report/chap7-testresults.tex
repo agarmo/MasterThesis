@@ -108,7 +108,6 @@ parameters for this test are shown in Table \ref{chap7:tab-longpipe}.
     \caption{Test parameters for the long pipe test}
     \label{chap7:tab-longpipe}
 \end{table}
-
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{pics/longpipe-tof-3d}
@@ -119,7 +118,7 @@ parameters for this test are shown in Table \ref{chap7:tab-longpipe}.
     \centering
     \includegraphics[width=0.8\textwidth]{pics/longpipe-tof-dist}
     \caption{The distance of the points from the fitted cylinders}
-    \label{chap7:fig-longpipe-tof-dits}
+    \label{chap7:fig-longpipe-tof-dist}
 \end{figure}
 \begin{figure}[htbp]
     \centering
@@ -130,8 +129,8 @@ parameters for this test are shown in Table \ref{chap7:tab-longpipe}.
 
 \subsection{Control Case at Position Two Looking at Position One}
 This this test shows how the algorithms preforms in the ideal case when placed inside the
-pipe. The parameters where mostly the same as for the long pipe test.
-
+pipe. The parameters where mostly the same as for the long pipe test. See Fiugres
+\ref{chap7:fig-pos21-control-tof-3d}--\ref{chap7:fig-pos21-control-urg-2d}.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{pics/pos21-control-tof-3d}
@@ -154,7 +153,8 @@ pipe. The parameters where mostly the same as for the long pipe test.
 
 
 \subsection{Irregular Obstacle at Point B at Position One}
-
+This test shows how an irregular object affects the algorithms. See Figures 
+\ref{chap7:fig-pos1-irregular-tof-3d}--\ref{chap7:fig-pos1-irregular-urg-2d} 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{pics/pos1-irregular-tof-3d}
@@ -173,3 +173,35 @@ pipe. The parameters where mostly the same as for the long pipe test.
     \caption{The data from the URG Laser Range Finder at Position 1}
     \label{chap7:fig-pos1-irregular-urg-2d}
 \end{figure}
+
+\subsection{Regular Obstacle at Point B at Position One}
+Figures \ref{chap7:fig-pos1-regular-tof-3d}--\ref{chap7:fig-pos1-regular-urg-2d} shows the
+results form the regular obstacle test. Figure \ref{chap7:fig-pos1-regular-urg-2d} differs
+from Figure \ref{chap2:fig-pos1-irregular-urg-2d} in the only way that the irregular
+obstacle is not in the field-of-view of the Laser Range Finder, but the regular obstacle
+is. But, as seen on the figures the difference is not notably on the line fitting
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{pics/pos1-regular-urg-3d}
+    \caption{Cylinder fitted only using the Laser Range Finder measurements at position 1}
+    \label{chap7:fig-pos1-regular-urg-3d}
+\end{figure}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{pics/pos1-regular-tof-3d}
+    \caption{Fitted cylinders from ToF camera at position 1 with regular obstacle}
+    \label{chap7:fig-pos1-regular-tof-3d}
+\end{figure}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{pics/pos1-regular-tof-dist}
+    \caption{The distance from the fitted cylinder with regular obstacle}
+    \label{chap7:fig-pos1-regular-tof-dits}
+\end{figure}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{pics/pos1-regular-urg-2d}
+    \caption{The data from the URG Laser Range Finder at Position 1}
+    \label{chap7:fig-pos1-regular-urg-2d}
+\end{figure}
+
