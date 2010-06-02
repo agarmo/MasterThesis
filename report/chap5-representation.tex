@@ -187,3 +187,13 @@ graph which have been created, can be matched with the \`a priori map, based on 
 of nodes that have been passed, the taken path of the robot can be matched given that the
 \`a priori map is accurate with regard to the location and order of the nodes. 
 
+For example the robot passes first through a L-bend, then continues to a Y-Junction. It
+continues to the left, where it hits a R-bend and into a T-Junction. This sequence of
+nodes, can be matched to the given map, and a position can be estimated. If there are
+ambiguities the correct position cannot be established before additional nodes are passed.
+The pipe network need to be, using an analogue to the system identification terminology, 
+\emph{persistently exciting}. Which means that the network consists of enough unique features and
+sequences that the position can be determined uniquely. 
+
+********REFERENCE TO MAKRO which uses this kind of positioning*********
+
