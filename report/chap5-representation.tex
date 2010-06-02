@@ -106,10 +106,11 @@ the initial radius, $r_0$.
         \ENDFOR
     \end{algorithmic}
 \end{algorithm}
-Here there are a huge problem. The points not belonging to the geographical
+Here there are a couple of problems. First, the points not belonging to the geographical
 primitive, i.e. the cylinder will draw the cylinder fit off-axis, and cause the cylinder
 fit to fail, as the Least-Squares approach assumes that all the points in the supplied set
-belongs to the cylinder. 
+belongs to the cylinder. Secondly, the Gauss-Newton algorithm needs good initial
+estimates. ***************More info here****************
 
 The user parameters in this algorithm are the \emph{subset threshold} which decides the interval
 of the subsets and also how many cylinders should be fitted to the given point cloud. The
