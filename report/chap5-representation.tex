@@ -64,21 +64,32 @@ detected.
 
 
 \subsection{Cylinder Fit from 3D Sensor Data}
-The cylinder fit is a Least-Squares Gauss-Newton algorithm. This algorithm are very
-useful since it does not require the calculation of the Second order derivatives, or the
-Hessian matrix. This calculations are very cumbersome and computationally expensive. 
+The three dimensional point cloud which is output form the Time-of-Flight camera are
+filtered before it is fed to the surface fit algorithm. Firstly the intensity images, is
+used for filtering out pixels with too high or too low intensity values. The high
+intensity values indicate that the pixel is too close to measure, or that the surface is
+too reflective, either way this will give bad range data. The pixels which have too low
+intensity values are either too far away, or might indicate that a multi-path reflections
+and are filtered away. 
 
-The point cloud from the Time-of-Flight camera are divided into equally spaced
-sections with regard to the z-axis, i.e. the depth into the pipe. This intervals of 3D
-data are fed into the algorithm and produces a set of cylinders which are fitted to the
-pipe. The distance of the points from the proposed cylinder are output from the algorithm
-and can be used for determining if the cylinder fit is a good fit. 
-\begin{algorithm}
+After doing this a number of successive captures are averaged to provide less noisy image.
+Then the coordinates are sorted on the z-coordinate and divided into $n$ equally spaced
+subsets. This means that there will be $n$ cylinders fitted to the captured point cloud.
+This is too ease the amount of memory used to process the whole point cloud, which as
+shown later was to big much for matlab to handle. 
+
+The surface fit algorithm is a Nonlinear Least-Squares Guass-Newton algorithm. It parameterize the
+cylinder as described in Section \ref{chap2:sec-surface-fit-alg}. The input to this
+algorithm is start coordinates of the cylinder axis, $x_0$, the axis direction $a_0$, and
+the initial radius, $r_0$.
+\begin{algorithm}[htbp]
     \caption{Cylinder Fit Algorithm}
     \label{chap5:alg-cylinderfit}
     \begin{algorithmic}
-        \REQUIRE (X, Y, Z) $\leftarrow$ point cloud
-        \STATE Average point cloud over $n$ samples
+        \REQUIRE (X, Y, Z) $\leftarrow$ point cloud and IntensityImage
+        \STATE Filter out pixels with Intensity Values below $LowIntensity$ and
+        $HighIntensity$
+        \STATE Average point cloud over $m$ samples
         \STATE Remove all trivial points
         \STATE Sort on Z-coordinate
         \STATE Divide point cloud into $n$ equally spaced $SubSets$ according to $|Z| >$
@@ -95,16 +106,10 @@ and can be used for determining if the cylinder fit is a good fit.
         \ENDFOR
     \end{algorithmic}
 \end{algorithm}
-
-\begin{figure}[htbp]
-    \centering
-    %\includegraphics[width=0.7\textwidth]{pics/cylinderfit}
-    \caption{The set of cylinders fitted to the point cloud}
-    \label{chap5:fig-cylinderfit}
-\end{figure}
-An example of a set of fitted cylinders are shown in Figure \ref{chap5:fig-cylinderfit}.
-One might see that the axis are off. This is because noise and the least squares nature of
-the fit. The noisy points will draw the cylinder off axis compared to the real one. 
+Here there are a huge problem. The points not belonging to the geographical
+primitive, i.e. the cylinder will draw the cylinder fit off-axis, and cause the cylinder
+fit to fail, as the Least-Squares approach assumes that all the points in the supplied set
+belongs to the cylinder. 
 
 The user parameters in this algorithm are the \emph{subset threshold} which decides the interval
 of the subsets and also how many cylinders should be fitted to the given point cloud. The
@@ -124,6 +129,12 @@ select this points a histogram is formed for both x- and y-direction of the poin
 will detect points which lie in a horizontal- and vertical lines. This points are selected
 and fed into the line fit algorithm. 
 
+This approach is also prone to the problem with least squares, that all the points are
+assumed to belong to the geographical primitive, and that the noise averages out when
+enough samples are taken. But here the points are segmented on vertical and horizontal
+lines. Lines that are neither horizontal or will causes problem for this algorithm. If the
+histogram bins are too large, the direction of the fitted line will be diverted, and if it
+is too small the algorithm will not detect the points as a belonging to a line. 
 \begin{algorithm}[htbp]
     \caption{2D Line Fit algorithm}
     \label{chap5:alg-2dlinefit}
