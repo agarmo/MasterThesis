@@ -63,26 +63,58 @@ detected.
 \section{Map-building From the Sensor Data}
 
 
-\subsection{Cylinder or Cone Fit from 3D Sensor Data}
+\subsection{Cylinder Fit from 3D Sensor Data}
 The cylinder fit is a Least-Squares Gauss-Newton algorithm. This algorithm are very
 useful since it does not require the calculation of the Second order derivatives, or the
 Hessian matrix. This calculations are very cumbersome and computationally expensive. 
 
-The point cloud which is the output from the Time-of-Flight camera are divided into
+The point cloud from the Time-of-Flight camera are divided into equally spaced
 sections with regard to the z-axis, i.e. the depth into the pipe. This intervals of 3D
 data are fed into the algorithm and produces a set of cylinders which are fitted to the
 pipe. The distance of the points from the proposed cylinder are output from the algorithm
-and are used for determining if the cylinder fit is a good fit. 
+and can be used for determining if the cylinder fit is a good fit. 
+\begin{algorithm}
+    \caption{Cylinder Fit Algorithm}
+    \label{chap5:alg-cylinderfit}
+    \begin{algorithmic}
+        \REQUIRE (X, Y, Z) $\leftarrow$ point cloud
+        \STATE Average point cloud over $n$ samples
+        \STATE Remove all trivial points
+        \STATE Sort on Z-coordinate
+        \STATE Divide point cloud into $n$ equally spaced $SubSets$ according to $|Z| >$
+        Threshold
+        \FOR{every $SubSets$}
+            \STATE Get initial values for Surface Fit algorithm
+            \STATE  $r, a, x_0, d$ $\leftarrow$ run surface fit algorithm on $SubSets$
+            with given Initial Values
+        \ENDFOR
+        \FOR{every $r$}
+            \IF {$r > m \times PipeRadius$}
+                \STATE Mark $r$ as erroneous
+            \ENDIF
+        \ENDFOR
+    \end{algorithmic}
+\end{algorithm}
 
 \begin{figure}[htbp]
     \centering
-   % \includegraphics[width=0.7\textwidth]{pics/cylinderfit}
+    %\includegraphics[width=0.7\textwidth]{pics/cylinderfit}
     \caption{The set of cylinders fitted to the point cloud}
     \label{chap5:fig-cylinderfit}
 \end{figure}
 An example of a set of fitted cylinders are shown in Figure \ref{chap5:fig-cylinderfit}.
 One might see that the axis are off. This is because noise and the least squares nature of
 the fit. The noisy points will draw the cylinder off axis compared to the real one. 
+
+The user parameters in this algorithm are the \emph{subset threshold} which decides the interval
+of the subsets and also how many cylinders should be fitted to the given point cloud. The
+other parameters are $m$ which tells for which values the predicted cylinder radii are
+erroneous. 
+
+The initial values which are required for the surface fit, is the assumed start position
+of the cylinder which at the first \emph{SubSet} is at the origin with regard to the
+ToF-camera sensor frame, and the initial axis which unless other is said is along the
+z-axis, i.e. into the pipe seen from the camera.
 
 
 \subsection{Line Fit and Arc Fit in 2D Sensor Data}
