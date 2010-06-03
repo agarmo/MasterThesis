@@ -125,7 +125,7 @@ and where dependant on the time to locate enough memory to store the scan.
 
 
 
-\subsection{Surface Fit Algorithm}
+\subsection{Surface Fit and Pipe Properties Estimation}
 The proposed surface fit algorithm is based on least-squares. This does not work very good
 when there is no segmentation employed in the system. Looking at Figure
 \ref{chap7:fig-longpipe-tof-3d} from the Long pipe test, the first cylinder axis is severely displaced. This
@@ -160,9 +160,34 @@ clustering of points.
 Figure \ref{chap7:fig-longpipe-tof-dist} is a measure on how good the cylinder fits. The
 figure have small crosses where the next next cylinder interval starts. The x-axis show
 the number of points which is fitted to the cylinder, and the y-axis scale is in meters.
+As seen from the figure, the overall distance of the points to the given cylinders are in
+general less than 5 cm, this is not a great result, but it suffices and gives the general
+direction of the pipe. This collection of points might be used for a crude selection
+criterion for which point indices that might belong to the cylinder. The algorithm might
+then be run once more on the filtered point selection, and give a better cylinder fit to
+selected set. 
 
-
-
+For the Laser Range finder data, on this test, the line fitting worked quite well, see
+Figure \ref{chap7:fig-longpipe-urg-2d}. For the horizontal lines, the walls of the pipe
+are detected adequately. The error of the for the fitted horizontal lines are oscillating
+around zero, except for the ends of the lines. The vertical line fit , which
+really is transversal lines in the plane, are another story. The histogram bins for the
+vertical lines where chosen large in this test, and this can be seen because all the lines
+which really should have been vertical on the figure are either drawn to the left or right
+of the vertical axis. 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{pics/longpipe-urg-hist}
+    \caption{The histogram for the vertical and horizontal line fit for the long pipe test}
+    \label{chap8:fig-longpipe-urg-hist}
+\end{figure}
+Figure \ref{chap8:fig-longpipe-urg-hist} shows the distribution of the points in the
+histogram binds. As seen, there are most points in the bin containing the origin, this is
+because of the sectors of the laser range finder which cannot be measured. This points are
+not removed from the data set, but not included in the line fitting algorithm. 
+The second plot in the figure clearly shows that there are three distinct gathering of
+points with almost the same y-coordinates, which makes up the three walls of as seen on
+Figure \ref{chap7:fig-longpipe-urg-2d}.
 
 \section{Why did it perform this way?}
 
