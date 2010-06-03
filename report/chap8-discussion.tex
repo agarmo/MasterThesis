@@ -70,7 +70,36 @@ the pipe bends where turned towards the window which gave much sunlight. If a ar
 light source were included in the tests, some of the features would be sharper and the
 matching would have produced better results. 
 
+The inside of the test pipe were mostly featureless. The implemented algorithms did not
+detect enough features in both cameras to calculate a dense stereo image of in most of the
+cases. 
 
+Even when there were obstacles, both irregular and regular objects, the algorithm did not
+detect enough features, and where not able to match these features. This might be because
+that there were not enough light in the scene, and the surfaces of the irregular object
+where not sharp enough for the algorithm to detect. 
+
+To test if the algorithm did provide dense stereo images, the stereo rig were directed at
+a typical lab environment, with enough structure to make good stereo matches for the
+implementation. See figures \ref{chap8:fig-structured-test-rectified} and
+\ref{chap8:fig-structured-test-depht}
+\begin{figure}[htbp]
+    \centering
+    %\includegraphics[width=0.8\textwidth]{pics/structure-test-rectified}
+    \caption{Rectified left and right images of the structured lab environment}
+    \label{chap8:fig-structured-test-rectified}
+\end{figure}
+\begin{figure}[htbp]
+    \centering
+    %\includegraphics[width=0.45\textwidth]{pics/structure-test-depth}
+    %\includegraphics[width=0.45\textwidth]{pics/structured-test-3d}
+    \caption{Depth image and projected point cloud of the structured lab environment test}
+    \label{chap8:fig-structured-test-depth}
+\end{figure}
+This clearly shows that the algorithm works adequately for good lit, structured
+environments. The depth image is represented in pixel related units. Since the exact size
+of the pixels on the CCD chip were difficult to come by, the distances are given in
+pixels.
 
 
 \section{Why did it perform this way?}
