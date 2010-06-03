@@ -82,7 +82,7 @@ where not sharp enough for the algorithm to detect.
 To test if the algorithm did provide dense stereo images, the stereo rig were directed at
 a typical lab environment, with enough structure to make good stereo matches for the
 implementation. See figures \ref{chap8:fig-structured-test-rectified} and
-\ref{chap8:fig-structured-test-depht}
+\ref{chap8:fig-structured-test-depth}
 \begin{figure}[htbp]
     \centering
     %\includegraphics[width=0.8\textwidth]{pics/structure-test-rectified}
@@ -99,7 +99,32 @@ implementation. See figures \ref{chap8:fig-structured-test-rectified} and
 This clearly shows that the algorithm works adequately for good lit, structured
 environments. The depth image is represented in pixel related units. Since the exact size
 of the pixels on the CCD chip were difficult to come by, the distances are given in
-pixels.
+pixels. It can be seen that the range image is much more detailed, this is most probably
+because there are sufficient light in the scene and a lot more features which can be
+matched.
+
+When regarding speed, the \emph{OpenCV} library are reasonable fast. When running at
+$640\times480$ a brute-force implementation of the stereo matching using standard
+\emph{OpenCV}-library methods, where able to process 2-3 stereo pairs each second, and
+output a dense stereo range image, on a Pentium 4 3.0 GHz Windows XP standard workstation
+with 2 Gb of RAM. 
+
+
+
+\subsection{Hokuyo URG-04LX Laser Range Finder}
+The measurement from the laser range finder that affects the readings in the test were
+mostly random gaussian distributed noise. To get rid of this, 5 successive
+readings where averaged. Since the update rate of the range finder is 10 Hz, the system
+will get readings from the URG twice every second. This will not impact the control system
+that much, since the dynamics of the system is not that fast. The implementation, the time
+needed to get a full range scan was about 0.1-0.15 seconds. The times seemed a bit random,
+and where dependant on the time to locate enough memory to store the scan.. The times
+seemed a bit random, and where dependant on the time to locate enough memory to store the
+scan.. The times seemed a bit random, and where dependant on the time to locate enough
+memory to store the scan.. The times seemed a bit random, and where dependant on the time
+to locate enough memory to store the scan. 
+
+
 
 
 \section{Why did it perform this way?}
