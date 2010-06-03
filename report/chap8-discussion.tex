@@ -89,6 +89,8 @@ implementation. See figures \ref{chap8:fig-structured-test-rectified} and
     \caption{Rectified left and right images of the structured lab environment}
     \label{chap8:fig-structured-test-rectified}
 \end{figure}
+The rectified images have horizontal lines superimposed, are to verify that the same
+pixels that are in both images are aligned horizontally.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.45\textwidth]{pics/structure-test-depth}
@@ -96,7 +98,8 @@ implementation. See figures \ref{chap8:fig-structured-test-rectified} and
     \caption{Depth image and projected point cloud of the structured lab environment test}
     \label{chap8:fig-structured-test-depth}
 \end{figure}
-This clearly shows that the algorithm works adequately for good lit, structured
+This clearly shows that the rectification and finding stereo correspondences
+works adequately for good lit, structured
 environments. The depth image is represented in pixel related units. Since the exact size
 of the pixels on the CCD chip were difficult to come by, the distances are given in
 pixels. It can be seen that the range image is much more detailed, this is most probably
@@ -118,7 +121,45 @@ readings where averaged. Since the update rate of the range finder is 10 Hz, the
 will get readings from the URG twice every second. This will not impact the control system
 that much, since the dynamics of the system is not that fast. The implementation, the time
 needed to get a full range scan was about 0.1-0.15 seconds. The times seemed a bit random,
-and where dependant on the time to locate enough memory to store the scan.  
+and where dependant on the time to locate enough memory to store the scan. 
+
+
+
+\subsection{Surface Fit Algorithm}
+The proposed surface fit algorithm is based on least-squares. This does not work very good
+when there is no segmentation employed in the system. Looking at Figure
+\ref{chap7:fig-longpipe-tof-3d} from the Long pipe test, the first cylinder axis is severely displaced. This
+is because of pipeline profile. The Y-junction draws is recognized as half a cylinder. The
+other cylinders are however fitted better to the point cloud. Although the axis are
+directed upwards. The direction vectors are given below in Equation
+\eqref{chap8:eq-direction-longpipe}. 
+\begin{equation}
+    \label{chap8:eq-direction-longpipe}
+    a_1 = \left[ \begin{matrix}
+                        0.8165\\
+                       -0.1749\\
+                       0.5503 
+                 \end{matrix} \right] \quad a_2 = \left [
+                 \begin{matrix}
+                       0.0009\\
+                       0.08657\\
+                       0.9963
+                 \end{matrix} \right] \quad a_3 = \left [
+                 \begin{matrix}
+                       -0.0997\\
+                       0.1185\\
+                       0.9879
+                 \end{matrix} \right]
+\end{equation}
+Vector $a_2$ and $a_3$ are almost parallel with the z-axis, which is the view direction,
+and also the direction of the pipe. But the axis are offset in the y-direction which tilts
+the cylinder axis upwards. This is due to the uneven distribution of points in the top of
+the pipe, and because of the least-squares approach the axis are drawn towards the largest
+clustering of points. 
+
+Figure \ref{chap7:fig-longpipe-tof-dist} is a measure on how good the cylinder fits. The
+figure have small crosses where the next next cylinder interval starts. The x-axis show
+the number of points which is fitted to the cylinder, and the y-axis scale is in meters.
 
 
 
