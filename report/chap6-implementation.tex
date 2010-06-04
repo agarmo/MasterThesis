@@ -83,10 +83,6 @@ The algorithm which is used are the \emph{EUROMETROS}\cite{eurometros} Matlab li
 estimated radii, and directions of the data sets. Also the distance of the data set to the
 estimated cylinders are output, which is a measurement on how good the cylinder fit is. 
 
-\paragraph{Issues}
-The algorithm is sensitive to edge data. This can be controlled with limiting the interval
-in the z-direction of which the cylinder is fitted to the data.*************FIX*******
-
 
 \section{High-level Implementations}
 
@@ -107,5 +103,42 @@ classes which inherits from a super node.
 
 
 \section{Summary of Parameters}
+Here a summary of the different parameters that the user is required to set, and guess, is
+given. 
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{|r|l|}
+        \hline
+        $LowIntensity$ &  Threshold value for filtering low intensity pixels   \\
+        $HighIntensity$ & Threshold value for filtering high intensity pixels  \\
+        Interval      &  The interval for which the point cloud should be divided \\
+        $m$             &  value which defines $m r_i$ as errenous             \\
+        \hline
+        $hits_y$    &  The bin sizes of the histogram in the y direction       \\
+        $hist_x$    &  The bin sized of the histogram in the x direction       \\
+        $NoPointsY$ &  The number of points in a bin to define a line          \\
+        $NoPointsX$ &  The number of points in a bin to define a line         \\
+        $P_1$       &  The distance of the measurement plane of the URG in meters\\
+        $ParallelThreshold$ &  Upper value that defines if two lines are parallel \\
+        \hline
+        $NoChessBoardImages$ & images of the checkerboard required for stereo camera calibration         \\
+        \hline
+    \end{tabular}
+    \caption{Summary of the user parameters}
+    \label{chap6:tab-user-parameters}
+\end{table}
+
+\section{What is not Implemented}
+There are a number of things that are not implemented because of time issues. Probably the
+most important thing is the segmentation of the sensor data. This is crucial for the
+least-squares method to work properly. 
+
+Another thing that is not implemented is the module that recognizes and matches pipe
+profiles. The idea of this is that it will from the sensor interpreter recognize the pipe
+profile, which is matched to some internal database of profiles.
+
+Also, the matching algorithm for finding the global position from the passed-through nodes
+have also been skipped for time issues. All, of this modules are easy to insert in the
+present implementation, because of the modular architecture. 
 
 

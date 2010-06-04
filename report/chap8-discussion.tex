@@ -175,6 +175,7 @@ really is transversal lines in the plane, are another story. The histogram bins 
 vertical lines where chosen large in this test, and this can be seen because all the lines
 which really should have been vertical on the figure are either drawn to the left or right
 of the vertical axis. 
+
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{pics/longpipe-urg-hist}
@@ -188,6 +189,26 @@ not removed from the data set, but not included in the line fitting algorithm.
 The second plot in the figure clearly shows that there are three distinct gathering of
 points with almost the same y-coordinates, which makes up the three walls of as seen on
 Figure \ref{chap7:fig-longpipe-urg-2d}.
+
+When estimating the radius of the pipe based solely on the laser range finder, the
+following result is produced. 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{pics/longpipe-urg-3d}
+    \caption{Estimated cylinder using data from Laser Range Finder}
+    \label{chap8:fig-longpipe-urg-3d}
+\end{figure}
+The cylinder is fitted right in the middle of the point cloud, but the radius of the
+cylinder is smaller than the point cloud. The radius is calculated to be $r = 0.1125$. This
+is 1 cm smaller than the actual radius of $r_r = 0.1225$. This difference is most
+probably because the hight of the measurement plane was not recorded exactly, and therefor
+underestimating the radius. 
+
+When this is shown together with the point cloud, it is
+possible that the time-of-flight camera have overestimated the distances at close range,
+and therefor making the cylinder appear larger than it really is. \cite{sintef-tof} found
+that the measurements would narrow as the range increased. 
+
 
 \section{Why did it perform this way?}
 
