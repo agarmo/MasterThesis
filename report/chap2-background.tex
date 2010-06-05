@@ -618,10 +618,14 @@ When finally the stereo correspondences are found, the \emph{disparity} can be c
 The disparity is the difference in pixels coordinates from of the matched feature from one
 image to the other. This disparity is inversely proportional to the depth. This means that
 the depth perception of the stereo rig is better when relatively close to the cameras, as
-Figure \ref{chap2:fig-disparity-depth} shows.
+Figure \ref{chap2:fig-disparity-depth} shows. 
+Since the disparity is an integer, the resolution of the Stereo Rig depends on the
+baseline. The figure shows the depth-disparity plot with 6 different baselines, $20,
+60, 100, 150, 200$ and $300$ millimeters. It is clearly seen that the depth resolution becomes better
+when the baseline increases. 
 \begin{figure}[htbp]
     \centering
-    %\includegraphics[width=0.5\textwidth]{pics/disparity-depth}
+    \includegraphics[width=0.7\textwidth]{pics/disparity}
     \caption{The relationship between depth and disparity}
     \label{chap2:fig-disparity-depth}
 \end{figure}
@@ -633,16 +637,8 @@ The 3D coordinates of the point can be calculated form the disparities given by 
 matching algorithms. This is the process of \emph{reprojection}. Using triangulation
 between the two known camera locations the depth can be derived accordingly to 
 \begin{equation}
-    D = f (T / d - 1)
+    z = \frac{f T}{x_l - x_r}
 \end{equation}
-
-\begin{figure}[htbp]
-    \centering
-    %\includegraphics[width=0.5\textwidth]{pics/stereo-triangulation}
-    \caption{Triangulation in the stereo rig}
-    \label{chap2:fig-stereo-triangulation}
-\end{figure}
-
 
 
 
