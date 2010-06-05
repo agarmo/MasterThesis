@@ -143,21 +143,22 @@ more specific sensor characteristics in later sections.
 
 
 \subsection{Triangulation}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.55\textwidth]{pics/triangulation}
+    \caption{Triangulation setup}
+    \label{chap2:fig-triangulation}
+\end{figure}
 The technique of triangulation is an old and well-known technique for range determination.
-Two points with known locations are used. The distance between the two points are called
-the \emph{baseline}. Instead of measuring the range to a third point directly the angles
-from the two ends of the baseline to a third point is used to calculate the range
+Two points with known locations are used. The distance between the two points, $A$ and $B $are called
+the \emph{baseline}. Instead of measuring the range to $p1$ directly, the angles
+from $A$ and $B$ and the baseline is used to calculate the range to the third point, $p1$,
 according to Equation \ref{chap2:eq-triangulation}. See Figure
 \ref{chap2:fig-triangulation}.
 \begin{equation}
     \label{chap2:eq-triangulation}
     d = b \frac{\sin{\alpha} \sin{\beta}}{\sin{\alpha + \beta}}
 \end{equation}
-\begin{figure}[htbp]
-    \caption{Triangulation setup}
-    \label{chap2:fig-triangulation}
-\end{figure}
-
 This technique is accurate for as long as all the points are in the same plane.
 
 
@@ -413,14 +414,14 @@ where
     \centering
     \includegraphics[width=0.7\textwidth]{pics/pinhole_model}
     \caption{Pinhole Camera Model showing two dimensions}
-    \label{fig:ch2-pinhole}
+    \label{chap2:fig-pinholemodel}
 \end{figure}
 
-Figure \ref{chap2:fig-pinhole} shows the configuration with the pinhole located at
+Figure \ref{chap2:fig-pinholemodel} shows the configuration with the pinhole located at
 Origo and the image plane located at $f$. Where the pinhole is are often termed
 \emph{center of projection}. The x axis of the image is located
 upwards, while the real Z axis are the horizontal axis, that are called the
-\emph{optcal axis}. This lead us to the next parameters which need to be defined.
+\emph{optcal axis} or the \emph{principal axis}. This lead us to the next parameters which need to be defined.
 
 The optical axis should ideally always be aligned with the center of projection. Due to
 manufacturing inaccuracies this is rarely the case, therefor we need two more parameters
