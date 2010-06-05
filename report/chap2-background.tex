@@ -500,18 +500,18 @@ images.
 \paragraph{Epipolar Geometry}
 To describe the stereo rig and geometry between the left and right cameras, the term
 \emph{epipolar geometry} is introduced. Epipolar geometry exists between any two cameras.
-The different center of projections, $O_r$ and $O_l$, and corresponding
-projective planes, $\Pi_r$ and $\Pi_l$ and the term \emph{epipole} on the projective plane
-$\Pi_r$, $e_r$ can now be defined as the image of the center of projection of the other 
-camera, $O_l$. Suppose the point, $P$ are viewed from both cameras, and have the image
-location, $p_l$ and $p_r$ in the left and right view, respectively. The line from the left
-epipole, $e_l$ to $p_l$ and the line from $e_r$ to $p_r$ are called the \emph{epipolar
-lines}. The planes made by the observed real world point, $P$ and the center of
-projections, $O_r$ and $O_l$ are called the \emph{epipolar planes}. See Figure
-\ref{chap2:fig-epipolarGeometry}
+The different center of projections, $C'$ and $c$, and corresponding
+projective planes, $\Pi'$ and $\Pi$ and the term \emph{epipole} on the projective plane
+$\Pi'$, $e'$ can now be defined as the image of the center of projection of the other 
+camera, $C$. Suppose the point, $\mathbf{X}$ are viewed from both cameras, and have the image
+location, $\mathbf{x'}$ and $\mathbf{x}$ in the left and right view, respectively. The line from the left
+epipole, $e'$ to $\mathbf{x'}$ and the line from $e$ to $\mathbf{x}$ are called the \emph{epipolar
+lines}. The planes made by the observed real world point, $\mathbf{X}$ and the center of
+projections, $C'$ and $C$ are called the \emph{epipolar planes}. See Figure
+\ref{chap2:fig-epipolarGeometry}.
 \begin{figure}[htbp]
     \centering
-    %\includegraphics[width=0.5\textwidth]{pics/stereo_geometry}
+    \includegraphics[width=0.8\textwidth]{pics/epipolar}
     \caption{The epipolar geometry}
     \label{chap2:fig-epipolarGeometry}
 \end{figure}
