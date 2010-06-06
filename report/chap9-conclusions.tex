@@ -3,7 +3,15 @@
 \label{chap9}
 This report have proposed a navigation system for a pipe inspection robot using three
 types of sensors, namely a Laser Range Finder, a Time-of-Flight camera and a stereo
-camera. The different sensors have been investigated and their abilities have been
+camera. The system uses a modular three-layer approach, where the lower layer is the
+sensor layer, which transforms the sensor information into a common representation. The
+middle layer handles the interpretation of the sensor data, which include cylinder fit-
+and line fit algorithms. The third layer handles the world representation, keep track of
+the current explored areas, and matchers these to the known \`a priori map that and can be
+used for global positioning and tracking. Further path planning algorithms and command
+algorithms might be implemented in the third layer, but this is a topic for further work. 
+
+The different sensors have been investigated and their abilities have been
 evaluated, and possible difficulties by using the proposed sensors have been evaluated.
 This shows that the laser range finder provides reliable results in the plane without much
 filtering and treatment of the sensor data. The time-of-flight camera on the other hand,
@@ -14,7 +22,7 @@ environments, this is mostly due to the quality of the camera, and the lack of s
 lighting in the scene. Some enhancement of the images might have given better matching
 results. But this were not tested in the report. 
 
-A representation of the sensor data were also tested and implemented. This is a
+A proposed representation scheme of the sensor data were also implemented. This is a
 topological representation of the world, which is based on much reasoning and
 interpretation of the sensor data. A set of nodes are defined, this can be pipeline
 junctions, like a pipeline bend, or a T-junction and likewise. It can also be any other
@@ -25,6 +33,19 @@ representation is proposed, the topological approach for the world representatio
 chosen because of the simple and demanding less memory than other mapping approaches, like
 the Occupancy Grid, which demand much memory, especially if implemented in three
 dimensions. 
+
+The implemented sensor interpretation algorithms did not work according to the planned
+results. The algorithms are least-squares based algorithms, and does not work well when
+now selection of the data set is preformed. The topic of segmenting a data set into
+different regions are a difficult but crucial topic when the interpreting sensor data from
+complex scenes. Unfortunately, time did not allow for developing a good solution to this
+problem. One possible solution is to use another algorithm for surface fit, like the
+RANSAC algorithm, which is widely used in computer graphics applications. This approach
+employs an internal selection of points that it thinks belongs to the data set.
+\cite{ransac}. The two dimensional line fit from the Laser Range Finder worked adequately,
+but suffered from the same problems as the three dimensional case did. 
+
+
 
 
 To draw conclusions from the results in Chapter \ref{chap7} and \ref{chap8} are difficult.
