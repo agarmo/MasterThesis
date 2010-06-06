@@ -9,7 +9,7 @@ How the system preformed are outlined in this section. Starting off with the
 \emph{SwissRanger 3000} Time-of-Flight camera.
 
 \subsection{MESA SwissRanger 3000}
-To start off, the output from the camera were applied directly into matlab. Default
+The output from the camera were applied directly into matlab. Default
 integration time were used, and the intensity- and range images where captured as is from
 the camera electronics.
 
@@ -41,6 +41,22 @@ value of that pixel. An example of this can be seen in Figure
     \caption{The unfiltered and filtered point clouds}
     \label{chap8:fig-tof-imagery-intensity-filtered}
 \end{figure}
+
+The field-of-view of the camera is one of its short-comings. In a small confined space
+like a pipe environment the field-of-view is important. Since the pipes are not that much
+bigger than the robot, the full view of the pipe is not available at close range to the
+robot. This limits the robot to spot obstacles or anomalies in at the pipe walls at close
+range. The field-of-view of the camera are $47.5^\circ$ in the horizontal directions and
+$39.6^\circ$ vertical. This means that if the pipeline is $25$ cm in diameter and the
+camera are places exactly in the middle, the full view of the pipe is not available before
+\begin{equation}
+    \begin{aligned}
+        d =& \frac{0.125}{ \tan \frac{47.5}{2}}  = 0.284\\
+        h =& \frac{0.125}{\tan \frac{39.6}{2}} = 0.347
+    \end{aligned}
+\end{equation}
+This is 35 cm in front of the robot, which is quite limiting for looking at the pipe walls
+up-close. 
 
 
 
