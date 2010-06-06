@@ -1009,6 +1009,13 @@ to be done with regard to make this robot robust enough for the real world.
 \cite{KURT}
 
 
-\cite{sintef-tof}
+\cite{sintef-tof} uses a Time-of-flight camera mounted on the Pipe Inspection Konda. It
+uses the M-SAC criterion to fit a cylinder or a cone to the sensor output of the
+time-of-flight camera. The cone was used instead, because experiments showed that it gave
+a better fit to the dataset. The system then uses the difference between the fitted
+cylinder or cone and
+a ideally synthesized image of the scene to find junctions and other things worth noting.
+The system is implemented with obstacle avoidance and gives promising results. This report
+is loosely based on the method described in the article. 
 
 
