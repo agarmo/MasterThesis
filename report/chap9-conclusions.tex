@@ -1,14 +1,40 @@
 
 \chapter{Conclusions}
 \label{chap9}
+This report have proposed a navigation system for a pipe inspection robot using three
+types of sensors, namely a Laser Range Finder, a Time-of-Flight camera and a stereo
+camera. The different sensors have been investigated and their abilities have been
+evaluated, and possible difficulties by using the proposed sensors have been evaluated.
+This shows that the laser range finder provides reliable results in the plane without much
+filtering and treatment of the sensor data. The time-of-flight camera on the other hand,
+need more preparation before it can be utilized to create a map of the surroundings,
+mostly because it provides more denser information, and this information is more prone to
+noise. The stereo camera on the other hand did not preform that well in the given
+environments, this is mostly due to the quality of the camera, and the lack of synthetic
+lighting in the scene. Some enhancement of the images might have given better matching
+results. But this were not tested in the report. 
+
+A representation of the sensor data were also tested and implemented. This is a
+topological representation of the world, which is based on much reasoning and
+interpretation of the sensor data. A set of nodes are defined, this can be pipeline
+junctions, like a pipeline bend, or a T-junction and likewise. It can also be any other
+feature that is not like the usual featureless straight pipeline. As said, this relies
+greatly on the interpretation of the sensors, which prove difficult with the proposed
+algorithms. Although, no matching algorithms from the sensor data to the world
+representation is proposed, the topological approach for the world representation were
+chosen because of the simple and demanding less memory than other mapping approaches, like
+the Occupancy Grid, which demand much memory, especially if implemented in three
+dimensions. 
+
+
 To draw conclusions from the results in Chapter \ref{chap7} and \ref{chap8} are difficult.
 The proposed algorithms lacked selection and segmentation of the data. This was fatal
 because the system needed to reason and the background of what it was looking for was
 wrong. This shows the importance of selecting the right conditions and terms before
 putting the data into the algorithms.
 
-The representation is good, although it was not tested properly in this thesis, it have
-the strengths that graph representations have, search and path planning. Path planning is
+The representation although it was not tested properly in this thesis, have
+the strengths that graph representations give. Path planning is
 really just a shortest-path problem which can be implemented relatively easy in a fast and
 efficient way. This also allows for easy interpretation back to the user, which then can
 investigate the nodes which have been marked with anomalies. The backside of this is that
@@ -17,7 +43,7 @@ it requires much reasoning from the robot, which demand robust recognition algor
 
 This project can be seen as a mapping project on what to be on the look-out for when
 designing this kind of system. This include, sensor calibration, sensor data
-segmentation
+segmentation and recognition of environment.
 
 
 
