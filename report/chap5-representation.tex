@@ -20,7 +20,7 @@ implementation platform. Third it should be easy to understand for a human opera
 without too much post-processing. 
 
 The possibility of global positioning must be met. The robot must be able to match its
-created map to a \`a priori map.
+created map to a \`a priori map. *****************************
 
 The problem when a robot has to reason, is that it might
 take the wrong decisions, and the risk of erroneous map making are high. 
@@ -170,8 +170,9 @@ is too small the algorithm will not detect the points as a belonging to a line.
 \end{algorithm}
 
 Parameters needed to be set by the user is, the histogram bin sizes, $hits_x$ and
-$hits_y$. The more points will fit into the bins, and the lines will be more prone to
-other points that does not ``belong'' to the wall points. The other parameters are the
+$hits_y$. This controls the number of points that will be sorted into the bins. The bigger
+the bins, the more vulnerable will the algorithm be to to
+other points that does not ``belong'' to the wall points. Other parameters are the
 threshold parameters for how many points there need to be in a histogram bin to pass them
 to the line fit, $NoPointsX$ and $NoPointsY$.
 
@@ -182,7 +183,7 @@ to calculate the radius of the pipe. The following relation is used.
     r^2 &= P_2^2 + \left(\frac{d}{2} \right)^2 \\
     r &= P_1 + P_2  \quad \rightarrow \quad P_2 = r - P_1
 \end{align}
-       Where $r$ is the radius of the pipe, $P_1$ is the distance from the measurement plane to
+Where $r$ is the radius of the pipe, $P_1$ is the distance from the measurement plane to
 the lowest point in the pipe, $P_2$ is the distance form the center of the pipe to the
 measurement plane and $d$ is the distance between the matched line segments. Substituting
 for $P_2$ and rearranging
@@ -198,8 +199,29 @@ This requires that two lines can be matched to be approximately parallel for the
 $d$ to be calculated. Therefor the direction of all the lines are compared to all the
 other lines and those parallel within some threshold, $ParallelThreshold$ are selected.
 
+The estimated parameters here can be compared to the ones estimated from the 3D point
+cloud, in a fashion that makes the system select the best estimate. The initial guess of
+what sensor which provides the best results, are the laser range finder, which is
+guaranteed to provide more accurate results from the manufacturer. The laser range finder
+does also provide much less information to process, and will give results faster. 
 
-\section{Positioning in the World Representation}
+
+\section{Matching Pipe Profiles and Detecting Anomalies}
+Matching the pipe profiles is one of the central aspects when using this kind of abstract
+representation. This method needs to be robust, and need to provide accurate results most
+of the time.
+
+First, the sensor data are processed and the pipeline properties are estimated, i.e.
+radius and direction. This can be done using the laser range finder, which probably will
+give the most accurate results, when around the robot. Then the \emph{misfit} points from
+the 3D sensor is analysed, this can be matched to a database with \emph{fingerprints} of
+the different pipeline junctions, and the best fit can be selected.
+
+Unfortunately, this have not been prioritized when working with this project, and is a
+topic of further research. 
+
+
+\section{Navigation and Positioning in the World Representation}
 How the control system positions itself in the environment is very important for the
 control system. Because the system need to know where it is, and where it has been, to be
 able to determine where it will go. 
@@ -208,7 +230,8 @@ Given the case that the \emph{SensorInterpreter} is capable of identifying and m
 the nodes correct, this can be used as landmark when determining global position. The
 graph which have been created, can be matched with the \`a priori map, based on what kind
 of nodes that have been passed, the taken path of the robot can be matched given that the
-\`a priori map is accurate with regard to the location and order of the nodes. 
+\`a priori map is accurate with regard to the location and order of the nodes. This is
+similar to the approach used by the MAKRO project \cite{makro-visual}.
 
 For example the robot passes first through a L-bend, then continues to a Y-Junction. It
 continues to the left, where it hits a R-bend and into a T-Junction. This sequence of
@@ -217,6 +240,4 @@ ambiguities the correct position cannot be established before additional nodes a
 The pipe network need to be, using an analogue to the system identification terminology, 
 \emph{persistently exciting}. Which means that the network consists of enough unique features and
 sequences that the position can be determined uniquely. 
-
-********REFERENCE TO MAKRO which uses this kind of positioning*********
 
