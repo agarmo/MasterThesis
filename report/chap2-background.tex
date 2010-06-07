@@ -849,6 +849,7 @@ discussed in the next section.
 
 
 \subsubsection{Leasts-Squares Gauss-Newton Optimization}
+\label{chap2:subsec-gauss-newton}
 Least-squares method is a common way to optimize and fit data sets to a proposed model.
 The idea is to minimize the objective function 
 \begin{equation}
@@ -884,7 +885,7 @@ The approximation of the Hessian saves quite a lot computational time and the im
 the direction is not that great. Also, around the solution $x^*$ the first term in
 \eqref{chap2:eq-hessian} will dominate the other factors. This will cause the convergence
 rate of the algorithm to be equal to those of the standard Newton methods, which is
-quadratically. 
+quadratically.\cite{optreg} 
 
 $p_k$ is guaranteed to be a descent direction when $J_k$ has full row rank and the
 gradient $\nabla f_k$ is nonzero. The Gauss-Newton also has the advantage that the
