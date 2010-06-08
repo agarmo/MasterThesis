@@ -99,7 +99,7 @@ Even when there were obstacles, both irregular and regular objects, the algorith
 detect enough features, and where not able to match these features. This might be because
 that there were not enough light in the scene, and the surfaces of the irregular object
 where not sharp enough for the algorithm to detect. Enhancing contrasts and image features
-might have given better results. \cite{gonzalez} ******REFERENCE FROM GONZALES******
+might have given better results, for example using a histogram intensity transform. \cite{gonzalez} 
 
 To test if the algorithm did provide dense stereo images, the stereo rig were directed at
 a typical lab environment, with enough structure to make good stereo matches for the
@@ -129,7 +129,7 @@ because there are sufficient light in the scene and a lot more features which ca
 matched.
 
 Another aspect worth noting is when bad matches occur. The figures
-\ref{chap8:fig-pos21-control-depth} and \ref{chap8:fig-pos21-contorl-rectified} show an
+\ref{chap8:fig-pos21-control-depth} and \ref{chap8:fig-pos21-control-rectified} show an
 example of this. The periodic structure on the walls in the pipe bend is the problem. The
 distance from the wall makes the structures fall almost exactly on top of each other, only
 the this is shifted one of the structure length to the left. This makes makes the
