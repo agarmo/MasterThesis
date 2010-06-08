@@ -172,16 +172,20 @@ stereo cameras.
 
 \subsection{1D Sensors}
 
-\subsubsection{Infrared Sensors and Proximity Sensors}
+\subsubsection{Proximity Sensors}
+Proximity senors are used to detect if a object is near or not. These sensors are usually
+small and not very expensive. This means that a number of these can be fit on a robot
+without impacting either price, size or weight of the robot. 
 
-
-
+Proximity sensors usually consists of a source and a detector. The detector detects the
+signal from the source only if an object is close enough, and thereby triggering the
+output of the sensor. The medium used depends on the application, and can be everything
+from sound, light or electromagnetic waves. 
+\cite{proximity}
 
 \subsection{2D Sensors}
 
 \subsubsection{Laser Range Finders}
-
-
 When looking at Laser Range Finder, there are 3 techniques for determining the distance,
 \emph{optical triangulation}, \emph{pulse Time-of-Flight} and \emph{frequency modulated
 continuous wave} (FMCW). \cite{laser-ranging-critical-review}
@@ -258,6 +262,17 @@ variations in the intermediate frequency measurement.
 \cite{laser-ranging-critical-review}.
 
 \subsubsection{Sonar}
+Sonars utilize sound waves for determining distance. It uses the time-of-flight principle
+to measure the distance, assuming that the velocity of the sound wave can be determined
+within some accurate bounds. The problem is that the travel time of sound varies with a
+number of parameters limiting the accuracy of the range estimate substantially. 
+
+There are a number of different sonar techniques. The most common are the narrow beam
+sonars, which scans the environments like the 2D Laser Range Finders. \cite{mathisen}
+
+Using sound as a carrier in air is usually not preferred, because the sound waves travels
+much slower in air, and is quickly attenuated. This sensor type will not be considered for
+the application in question. 
 
 
 \subsection{3D Sensors}
