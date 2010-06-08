@@ -209,6 +209,12 @@ dimension a bit more tricky, because of the positional uncertainty introduced by
 noise. Frequency of the light, angle and area of the collecting lenses and photo detector
 are parameters that influence the position uncertainty. 
 
+This technique can be used for pipeline profiling, i.e. Assessing the quality of the pipe
+and finding damages, weak spots, corrosion, and other things worth noting when doing a pipe
+inspection. \cite{optical-pipe-inspection} describes an instrument for recording sizes and
+internal structure of almost any pipe size, using an optical triangulation scheme mounted
+on a rotating head. 
+
 
 \paragraph{Pulsed Time-of-Flight}
 The technique referred to as pulsed time-of-flight refers to the time taken of a pulse
@@ -642,7 +648,17 @@ This method is also prone to the challenges stated for the intensity modulation 
 as well.
 
 \paragraph{3D camera calibration}
-This should outline how to calibrate the cameras. 
+Some of the uncertainty and difficulties described above can be attenuated by properly
+calibrating the Time-of-Flight sensor. Since the sensor uses a conventional lens to
+capture the returned light, distortion due to the lens might occur. This can be calibrated
+using the same method as for normal cameras, described in Section
+\ref{chap2:sec-distortion}. 
+
+Depth inaccuracies are present because generation of a perfect sinusoidal signal which is
+assumed for the correlation step is not possible due to cost and hardware limitation. This
+is the base for a systematic distance error, which when analyzed have a sinusoidal shape
+\cite{tof-calibration}. To correct this the systematic error function is approximated
+using linear or higher-order polynomial models. 
 
 
 
