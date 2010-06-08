@@ -169,6 +169,14 @@ sensors which are compliant to the overall perspective will be dealt with. This 
 laser range finders, ultrasound and Sonar sensors, Time-of-Flight cameras and
 stereo cameras. 
 
+
+\subsection{1D Sensors}
+
+\subsubsection{Infrared Sensors and Proximity Sensors}
+
+
+
+
 \subsection{2D Sensors}
 
 \subsubsection{Laser Range Finders}
@@ -252,104 +260,7 @@ variations in the intermediate frequency measurement.
 \subsubsection{Sonar}
 
 
-\subsubsection{Infrared Sensors and Proximity Sensors}
-
-
 \subsection{3D Sensors}
-
-
-\subsubsection{Time-of-Flight Cameras}
-The research and application of Time-of-Flight cameras have increased significantly during the last four
-years. A Time-of-Flight camera is a compact device which makes it suitable to mount on
-mobile platforms, and thereby using it in navigation and localization applications. 
-
-The most used ranging techniques by the cameras are \emph{intensity modulation} approaches and
-\emph{optical shutter} technology. The first one is used by the best known manufacturers,
-like MESA and PMD. While the optical shutter approach is less expensive and have been used
-by Zcam, which now have been sold to Microsoft. 
-
-
-\paragraph{Intensity Modulation Approach}
-This approach uses modulated near infrared light (NIR), $g$ which is reflected to and
-captured by a CCD chip then correlated with the reference signal, $r$. 
-\begin{equation}
-    c(\tau) = g \otimes r = \lim_{T \rightarrow \inf} \int^{T/2}_{-T/2} g(t) r(t + \tau) dt
-\end{equation}
-where the signals, $g$ and $r$ might be
-\begin{equation}
-    g(t) = \cos{\omega t}, \quad \quad r(t) = b + a \cos{(\omega t + \phi)}
-\end{equation}
-where $\phi$ is the phase offset because of the travel time of the signal, $b$ is a
-correlation bias, $a$ is the amplitude and $\omega$ is the modulation frequency. Solving
-the integral yields 
-\begin{equation}
-    c(\tau) = \frac{a}{2} \cos{(\omega \tau + \phi )} + b
-\end{equation}
-which is the correlation function. 
-
-The demodulation is usually done by sampling the correlation function at 4 equally spaced
-phase offsets. The following relation can now be written
-\begin{equation}
-    \begin{aligned}
-        \phi &= \tan^{-1} (\frac{A_3 - A_1}{A_0 - A_2}) \\
-        I &= \frac{A_0 + A_1 + A_2 + A_3}{4} \\
-        a &= \frac{\sqrt{(A_3 - A_1)^2 + (A_0 - A_2)^2}}{2}
-    \end{aligned}
-\end{equation}
-where $A_i = c(i \frac{\pi}{2})$ for $ i = 0,..,3$ and $I$ is the intensity of the returned NIR
-signal. From this the distance can be calculated using the phase delay $\phi$. 
-\begin{equation}
-    d = \frac{c}{4 \pi \omega} \phi
-\end{equation}
-
-There are a number of challenges when using this approach
-\cite{time-of-flight-comp-graphics}
-\begin{itemize}
-    \item The resolution of the sensors are small compared to standard RGB or grayscale
-        sensors. Current resolution on present day time-of-flight cameras are $204 \times
-        204$. 
-    \item ``Wiggling'' because of imperfections when creating the sinusoidal signals.
-    \item Errors due to intensity measurements. Various sensor electronics might influence
-        the measured intensity and give wrong readings.
-    \item ``Flying Pixels'' occurs when a pixel in the camera oversees a region with
-        large depth variances, e.g. at object boundaries, because of superimposed signals. 
-    \item Motion artifacts might occur because the phase images are captured sequentially
-        quick motion might cause artifacts.
-    \item Multiple reflections in highly reflective environments will cause erroneous
-        distance measurements.
-\end{itemize}
-
-Standard lenses are used to capture the reflected light, which means that intrinsic
-calibration should be carried out to specify the projection axis and distortion parameters
-of the lens. See sections below for lens calibration and distortion coefficient
-estimation. \cite{time-of-flight-comp-graphics}
-
-
-\paragraph{Optical Shutter Approaches}
-Light travels roughly at $c \approx 3 \times 10^8$ meters per seconds. This translates to
-that light uses $7$ pico seconds to travel one millimeter. Imagine a light pulse emitted
-at time $t$. This pulse travels in a spherical pattern and hits a 3D shape. The light wall
-will be reflected back in a distorted pattern.\cite{optical-shutter} 
-A shutter in front of the CCD chip then
-shuts out the rest of the light wall pattern. This will then produce a shape of the object
-which can be used to calculate the distance, based on the times the shutter is open,
-according to the following relation \cite{time-of-flight-comp-graphics}
-\begin{equation}
-    d = (1 - \alpha) d_{min} + \alpha d_{max}, \quad \quad \alpha =
-    \frac{I_{gate}}{I_{total}}
-\end{equation}
-where $I_{gate}$ is the pixel intensity which arrives when the shutter is open, and
-$I_{total}$ is the total amount of reflected light. Distances outside $d_{min}$ and
-$d_{max}$ cannot be measured in the exposure. Therefor this techniques require multiple
-exposure to get the desired depth resolution. 
-
-This method is also prone to the challenges stated for the intensity modulation approach
-as well.
-
-\paragraph{3D camera calibration}
-This should outline how to calibrate the cameras. 
-
-
 
 \subsubsection{Stereo Vision}
 Stereo vision is an inexpensive way of finding range measurements. The setup is two or
@@ -626,6 +537,99 @@ between the two known camera locations the depth can be derived accordingly to
 \begin{equation}
     z = \frac{f T}{x_l - x_r}
 \end{equation}
+
+\subsubsection{Time-of-Flight Cameras}
+The research and application of Time-of-Flight cameras have increased significantly during the last four
+years. A Time-of-Flight camera is a compact device which makes it suitable to mount on
+mobile platforms, and thereby using it in navigation and localization applications. 
+
+The most used ranging techniques by the cameras are \emph{intensity modulation} approaches and
+\emph{optical shutter} technology. The first one is used by the best known manufacturers,
+like MESA and PMD. While the optical shutter approach is less expensive and have been used
+by Zcam, which now have been sold to Microsoft. 
+
+
+\paragraph{Intensity Modulation Approach}
+This approach uses modulated near infrared light (NIR), $g$ which is reflected to and
+captured by a CCD chip then correlated with the reference signal, $r$. 
+\begin{equation}
+    c(\tau) = g \otimes r = \lim_{T \rightarrow \inf} \int^{T/2}_{-T/2} g(t) r(t + \tau) dt
+\end{equation}
+where the signals, $g$ and $r$ might be
+\begin{equation}
+    g(t) = \cos{\omega t}, \quad \quad r(t) = b + a \cos{(\omega t + \phi)}
+\end{equation}
+where $\phi$ is the phase offset because of the travel time of the signal, $b$ is a
+correlation bias, $a$ is the amplitude and $\omega$ is the modulation frequency. Solving
+the integral yields 
+\begin{equation}
+    c(\tau) = \frac{a}{2} \cos{(\omega \tau + \phi )} + b
+\end{equation}
+which is the correlation function. 
+
+The demodulation is usually done by sampling the correlation function at 4 equally spaced
+phase offsets. The following relation can now be written
+\begin{equation}
+    \begin{aligned}
+        \phi &= \tan^{-1} (\frac{A_3 - A_1}{A_0 - A_2}) \\
+        I &= \frac{A_0 + A_1 + A_2 + A_3}{4} \\
+        a &= \frac{\sqrt{(A_3 - A_1)^2 + (A_0 - A_2)^2}}{2}
+    \end{aligned}
+\end{equation}
+where $A_i = c(i \frac{\pi}{2})$ for $ i = 0,..,3$ and $I$ is the intensity of the returned NIR
+signal. From this the distance can be calculated using the phase delay $\phi$. 
+\begin{equation}
+    d = \frac{c}{4 \pi \omega} \phi
+\end{equation}
+
+There are a number of challenges when using this approach
+\cite{time-of-flight-comp-graphics}
+\begin{itemize}
+    \item The resolution of the sensors are small compared to standard RGB or grayscale
+        sensors. Current resolution on present day time-of-flight cameras are $204 \times
+        204$. 
+    \item ``Wiggling'' because of imperfections when creating the sinusoidal signals.
+    \item Errors due to intensity measurements. Various sensor electronics might influence
+        the measured intensity and give wrong readings.
+    \item ``Flying Pixels'' occurs when a pixel in the camera oversees a region with
+        large depth variances, e.g. at object boundaries, because of superimposed signals. 
+    \item Motion artifacts might occur because the phase images are captured sequentially
+        quick motion might cause artifacts.
+    \item Multiple reflections in highly reflective environments will cause erroneous
+        distance measurements.
+\end{itemize}
+
+Standard lenses are used to capture the reflected light, which means that intrinsic
+calibration should be carried out to specify the projection axis and distortion parameters
+of the lens. See sections below for lens calibration and distortion coefficient
+estimation. \cite{time-of-flight-comp-graphics}
+
+
+\paragraph{Optical Shutter Approaches}
+Light travels roughly at $c \approx 3 \times 10^8$ meters per seconds. This translates to
+that light uses $7$ pico seconds to travel one millimeter. Imagine a light pulse emitted
+at time $t$. This pulse travels in a spherical pattern and hits a 3D shape. The light wall
+will be reflected back in a distorted pattern.\cite{optical-shutter} 
+A shutter in front of the CCD chip then
+shuts out the rest of the light wall pattern. This will then produce a shape of the object
+which can be used to calculate the distance, based on the times the shutter is open,
+according to the following relation \cite{time-of-flight-comp-graphics}
+\begin{equation}
+    d = (1 - \alpha) d_{min} + \alpha d_{max}, \quad \quad \alpha =
+    \frac{I_{gate}}{I_{total}}
+\end{equation}
+where $I_{gate}$ is the pixel intensity which arrives when the shutter is open, and
+$I_{total}$ is the total amount of reflected light. Distances outside $d_{min}$ and
+$d_{max}$ cannot be measured in the exposure. Therefor this techniques require multiple
+exposure to get the desired depth resolution. 
+
+This method is also prone to the challenges stated for the intensity modulation approach
+as well.
+
+\paragraph{3D camera calibration}
+This should outline how to calibrate the cameras. 
+
+
 
 
 

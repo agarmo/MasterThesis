@@ -8,7 +8,7 @@ if isempty(ToF) || (ToF == -1)
     [ToF] = sr_open();
 end
 
-hokuyo_matlab('open', 'COM5', 115200);
+hokuyo_matlab('open', 'COM7', 115200);
 
 %angle to be plotted against
 theta = (360/1024)*(pi/180).*(1:1024);

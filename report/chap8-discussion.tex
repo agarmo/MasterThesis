@@ -5,8 +5,12 @@ This chapter will evaluate how the implemented algorithms work, the shortcomings
 possible solutions to problems. 
 
 \section{How did it perform?}
-How the system preformed are outlined in this section. Starting off with the
-\emph{SwissRanger 3000} Time-of-Flight camera.
+Evaluation of the system is done in this section. The implemented systems are evaluated
+and difficulties and why it did not work as planned are outlined. In the last section
+possible changes are proposed that might make the system better. 
+
+The sensors are assessed individually, then the surface fit algorithms are evaluated.
+
 
 \subsection{MESA SwissRanger 3000}
 The output from the camera were applied directly into matlab. Default
@@ -19,28 +23,6 @@ distributed measurement errors. This where removed by averaging the images over 
 of successive images. This reduced the response time of the sensor and therefor the
 refreshment time, but this will most probably not be a case in this application, since the
 velocities included are not of the greatest magnitudes. 
-
-Figure \ref{chap8:fig-typical-tof-image} shows a typical range image, and the
-corresponding intensity image. 
-\begin{figure}[htbp]
-    \centering
-    %\includegraphics[width=0.8\textwidth]{pics/tof-imagery}
-    \caption{Typical range image of the pipe}
-    \label{chap8:fig-typical-tof-image}
-\end{figure}
-
-When objects came too close to the sensor, it looked like the sensor went berserk. This
-was because the intensity values became so large, and they dominated the picture
-completely. The solution to this were to filter the range image based on the intensity
-value of that pixel. An example of this can be seen in Figure
-\ref{chap8:fig-tof-imagery-intensity-filtered}
-\begin{figure}[htbp]
-    \centering
-    %\includegraphics[width=0.45\textwidth]{pics/tof-intensity-unfilterd}
-    %\includegraphics[width=0.45\textwdith]{pics/tof-intensity-filtered}
-    \caption{The unfiltered and filtered point clouds}
-    \label{chap8:fig-tof-imagery-intensity-filtered}
-\end{figure}
 
 The field-of-view of the camera is one of its short-comings. In a small confined space
 like a pipe environment the field-of-view is important. Since the pipes are not that much
