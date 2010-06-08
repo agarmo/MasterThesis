@@ -115,18 +115,42 @@ The rectified images have horizontal lines superimposed. The lines are to verify
 pixels that are in both images are aligned horizontally.
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.45\textwidth]{pics/structure-test-depth}
-    \includegraphics[width=0.45\textwidth]{pics/structured-test3d}
+    \includegraphics[width=0.35\textwidth]{pics/structure-test-depth}
+    \includegraphics[width=0.55\textwidth]{pics/structured-test3d}
     \caption{Depth image and projected point cloud of the structured lab environment test}
     \label{chap8:fig-structured-test-depth}
 \end{figure}
 This clearly shows that the rectification and finding stereo correspondences
 works adequately for good lit, structured
-environments. The depth image is represented in pixel related units. Since the exact size
-of the pixels on the CCD chip were difficult to come by, the distances are given in
-pixels. It can be seen that the range image is much more detailed, this is most probably
+environments. The reprojection of the disparity image clearly shows that the object in the
+middle is closes to the stereo rig. The range image is much more detailed than the other
+reprojected images. This is most probably
 because there are sufficient light in the scene and a lot more features which can be
 matched.
+
+Another aspect worth noting is when bad matches occur. The figures
+\ref{chap8:fig-pos21-control-depth} and \ref{chap8:fig-pos21-contorl-rectified} show an
+example of this. The periodic structure on the walls in the pipe bend is the problem. The
+distance from the wall makes the structures fall almost exactly on top of each other, only
+the this is shifted one of the structure length to the left. This makes makes the
+disparity of the two features small, which means that the distance must be far away. 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.35\textwidth]{pics/pos21-control-depth}
+    \includegraphics[width=0.55\textwidth]{pics/pos21-control-3d}
+    \caption{Depth image and projected point cloud of the structured lab environment test}
+    \label{chap8:fig-pos21-control-depth}
+\end{figure}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{pics/pos21-control-rectified}
+    \caption{Stereo Pair of the bad matches}
+    \label{chap8:fig-pos21-control-rectified}
+\end{figure}
+This is exactly what is shown in the right plot in Figure
+\ref{chap8:fig-pos21-control-depth}. The distance to the matched points are calculated to
+be very far from the view, because of the small disparity. This is the danger when the
+environment are periodically structured, and at given distances this can happen. 
 
 When regarding speed, the \emph{OpenCV} library are reasonable fast. When running at
 $640\times480$ a brute-force implementation of the stereo matching using standard

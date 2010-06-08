@@ -2,7 +2,7 @@ clear all;
 close all;
 
 
-temp = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\stereo\structured-test.txt');
+temp = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\stereo\pos21-control.txt');
 
 xall = zeros(480*5, 640);
 yall = zeros(480*5, 640);
@@ -59,13 +59,13 @@ clear pos;
 
 
 
-scatter3(-temp2(1:20:end,3), temp2(1:20:end,1), -temp2(1:20:end,2), '.')
+scatter3(-temp2(1:1:end,3), temp2(1:1:end,1), -temp2(1:1:end,2), '.')
 grid on
 xlabel('Depth');
 ylabel('X');
 zlabel('Y');
-axis([0 50 -30 30 -10 10])
-view(-31, 72);
+% axis([0 50 -30 30 -10 10])
+% view(-31, 72);
 
 
 % 
