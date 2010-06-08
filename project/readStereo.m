@@ -2,7 +2,7 @@ clear all;
 close all;
 
 
-temp = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\stereo\pos1-control.txt');
+temp = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\stereo\structured-test.txt');
 
 xall = zeros(480*5, 640);
 yall = zeros(480*5, 640);
@@ -53,18 +53,19 @@ temp2(~any(pos,2),:)=[]; %% remove trivial points
 clear pos;
 
 % estiamte the cylinder
-[x0n, an, rn, d, sigmah, conv, Vx0n, Van, urn, GNlog, a] = ...
-                        lscylinder(temp2, [0, 0, -40]', [0,0,1],...
-                        0.125, 100, 100);
+% [x0n, an, rn, d, sigmah, conv, Vx0n, Van, urn, GNlog, a] = ...
+%                         lscylinder(temp2, [0, 0, -40]', [0,0,1],...
+%                         0.125, 100, 100);
 
 
 
-scatter3(-temp2(1:1:end,3), -temp2(1:1:end,1), -temp2(1:1:end,2), '.')
+scatter3(-temp2(1:20:end,3), temp2(1:20:end,1), -temp2(1:20:end,2), '.')
 grid on
 xlabel('Depth');
 ylabel('X');
 zlabel('Y');
-axis equal
+axis([0 50 -30 30 -10 10])
+view(-31, 72);
 
 
 % 
@@ -105,7 +106,7 @@ axis equal
 %                     hold on;
 %                     surface(Zny./tf(4,4), Xny./tf(4,4), Yny./tf(4,4));
 %                     hold off
-% 
+
 
 
 % mesh(zall(1:10:480,:), xall(1:10:480,:), yall(1:480,:))
