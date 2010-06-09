@@ -3,6 +3,8 @@
 
 \chapter{Sensors}
 \label{chap3-sensors}
+The sensors of a autonomous system is one of the key components for the application to
+succeed. The sensors are eyes, ears and touch for the robot, and 
 
 \section{Comparisons Between the Proposed Sensors}
 For this project, some of the sensors was not decided. This gave the ability to chose a
@@ -14,30 +16,37 @@ in Table \ref{chap3:tab-sensors}.
 \begin{table}[htbp]
     \begin{tabular}{|c|c|c|c|c|c|}
         \hline
-        Sensor              & LMS-100 & LMS-200 & UTM-30LX & URG-04LX & URG-04LX-URG01 \\
+        Sensor              & LMS-100 & UTM-30LX & URG-04LX & URG-04LX-URG01 \\
         \hline
-        Max Range           & 20 m    & 80 m    & 30 m     & 4 m      & 5.6 m          \\
-        Accuracy            & 12 mm   & 30 mm   & 30 mm    & 10 mm    & 30 mm          \\
-        Field-of-View       & $270^\circ$ &$180^\circ$  & $270^\circ$ & $240^\circ$ & $240^\circ$  \\
-        Angular Resolution  & $0.25-0.5^\circ$  & $0.25-1^\circ$ & $0.25^\circ$ & $0.36^\circ$ & $0.36^\circ$  \\
-        Scan Frequency      & 50 Hz   & 75 Hz   &  40 Hz   & 10 Hz    & 10 Hz          \\
-        Weight              & 1.1 Kg  & 4.5 Kg  & 210 g    & 160 g    & 160 g          \\
-        Power Consumption   & Not Specified & Not Specified  & $<8 $ W & $~2.5$W  &$~2.5$W  \\
+        Max Range           & 20 m    & 30 m     & 4 m      & 5.6 m          \\
+        Accuracy            & 12 mm   & 30 mm    & 10 mm    & 30 mm          \\
+        Field-of-View       & $270^\circ$& $270^\circ$ & $240^\circ$ & $240^\circ$  \\
+        Angular Resolution  & $0.25-0.5^\circ$  & $0.25^\circ$ & $0.36^\circ$ & $0.36^\circ$  \\
+        Scan Frequency      & 50 Hz   &  40 Hz   & 10 Hz    & 10 Hz          \\
+        Weight              & 1.1 Kg  &  210 g    & 160 g    & 160 g          \\
+        Power Consumption   & Not Specified  & $<8 $ W & $~2.5$W  &$~2.5$W  \\
         \hline
-        Cost                & \$5500  & \$5000  & \$5000   & \$2400   & \$1100         \\
+        Cost                & \$5500  & \$5000   & \$2400   & \$1100         \\
         \hline
     \end{tabular}
     \caption{Comparison between the proposed sensors}
     \label{chap3:tab-sensors}
 \end{table}
 
-The LMS-100 and LMS-200 are relatively large sensors compared to the ones from Hokuyo. The
-scanning frequency of the SICK range finders are quicker, but because PiKo is not that
-fast and taken into account that the 3D sensor which will have much greater scanning
-frequency. This means that the frequency of the 2D sensor is not that important. The most
-important thing is that it is as accurate as possible. Also, the Hokuyo sensors are much
-cheaper than the ones from SICK which gives them the advantage.
+The LMS-100 and LMS-200(not shown in the table) are relatively large sensors compared to
+the ones from Hokuyo. The LMS-200 have been thoroughly tested and used in robotic
+applications for a long time. The LMS-100 is a newer sensor, and is much smaller than the
+LMS-200 \cite{SICKweb}. The advantage of the SICK laser scanners are their scanning
+frequency, which is very fast compared to the Hokuyo laser range finders.
 
+The criteria for sensor selection are:
+\begin{itemize}
+    \item Accuracy
+    \item Price
+    \item Size
+    \item Power consumption
+    \item Time of delivery
+\end{itemize}
 Because of favourable size, weight, accuracy and cost the Hokuyo \emph{URG-04LX} was
 chosen. The sensor will be discussed in Section \ref{chap3:sec-urg}.
 
@@ -89,11 +98,10 @@ error codes and what they mean can be found in Appendix \ref{app:urg-error}.
 
 
 \subsection{Noise- and Error Sources}
-Major error sources of the URG where discussed in Section \ref{chap2:lrf-error}. It is
+Major error sources of laser range finders where discussed in Section \ref{chap2:subsec-lrf}. It is
 possible to read both range and intensity of the reflected signal from the URG. The
-intensity can be used as a quality control of the range value. 
-
-
+intensity can be used as a quality control of the range value. Beyond this, no error
+detection or redundancy are used. 
 
 
 
@@ -106,7 +114,7 @@ The stereo camera chosen for the project is the first commercially available 3D 
     \label{chap3:fig-minoru}
 \end{figure}
 It is actually just two cheap webcams and a USB hub in the same casing. The camera is
-available for about 900 NOK, so both optics and CCD chips are expected to be of poor
+available for about 900 NOK, so both optics and imaging chips are expected to be of poor
 quality. Also, the left and right camera shutters does not synchronize, \cite{nma-web}
 suggests it might be as much as 16.5 milliseconds which might cause problems in fast
 moving environments. 
@@ -133,7 +141,6 @@ internal algorithm detects the corners of the squares in each image. This gives 
 guess on how the distortion parameters are. The reprojection error is then minimized with
 regard to the distortion parameters using a nonlinear gradient decent algorithm. For more
 information on how this is carried out, see \cite{heikkila}.
-
 The distortion parameters for both cameras are summarized in Table
 \ref{chap3:tab-distortion-coeffs}.
 \begin{table}[htbp]
@@ -301,12 +308,18 @@ pixel distortion due to the lens is small.
 
 
 \subsection{Depth Calibration}
-
+Depth calibration of the \emph{SR3000} to remove the systematic errors due to
+imperfections in the creation of the sinusoidal correlation signal was not done, 
+because the inaccuracies in depth
+were thought to be of less importance with regard to the project. Using the depth
+calibration proposed in \cite{sr3000} or \cite{tof-calibration} would probably give a
+smoother point cloud, and ease the work for the higher level control system. But these
+systems must be robust, and an uncalibrated sensor will help test this. 
 
 
 
 \subsection{Noise- and Error Sources}
-As stated in Section \ref{chap2:sec-tof} the complete picture of the distances are
+As stated in Section \ref{chap2:subsec-tof} the complete picture of the distances are
 captured fist when 4 successive exposures are complete. This means that fast moving
 objects will cause distance errors because the object might have moved between the
 exposures. Another source of errors are multiple reflections and highly reflective
@@ -317,12 +330,11 @@ they really are.
 
 
 
-
 \section{Sensor Configurations}
 \label{chap3:sec-sensorconfig}
 \begin{figure}[htbp]
     \centering
-    %\includegraphics[width=0.7\textwidth]{pics/singlesensorframes}
+    \includegraphics[width=0.7\textwidth]{pics/sensor-config}
     \caption{\emph{Single-Sensor} frames on PiKo}
     \label{chap3:fig-single-sensor-frames}
 \end{figure}

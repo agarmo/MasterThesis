@@ -217,6 +217,7 @@ on a rotating head.
 
 
 \paragraph{Pulsed Time-of-Flight}
+\label{chap2:subsec-lrf}
 The technique referred to as pulsed time-of-flight refers to the time taken of a pulse
 train of laser light to be reflected back to the emitter. Light travels around 30 cm/ns,
 this means that to get 1 mm accuracy the accuracy of the timing devices should be
@@ -571,6 +572,7 @@ by Zcam, which now have been sold to Microsoft.
 
 
 \paragraph{Intensity Modulation Approach}
+\label{chap2:subsec-tof}
 This approach uses modulated near infrared light (NIR), $g$ which is reflected to and
 captured by a CCD chip then correlated with the reference signal, $r$. 
 \begin{equation}
@@ -722,13 +724,14 @@ Quadtrees can be used to represent a 2D space by recursively dividing the space 
 exactly four rectangles or squares. If this rectangles or squares does not include
 interesting information then it will not be divided further. This dividing continues until
 the smallest possible square is achieved. This creates a tree structure which is easily
-traversed and searched if necessary. 
-
+traversed and searched if necessary. An \emph{Oct-tree} is the same only each node have
+eight child nodes instead. This can be used to represent 3D spaces, see Figure
+\ref{chap2:fig-octtree}.
 \begin{figure}[htbp]
     \centering
    \includegraphics[width=0.5\textwidth]{pics/octtree}
     \caption{A Quadtree representation}
-    \label{chap2:fig-quadtree}
+    \label{chap2:fig-octtree}
 \end{figure}
 
 
@@ -744,6 +747,10 @@ operator creates and inputs the map to the robot, which uses this map for naviga
 largest challenge with this is to make the robot aware of where it is. It needs in some
 way to recognize its surroundings, and match it to the \'a priori map.
 
+The map of the London Underground is an common every day example of a topological map. It describes
+the important things as stations, but not the geometrical distances which is not important
+when navigating the London Underground. 
+
 
 \subsection{Mixed Approaches}
 This is when you take the best of both worlds. The easy and effective way of the metric
@@ -758,9 +765,13 @@ geographical information are not that important.
 
 This requires lots of processing of the sensor and map data, and should be done off-line
 after the robot's mission is finished. 
-
+\cite{thrun}
 
 \section{Sensor Fusion Techniques}
+Multi sensor fusion have been a target for much research. The topic seeks to combine the
+abilities of several sensors and sensor types, to make the combined result better. 
+
+
 According to \cite{sensor-fusion-mobile-robots} theres a lot of ways to achieve sensor
 fusion in mobile robotics. The use of multiple sensors are favorable because the readings
 can be fused to make a better estimate of the current situation. 
