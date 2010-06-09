@@ -3,15 +3,7 @@
 
 \chapter{Data Representation and Interpretation}
 \label{chap5}
-Choosing how to represent the world is an important design parameter of the system. The
-robot is have limited space and computational abilities, therefor the representation
-should not be too spacious in the control systems memory. If one allows reasoning in the
-system, the space of the representation becomes less, but the complexity of the reasoning
-and sensor interpretation increase. With increased reasoning, the possibility for the
-control system to take the wrong decision becomes substantial, and the integrity of the
-map building compromised. Summarized, the more abstract representation, the more reasoning
-of the control system are needed, but the representation takes less space in the control
-systems memory. 
+
 
 \section{World Representation}
 The world representation should have a number of qualities. First it must represent the
@@ -19,11 +11,22 @@ world in a satisfactory way. It should be easy to update and take up little memo
 implementation platform. Third it should be easy to understand for a human operator
 without too much post-processing. 
 
-The possibility of global positioning must be met. The robot must be able to match its
-created map to a \`a priori map. *****************************
+It must be possible to determine the global position of the robot uniquely form the
+observation the robot does during its mission. This can be achieved by matching the map
+created only from observations to a map supplied by the user. This is an relatively easy
+task when the both maps are of topological nature. The matching between those maps can
+then be a graph search in the map supplied by the user. Depending on the accuracy of the
+supplied map, the global position of the robot can be determined, and the path forward can
+be determined. 
 
-The problem when a robot has to reason, is that it might
-take the wrong decisions, and the risk of erroneous map making are high. 
+In a topological world representation the geometrical aspect of a map is not that
+important, instead landmarks, interesting locations and other features which are easy 
+recognizable are represented as nodes in a graph representation. 
+
+Based on the terms that the world representation should not be spacious in memory, and
+that exact distances are difficult to measure when theres no redundant global positioning
+system the world representation is chosen to be a topological one. 
+
 
 \subsection{Nodes}
 The representation in this project is a kind of topological map. It is abstract in the way
@@ -47,6 +50,12 @@ other nodes. These attributes are:
     \item List of anomalies
 \end{itemize}
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{pics/worldrepresentation}
+    \caption{An example of the world representation}
+    \label{chap5:fig-worldrepresentation}
+\end{figure}
 Most of this attributes are self-explaining, but the last attribute, \emph{list of
 anomalies} deserves a closer explanation. 
 Anomalies are those things that the robot should look after, and record. An anomaly are
@@ -63,16 +72,20 @@ pipeline junctions might be marked as anomalies instead of being recognized as n
 Because the anomalies are detected before the node that will contain the list are
 detected, the list is temporary stored in the robots memory until the next node are
 detected. 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.8\textwidth]{pics/worldrepresentation}
-    \caption{An example of the world representation}
-    \label{chap5:fig-worldrepresentation}
-\end{figure}
 
+This anomalies might be obstacles which hinder the robot in completing its mission. It is
+important that the control system is able to traverse this obstacles or take another way
+to get past these obstacles. This special types of anomalies must be handled in some way,
+but is not a topic of this project. 
 
 \section{Map-building From the Sensor Data}
-
+Much reasoning are needed from the control system to interpret the sensor data to select
+and create the correct representation of the world, and more importantly take the correct
+decisions when the robot is faced with a challenge. This part is maybe the most important
+part in the complete navigation system, because it need to supply correct information to
+the higher level navigation and control system. If this part fail in assessing the
+environment in the correct way, the navigation system might take the wrong decisions and
+the mission might fail. 
 
 \subsection{Cylinder Fit from 3D Sensor Data}
 The three dimensional point cloud which is output form the Time-of-Flight camera are
@@ -174,7 +187,12 @@ $hits_y$. This controls the number of points that will be sorted into the bins. 
 the bins, the more vulnerable will the algorithm be to to
 other points that does not ``belong'' to the wall points. Other parameters are the
 threshold parameters for how many points there need to be in a histogram bin to pass them
-to the line fit, $NoPointsX$ and $NoPointsY$.
+to the line fit, $NoPointsX$ and $NoPointsY$.\
+
+The horizontal lines, i.e. the ones that is along the x-axis shown in Figure
+\ref{chap3:fig-sensor-frames}, are considered the most important, since these in all cases
+are the walls of the pipeline. Most of the times this lines will be the walls of the
+pipeline. 
 
 From these lines the radius and direction of the pipe can be found. The position of the
 Laser Range finder is assumed known, particularly the height above the ground are needed
@@ -217,8 +235,14 @@ give the most accurate results, when around the robot. Then the \emph{misfit} po
 the 3D sensor is analysed, this can be matched to a database with \emph{fingerprints} of
 the different pipeline junctions, and the best fit can be selected.
 
-Unfortunately, this have not been prioritized when working with this project, and is a
-topic of further research. 
+The \emph{MRINSPECT-V} described in \cite{MRINSPECT-V} recognizes pipe profiles using the 
+shadows created by a special illuminator. The shadow profiles are stored in tree
+structure. Then a depth-first search can be used to find the matching profile fast and
+efficient. 
+
+
+Unfortunately, the profile matching have not been prioritized when working with this
+project, and should be a topic of further research and work. 
 
 
 \section{Navigation and Positioning in the World Representation}
