@@ -4,7 +4,19 @@
 \chapter{Sensors}
 \label{chap3-sensors}
 The sensors of a autonomous system is one of the key components for the application to
-succeed. The sensors are eyes, ears and touch for the robot, and 
+succeed. The sensors are eyes, ears and touch for the robot, and for the robot to be able
+to complete its mission in a favourable way, the right sensors must be chosen.
+
+The main sensor suit of the PiKo platform with regard to the pipe inspection and
+navigation will be a 2D laser range finder, a Time-of-flight camera and a stereo camera
+rig. The other sensors involved on the PiKo platform is beyond the scope of this report
+and will not be investigated. 
+
+Some common laser range finders will be compared and one will be selected. The stereo
+camera rig are calibrated and both extrinsic, intrinsic parameters and distortion
+coefficients will be determined. The time-of-flight camera are also calibrated for lens
+distortions and intrinsic parameters will be determined. The different error sources associated
+with the senors will also be mentioned.
 
 \section{Comparisons Between the Proposed Sensors}
 For this project, some of the sensors was not decided. This gave the ability to chose a
@@ -161,10 +173,6 @@ The distortion parameters for both cameras are summarized in Table
     \label{chap3:tab-distortion-coeffs}
 \end{table}
 
-
-
-
-
 Figure \ref{chap3:fig-comp-lensdist} below shows how the camera lenses of the Stereo camera distorts the pictures
 towards the edges of the lens. 
 \begin{figure}[htbp]
@@ -204,6 +212,29 @@ suggests that the pixels of two cameras are not exactly square. The principal ax
 cameras are also in very different places. This is problematic because a stereo rig should
 be horizontally aligned to give the best results. Because for the off-center principal
 axis the field-of-view of the stereo rig will be quite reduced.
+
+The extrinsic parameters of the stereo rig are estimated based on the displacement of the
+checkerboard corners in the different views. The estimated extrinsic parameters are as
+follows. The values are given in millimeters. 
+\begin{equation}
+    T = \left[ \begin{matrix}
+                -60.45 \pm 0.18\\
+                -0.38 \pm 0.15\\
+                -0.02 \pm  1.13 \end{matrix} \right] \quad 
+    r = \left[ \begin{matrix}
+                0.01 \pm 0.01\\
+                -0.01 \pm 0.01 \\
+                0.00 \pm 0.00  \end{matrix} \right]
+\end{equation}
+The baseline given by the manufacturer is 6 cm which correspond very good the estimated
+values.
+\begin{figure}[hbtp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{pics/stereo-extrinsic}
+    \caption{The extrinsic calibration of the stereo rig, showing the calculated position
+    of the checkerboard sequence}
+    \label{chap3:fig-stereo-extrinsic}
+\end{figure}
 
 
 This distortion can be removed and are called rectifying the image. This makes common
@@ -328,17 +359,21 @@ with surfaces which absorbs most of the light. This surfaces will appear farther
 they really are. 
 
 
-
-
 \section{Sensor Configurations}
 \label{chap3:sec-sensorconfig}
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.7\textwidth]{pics/sensor-config}
-    \caption{\emph{Single-Sensor} frames on PiKo}
-    \label{chap3:fig-single-sensor-frames}
+    \caption{The different reference frames}
+    \label{chap3:fig-sensor-frames}
 \end{figure}
-The different sensor domains are shown in Figure \ref{chap3:fig-sensor-frames}, and the
-domains of the sensors shown. 
+The different reference frames are shown in Figure \ref{chap3:fig-sensor-frames}, together
+with the field-of-view and domains of the senors. These are the
+\emph{North-East-Down} frame, \emph{body} frame, and the two sensor frames with
+corresponding field of view. All of the systems are defined as right-hand-systems. 
+
+For the system it is important to known the location of the different sensors, relative to
+the center of gravity of the platform, where usually the center of the body frame are
+defined. 
 
 
