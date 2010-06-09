@@ -17,13 +17,25 @@ and where it should move next.
 
 The project is implemented in both \emph{C/C++} and Matlab. The sensor layer are
 implemented in \emph{C/C++} while the other layers are implemented in Object-Oriented
-Matlab. 
+Matlab.
 
 \section{Low-level Interfaces}
 The low-level interfaces from the sensors are implemented in \emph{C/C++} and uses the
 supplied sensor APIs. The SwissRanger 3000 API were used directly in Matlab. The Hokuyo
 API was a little more tricky to use. A Matlab interface function were implemented to get
 the sensor data directly into Matlab.
+
+\subsection{Hokuyo URG Sensor Interface}
+A sensor API for \emph{C/C++} was supplied from the manufacturer of the laser range
+finder. Standard API calls were used and a precompiled matlab \emph{mex}-file was created
+for sensor access from matlab. The code can be seen in Appendix \ref{app:urg-mex}.
+
+\subsection{SwissRanger 3000 Sensor Interface}
+MESA Imagining provided a standard matlab interface with the needed functionality, and
+were generally plug-and-play, using the \emph{sr\_aqquire()} to tell the camera to get
+ready for capture. \emph{sr\_getimage()} where used to get the intensity image, while
+\emph{sr\_coordtrf()} gave the Cartesian coordinate output. Default integration time for
+the camera where used. 
 
 \subsection{Stereo Camera Implementation}
 For the stereo camera, a program was written using the \emph{OpenCV} library. A open
@@ -54,7 +66,8 @@ read into Matlab for further processing.
     \end{algorithmic}
 \end{algorithm}
 This program calibrates the cameras, rectifies the images, finds stereo correspondences
-and reprojects them to 3D coordinates.
+and reprojects them to 3D coordinates. The source code is shown in Appendix
+\ref{app:dense-stereo}.
 
 
 \section{Mid-level Implantations}
@@ -64,21 +77,12 @@ sensor data. The main task is to find lines in the 2D sensor data, and cylinder 
 the 3D data. 
 
 This functionality are implemented in a Matlab class called the \emph{SensorInterpreter}.
+The m-file is given in the Appendix \ref{app:sensorinterpreter}. The implementation is
+straight forward and brute force. 
 
 
 \subsection{Analysis of 3D Sensor Data}
-The 3D data are first filtered with regard to corresponding the intensity image. Pixels
-with intensities larger or lower than a threshold value will be filtered away and set to
-zero. 
-
-After this the coordinates are sorted on ascending depth value, and all trivial points,
-i.e. zero points are taken out of the coordinate list. The new list with coordinates
-including only interesting points will be divided into 10 equally spaced bins in the depth
-direction. Each of this bins are sent to the surface fit algorithm which is a
-\emph{Least-Squares Guass-Newton steepest decent}-algorithm. 
-
-\subsubsection{Surface Fit Algorithm}
-The algorithm which is used are the \emph{EUROMETROS}\cite{eurometros} Matlab library developed by
+The algorithm which is used is the \emph{EUROMETROS}\cite{eurometros} Matlab library developed by
 \emph{National Physics Laboratory(NPL)} in the United Kingdom. The algorithm provides the
 estimated radii, and directions of the data sets. Also the distance of the data set to the
 estimated cylinders are output, which is a measurement on how good the cylinder fit is. 
@@ -99,7 +103,8 @@ representation described in Chapter \ref{chap5} are implemented as a class in Ma
 As seen from Figure \ref{chap6:fig-world-uml} the implementation are based on a
 \emph{world} class which contains the á priori map of the world and the node network
 together with some useful parameters. The nodes of the representation are also different
-classes which inherits from a super node. 
+classes which inherits from a super node. See Appendix \ref{app:world} for the matlab
+code. 
 
 
 \section{Summary of Parameters}
@@ -133,8 +138,11 @@ There are a number of things that are not implemented because of time issues. Pr
 most important thing is the segmentation of the sensor data. This is crucial for the
 least-squares method to work properly. 
 
-Another thing that is not implemented is the module that recognizes and matches pipe
-profiles. The idea of this is that it will from the sensor interpreter recognize the pipe
+Depth calibration of the Time-of-flight camera are not implemented, due to the reasons
+given in Section \ref{chap3:subsec-depht-calib}.
+
+The module that recognizes and matches pipe profiles are not implemented. 
+The idea of this is that it will from the sensor interpreter recognize the pipe
 profile, which is matched to some internal database of profiles.
 
 Also, the matching algorithm for finding the global position from the passed-through nodes
