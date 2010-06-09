@@ -1,12 +1,11 @@
 \chapter{Testing}
 \label{chap7}
-Testing is an important aspect of the work carried out in this thesis. In this chapter the
-test setup are described. How the tests are carried out, some of the results and some
-immediate results.
+In this chapter the test setup are described. How the tests are carried out, 
+some of the results and some immediate results.
 
 
 \section{Test Environment}
-The test environment are two connected pipe segments. A Y-junction and an L-bend. This
+The test environment are two connected pipe segments. A Y-junction and an R-bend. This
 pipe segments are connected, according to Figure \ref{chap7:fig-environment}.
 \begin{figure}[htbp]
     \centering
@@ -14,10 +13,9 @@ pipe segments are connected, according to Figure \ref{chap7:fig-environment}.
     \caption{The test environment}
     \label{chap7:fig-environment}
 \end{figure}
-
-There are six points of interest in this environment. 
-The numbers 1-3 are the places where the sensors will be put and record snapshots of the pipe. 
-The letters A-C are places where irregularities and anomalies in the pipes are placed. 
+There are five points of interest in this environment. 
+The numbers \emph{1-3} are the places where the sensors will be put and record snapshots of the pipe. 
+The letters \emph{B} and \emph{C} are places where irregularities and anomalies in the pipes are placed. 
 
 The idea behind the tests is to show how the sensors and the system reacts to different
 kinds of anomalies, and how this impacts on the ability to detect what nodes is where. 
@@ -54,9 +52,11 @@ The tests are carried out with a curled-up paper which is placed at the three di
 locations, marked in Figure \ref{chap7:fig-environment}. 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.5\textwidth]{pics/irregularSR}
-    \caption{The curled-up paper placed at point B in the pipe}
-    \label{chap7:fig-culed-up-paper-at-B}
+    \includegraphics[width=0.47\textwidth]{pics/irregularSR}
+    \includegraphics[width=0.47\textwidth]{pics/pos2-regular-tof}
+    \caption{Left: The curled-up paper placed at point B in the pipe. Right: Regular
+    surfaced obstacle at point B}
+    \label{chap7:fig-pics-of-obstacles}
 \end{figure}
 
 \subsection{Regular surfaced anomalies}
@@ -64,16 +64,8 @@ As mentioned above the algorithm relies on regularity in the environment to dete
 anomalies. This test will try to test the ability of the system to detect regular surfaced
 objects which might look as they are a part of the environment. 
 
-This test is a opaque bottle filled with water. The Figure \ref{chap7:fig-regular-at-B}
-shows the bottle used in the test cases.
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.5\textwidth]{pics/pos2-regular-tof}
-    \caption{The regular surfaced obstacle at point B}
-    \label{chap7:fig-regular-at-B}
-\end{figure}
-
-
+This test is a opaque bottle filled with water. The right image in Figure
+\ref{chap7:fig-pics-of-obstacles} shows the bottle used in the test cases.
 
 \section{Test Results}
 Some of the results are shown here. The ones that differ most from each other. The
@@ -83,7 +75,8 @@ complete list of plots is shown in the Appendix.
 Figures \ref{chap7:fig-longpipe-tof-3d}--\ref{chap7:fig-longpipe-urg-2d} shows the test of
 the long pipe scenario. Figure \ref{chap7:fig-longpipe-tof-dist} shows the distance from each
 point in the data set from the time-of-flight camera to the surface fitted cylinders. The
-parameters for this test are shown in Table \ref{chap7:tab-longpipe}.
+parameters for this test are shown in Table \ref{chap7:tab-longpipe}. If not otherwise is
+stated the parameters are the same for all the tests. 
 \begin{table}[htbp]
     \centering
     \begin{tabular}{|c|c|}
@@ -114,13 +107,13 @@ parameters for this test are shown in Table \ref{chap7:tab-longpipe}.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{pics/longpipe-tof-dist}
-    \caption{The distance of the points from the fitted cylinders}
+    \caption{The distance of the points from the fitted cylinders at position 1}
     \label{chap7:fig-longpipe-tof-dist}
 \end{figure}
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{pics/longpipe-urg-2d}
-    \caption{The data from the URG Laser Range Finder with fitted lines}
+    \caption{The data from the URG Laser Range Finder with fitted lines at position 1}
     \label{chap7:fig-longpipe-urg-2d}
 \end{figure}
 
@@ -149,15 +142,16 @@ pipe. The parameters where mostly the same as for the long pipe test. See Fiugre
 \end{figure}
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.5\textwidth]{pics/pos21-control-depth}
-    \caption{Depth image from the Stereo Rig with }
+    \includegraphics[width=0.37\textwidth]{pics/pos21-control-depth}
+    \includegraphics[width=0.6\textwidth]{pics/pos21-control-3d}
+    \caption{Depth image from the Stereo Rig with reprojected 3d coordinates}
     \label{chap7:fig-pos21-control-depth}
 \end{figure}
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{pics/pos21-control-rectified}
     \caption{The rectified stereo pair from position 2 looking at position 3 }
-    \label{chap7:fig-pos21-control-depth}
+    \label{chap7:fig-pos21-control-rectified}
 \end{figure}
 
 
@@ -170,13 +164,14 @@ This test shows how an irregular object affects the algorithms. See Figures
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{pics/pos1-irregular-tof-3d}
-    \caption{Fitted cylinders from ToF camera at position 1 with irregular obstacle}
+    \caption{Fitted cylinders from ToF camera at position 1 with irregular obstacle at
+    position 1}
     \label{chap7:fig-pos1-irregular-tof-3d}
 \end{figure}
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{pics/pos1-irregular-tof-dist}
-    \caption{The distance from the fitted cylinder with irregular obstacle}
+    \caption{The distance from the fitted cylinder with irregular obstacle at position 1}
     \label{chap7:fig-pos1-irregular-tof-dits}
 \end{figure}
 \begin{figure}[htbp]
@@ -185,6 +180,12 @@ This test shows how an irregular object affects the algorithms. See Figures
     \caption{The data from the URG Laser Range Finder at Position 1}
     \label{chap7:fig-pos1-irregular-urg-2d}
 \end{figure}
+In Figure \ref{chap7:fig-pos1-irregular-urg-2d} the irregular obstacle is not showing up
+on the URG. This is because the laser range finders scanner beams scans over the obstacle
+and therefor does not detect it. This should be taken into account when designing the
+control system. If the obstacle does not show up in one of the sensors field-of-view, does
+not mean that its not there. 
+
 
 \subsection{Regular Obstacle at Point B at Position One}
 Figures \ref{chap7:fig-pos1-regular-tof-3d}--\ref{chap7:fig-pos1-regular-urg-2d} shows the
@@ -207,13 +208,14 @@ exactly known, or that the ToF-camera over-estimates the distances.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.7\textwidth]{pics/pos1-regular-tof-3d}
-    \caption{Fitted cylinders from ToF camera at position 1 with regular obstacle}
+    \caption{Fitted cylinders from ToF camera at position 1 with regular obstacle at
+    position 1}
     \label{chap7:fig-pos1-regular-tof-3d}
 \end{figure}
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{pics/pos1-regular-tof-dist}
-    \caption{The distance from the fitted cylinder with regular obstacle}
+    \caption{The distance from the fitted cylinder with regular obstacle at position 1}
     \label{chap7:fig-pos1-regular-tof-dits}
 \end{figure}
 \begin{figure}[htbp]
@@ -226,7 +228,7 @@ exactly known, or that the ToF-camera over-estimates the distances.
     \centering
     \includegraphics[width=0.5\textwidth]{pics/pos1-regular-depth}
     \caption{Disparity and depth image of regular obstacle at Position 1}
-    \label{chap7:fig-pos1-regular-3d}
+    \label{chap7:fig-pos1-regular-depth}
 \end{figure}
 \begin{figure}[htbp]
     \centering
