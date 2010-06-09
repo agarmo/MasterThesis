@@ -704,6 +704,12 @@ example employing laser range finders, the grid at the distance reported from th
 finder are marked as occupied according to some uncertainty set by the accuracy of the
 range finder. The grids between the possible detected obstacle will then be decreased
 because the probability of obstacles are less. 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{pics/occupancy-grid}
+    \caption{An example of the occupancy grid map}
+    \label{chap2:fig-occupancy-grid}
+\end{figure}
 
 Occupancy maps are not the most computationally effective way to represent the world,
 especially when it is big. It is cumbersome and may lead to problems when dealing with
@@ -720,7 +726,7 @@ traversed and searched if necessary.
 
 \begin{figure}[htbp]
     \centering
-   %\includegraphics[width=0.5\textwidth]{pics/quad-tree}
+   \includegraphics[width=0.5\textwidth]{pics/octtree}
     \caption{A Quadtree representation}
     \label{chap2:fig-quadtree}
 \end{figure}
