@@ -14,4 +14,32 @@ sewer flow. Or robots crawling the pipelines carrying water, oil or gas to detec
 which will cause catastrophic events if not tended to. This are all important work, which
 either is dangerous, dirty or dull, or all three at once.
 
+The problem when a robot is going into an unknown area and mapping the surroundings using
+a pack of sensors is called \emph{SLAM}, short for Simultaneous Localization and Mapping.
+This is a problem much researched around, and have been tried with numerous sensor types
+and many algorithms are proposed. Some are best in structured environments, like office
+landscapes and industrial areas, while other will preform better in more sparse areas with
+less landmarks and recognizable features. 
+
+In our global world the transport of resources, like oil and gas are of great importance. Much of this
+transport is done using pipelines. There are millions of kilometers with pipelines around
+the world. These pipelines need regular inspections to insure that the pipeline is intact
+and undamaged. Also sewers, as mentioned above, needs inspections to keep a satisfactory
+standard. Some of the pipes are considered accessible by humans, i.e. diameter over 80 cm,
+but most are smaller than this, and uses various inspection devices feeding video to human
+operator that must detect, record, and classify the damages. This is tedious work which
+can be automated using robots. \cite{MAKRO-project}
+
+One such robot suitable for pipe inspection might be the \emph{Pipe Inspection KOnda}
+(PIKo) developed by SINTEF. This is a snake like robot, consisting a series of identical
+modules interconnected by two degrees of freedom active joints. On each module there is a
+set of four wheels, two near the ground and two on on the top of the modules. For
+horizontal motion it uses these wheels and a train like motion. Since the joints are
+connected with two degrees of freedom, the robot is capable of traversing vertical pipes
+as well. This is achieved by spanning the pipe alternately and pushing the wheels towards
+the pipe walls to gain enough friction for the robot to motion vertically. \cite{piko}
+
+This report will concern the modelling and proposition of a navigation system which can be
+used for pipe inspection. This navigation system must address a number of challenges. The
+
 
