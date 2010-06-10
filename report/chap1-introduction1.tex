@@ -46,7 +46,7 @@ is a tremendous task and has up to date not been solved for the general case.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{pics/piko}
-    \caption{The Pipe Inspection Konda}
+    \caption{The Pipe Inspection Konda. \url{www.sintef.no}}
     \label{chap1:fig-piko}
 \end{figure}
 
@@ -75,6 +75,53 @@ account. A map representation with little pre processing takes up much memory, w
 representation which processes the sensor output and estimates features need less space in
 memory if the features are recognized by the system. 
 
-Finally the total system must be tested to show the proposed qualities, and guarantee that
-it will work in a real environment. 
 
+\section{Assumptions}
+To summarize the points above there are some assumptions which simplifies the problem
+treated in this report.
+\begin{itemize}
+    \item Only planar motion is assumed, even though the implementation platform is
+    capable of vertical motion. 
+    \item The environment which the robot will operate are structured. Mainly pipe-like
+    environments and confined spaces. 
+\end{itemize}
+
+\section{Demands}
+The complete navigation system for a pipe inspection robot should meet the following
+demands and qualities. 
+\begin{itemize}
+    \item Robustness. The system should be robust and able to take the right decisions
+    even when the sensors does not give good readings, at least for a limited time.
+    \item Real-time system with limited computational abilities. The system is embedded
+    and the processor power and memory available are limited. The algorithms should be
+    efficient and the sensor data should be treated and stored in an memory efficient way. 
+    \item Simplicity. Make thing as simple as possible but not simpler, a great scientist
+    once said. This might help to keep the complexity of the system down. 
+    \item Consistency. If the system is presented with the same conditions as the
+    decision taken should be consistent.  
+\end{itemize}
+
+
+\section{Structure of the Report}
+The report is presented in the following way. Chapter \ref{chap2} give a thorough
+introduction to the concepts needed to understand this report. It will address different
+range finding techniques, and different sensor concepts will be introduced with advantages
+and disadvantages of the concepts. Stereo imaging will be discussed in detail, from camera
+calibration, and epipolar geometry to rectification of the captured images and
+reprojection of the extracted disparity images. The most used map data representations will be
+introduced and explained, also feature extraction and model fitting in Section
+\ref{chap2:sec-representations} and \ref{chap2:sec-feature-extraction}. At last a survey
+of the different pipe inspection robots currently under research is included in Section
+\ref{chap2:sec-state-of-the-art}.
+
+Chapter \ref{chap3} concerns the selection of sensors appropriate for the application, and
+calibration of the sensors. The lens distortion parameters and intrinsic parameters of the
+sensors will be estimated for the calibration. 
+
+The representation of the world will be treated in Chapter \ref{chap5}. How the sensor
+output are interpreted will also be shown in this chapter.
+
+Chapter \ref{chap6} and \ref{chap7} will deal with implementation and testing of the
+proposed system. While Chapter \ref{chap8} will discuss how the proposed system preformed
+on the tests. The last chapter will give the main conclusions and propose further topics
+for research. 
