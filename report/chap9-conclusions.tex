@@ -24,7 +24,7 @@ noise. The intrinsic parameters of the camera where determined, and corresponded
 the values given by the manufacturer. No calibration for the range data were preformed.
 Mostly because it where thought to not impact the system performance significantly. 
 
-The stereo cameras intrinsic parameters and lens distortion coefficients where estimated.
+The stereo cameras intrinsic parameters and lens distortion coefficients wherThie estimated.
 As expected this showed severe distortions and offset of the principal axes which impacted
 the field-of-view of the stereo rig. The cameras did not preform that well in the given
 environments, this is mostly due to the quality of the camera, and the lack of synthetic
@@ -60,15 +60,33 @@ but suffered from the same problems as the three dimensional case did.
 It is numerous of things that need to be looked into further. This section will try to 
 summarize this points. 
 
-\paragraph{Obstacle avoidance and Path Planning} For the 
+\paragraph{Path Planning and replanning} For the system to be autonomous it will
+need some kind of path planning, which takes the decisions on where to go next. It will
+also need to find a solution if the way it initially intended is blocked, or else the
+robot might fail its mission. It should include the possibility to go back and take
+another turn. 
 
-\paragraph{Local navigation}
+\paragraph{Local navigation} This refers to the ability to avoid or overcome obstacles
+that block the passage locally. The robot should be able to assess the obstacle and take
+decisions regarding if it should go over the obstacle or find a way around. 
 
-\paragraph{Segmenting of range images}
+\paragraph{Profile Matching} This is of course the most important thing for the
+topological map representation to work. The sensor output need to be translated into 
+map-related features, and transfered to the world representation. A \emph{node recognizer}
+must be developed and implemented.
 
-\paragraph{Fusion of Time-of-Flight and Stereo Camera}
+\paragraph{Segmenting of range images} For the topological map representation to work
+satisfactory, the sensors need to be interpreted correctly. For this to work, points from
+the time-of-flight camera or stereo camera need to be interpreted correctly, and correct
+geometric primitives need to be chosen.  This can only
+be achieved by determining which point belong to which geometrical primitive. Then fitting
+the selected subset to the right parametrization of the primitives used. 
 
-\paragraph{Profile Matching}
+\paragraph{Fusion of Time-of-Flight and Stereo Camera} To achieve better 3D point clouds
+a fusion between the Stereo camera and Time-of-flight camera can be implemented. This can
+provide good and exact coordinates at transition areas in the scene, where the ToF-camera
+are not sufficient. 
+
 
 \paragraph{Matching for global positioning}
 
