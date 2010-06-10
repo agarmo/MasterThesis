@@ -64,7 +64,8 @@ summarize this points.
 need some kind of path planning, which takes the decisions on where to go next. It will
 also need to find a solution if the way it initially intended is blocked, or else the
 robot might fail its mission. It should include the possibility to go back and take
-another turn. 
+another turn. Since the robot is going to be autonomous and cordless this path planning
+strategies need to be efficient to maximise the operation time. 
 
 \paragraph{Local navigation} This refers to the ability to avoid or overcome obstacles
 that block the passage locally. The robot should be able to assess the obstacle and take
@@ -88,9 +89,19 @@ provide good and exact coordinates at transition areas in the scene, where the T
 are not sufficient. 
 
 
-\paragraph{Matching for global positioning}
+\paragraph{Matching for global positioning} For global position to be determined, the map
+obtained by the robots sensors and the map supplied by the operator must be matched. This
+means searching the tree representation for the correct sequence of nodes. Although this
+can be troublesome if the map supplied by the user is not detailed enough or the map
+created by the robot is too detailed to be matched. 
 
-\paragraph{Robust Reasoning}
+\paragraph{Robust Reasoning} Because of the abstract map representation and that the world
+is not a ideal place, the robots reasoning need to be robust. Other ways of recognizing
+depth data and range images can be applied. The use of neural networks and fuzzy logic
+have proven useful in applications like this, and might yield a good solution to the
+problem. 
 
-
+\paragraph{Expand the system to 6 DOF} The pipe inspection platform discussed in this report
+have the ability to explore not only horizontal pipes, but also vertical pipes. This means
+that the proposed system should be able to navigate in three dimensional spaces. 
 
