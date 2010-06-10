@@ -163,6 +163,15 @@ when far away, which is obvious because of the nature of the scanning. The scann
 also have a large field-of-view, that makes it a good addition to the sensor suit of the
 platform. 
 
+The URG sensor is limited to planar measurement. Depending on the position of the laser
+scanner, this will limit the ability to sense obstacles which does not cover a large part 
+of the pipe. Obstacles in a pipe environment might be sediments and residues of the medium
+traveling in the pipe, and they usually settle at the bottom of the pipe. If the range
+finder is placed high above the ground in the pipe, these sediments and potential
+obstacles will not be detected. This motivates the use of the sensor for estimating the
+pipe radius and matching profiles, since in many cases the obstacles in the pipe will not
+affect the pipe profile, seen from the range finder. 
+
 
 \subsection{Surface Fit and Pipe Properties Estimation}
 The proposed surface fit algorithm is based on least-squares. This does not work very good
