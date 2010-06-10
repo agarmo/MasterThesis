@@ -17,12 +17,12 @@ The output from the camera were applied directly into matlab. Default
 integration time were used, and the intensity- and range images where captured as is from
 the camera electronics.
 
-The default readout from the ToF camera were not that affected by the difficulties
-described in Chapter \ref{chap2}, but the individual range values where dominated by normal
-distributed measurement errors. This where removed by averaging the images over a number
+The normal distributed measurement noise where damped and partly removed by averaging the images over a number
 of successive images. This reduced the response time of the sensor and therefor the
 refreshment time, but this will most probably not be a case in this application, since the
 velocities included are not of the greatest magnitudes. 
+The systematic errors described in Chapter \ref{chap2} were difficult to asses just from
+looking at the sensor output.
 
 The field-of-view of the camera is one of its short-comings. In a small confined space
 like a pipe environment the field-of-view is important. Since the pipes are not that much
@@ -38,7 +38,14 @@ camera are places exactly in the middle, the full view of the pipe is not availa
     \end{aligned}
 \end{equation}
 This is 35 cm in front of the robot, which is quite limiting for looking at the pipe walls
-up-close, without being able to turn the camera. 
+up-close, without being able to turn the camera. This is in the ideal case where the
+camera is located exactly in
+the middle of the pipe. Since most of the obstacles will be on the ground in the pipe it
+might be useful to tilt the camera somewhat downwards, to get a better view of the ground
+in the front of the robot. 
+
+
+
 
 
 
@@ -226,7 +233,7 @@ of the vertical axis.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.8\textwidth]{pics/longpipe-urg-hist}
+    \includegraphics[width=0.9\textwidth]{pics/longpipe-urg-hist}
     \caption{The histogram for the vertical and horizontal line fit for the long pipe test}
     \label{chap8:fig-longpipe-urg-hist}
 \end{figure}
@@ -267,9 +274,22 @@ estimates correct, Figure \ref{chap7:fig-pos1-regular-urg-3d}. This is of course
 because there are no segmentation of the objects in the images. 
 
 
+\section{Possible Changes}
+What could make the system better? In retrospect, after tested the system, it would
+benefit from a better feature and estimation scheme. The RANSAC algorithm have proven
+efficient in computer vision applications, because of its internal segmenting of points to
+the model. This will probably give good results with ``flying points'' that does not
+belong to the geometrical primitive. 
 
+Another approach is to classify every point in the point cloud using a Point
+Feature Histogram approach, and thereby classify the whole scene. The number of features
+of a certain type can be matched to a database and the match can be found. 
 
-\section{Why did it perform this way?}
-
+The possible sensor fusion of the stereo camera and the time-of-flight camera. A stereo
+rig provides acceptable results at transitions in the environment, i.e. edges and
+structures, while the time-of-flight camera seems to have more problems at this locations.
+Therefor a fusion of this sensors might prove useful to avoid, flying pixels and give good
+range estimates at edges. \cite{tof-stereo-fusion} shows promising results using this
+approach. 
 
 
