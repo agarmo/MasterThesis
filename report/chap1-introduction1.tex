@@ -30,7 +30,7 @@ but most are smaller than this, and uses various inspection devices feeding vide
 operator that must detect, record, and classify the damages. This is tedious work which
 can be automated using robots. \cite{MAKRO-project}
 
-One such robot suitable for pipe inspection might be the \emph{Pipe Inspection KOnda}
+One such robot suitable for pipe inspection might be the \emph{Pipe Inspection Konda}
 (PIKo) developed by SINTEF. This is a snake like robot, consisting a series of identical
 modules interconnected by two degrees of freedom active joints. On each module there is a
 set of four wheels, two near the ground and two on on the top of the modules. For
@@ -39,7 +39,42 @@ connected with two degrees of freedom, the robot is capable of traversing vertic
 as well. This is achieved by spanning the pipe alternately and pushing the wheels towards
 the pipe walls to gain enough friction for the robot to motion vertically. \cite{piko}
 
-This report will concern the modelling and proposition of a navigation system which can be
-used for pipe inspection. This navigation system must address a number of challenges. The
+This report will outline a possible navigation system for PIKo. This include the eyes and
+ears, the reasoning needed to interpret the senses, together with recollection of the
+areas and the decision making on what to do next. Making the robot do this all by it self
+is a tremendous task and has up to date not been solved for the general case.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{pics/piko}
+    \caption{The Pipe Inspection Konda}
+    \label{chap1:fig-piko}
+\end{figure}
 
+The challenges with designing such a navigation system is amongst others the difficulties
+with keeping track of where the robot is, and more importantly where it has been. This is
+difficult in a pipe environment because it does not allow for a redundant positioning
+system for global position estimation, such as GPS. The robot is then limited to using
+either some kind of odometry or determination and tracking of landmarks in the environment, 
+or both. 
+
+When the robot know where it is, it must take the decision on where it is to go, and if
+there is something blocking the way, it needs to handle this cases in some way.
+Unfortunately, the world is not ideal as the usual lab environments that are used to
+verify research. This calls for a robust system which can handle the situations that can
+occur in the given mission environments. 
+
+The report will define and select sensors applicable for a pipe inspection mission
+preformed by the PIKo robot platform. The benefits and drawbacks of the different sensors
+will be assessed in detail. Next, the sensor data must be stored and interpreted in some
+way, and important features must be selected. Some of this methods of feature extraction
+will be discussed and data set segmentation need to be outlined. 
+
+Given that the robot is autonomous, and the computational abilities and memory available
+for the map representation might be limited, this map representation must take this into
+account. A map representation with little pre processing takes up much memory, while a
+representation which processes the sensor output and estimates features need less space in
+memory if the features are recognized by the system. 
+
+Finally the total system must be tested to show the proposed qualities, and guarantee that
+it will work in a real environment. 
 
