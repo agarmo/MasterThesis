@@ -1,5 +1,5 @@
 /*
- * stereovisiontest.cpp
+ * DenseStereo.cpp
  *
  *  Created on: 17. apr. 2010
  *      Author: anderga
