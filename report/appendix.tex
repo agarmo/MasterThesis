@@ -1,0 +1,2475 @@
+
+
+
+
+
+\chapter{Matlab m-files}
+
+\lstloadlanguages{Matlab}
+
+\lstset{% general command to set parameter(s)
+    language=Matlab,
+    basicstyle=\scriptsize, % print whole listing small
+    stringstyle=\ttfamily, % typewriter type for strings
+    showstringspaces=false} % no special string spaces
+
+
+\section{World representation}
+
+\subsection{\emph{world.m}}
+\begin{lstlisting}
+
+%% World class, containing all the nodes. 
+% This is the container class for all the nodes stored in the world
+% 
+
+classdef world
+    properties %(SetAccess = private) % ?
+    %% private attributes?
+        nodes; % the nodes that are discovered. 
+    end
+    
+    properties
+    %% public attributes?
+    pipe_diameter; % The diameter of the pipeworld
+    
+    end
+    
+    methods
+ 
+        %%  Constuctor
+        function [object] = world(diameter)
+            
+            object.nodes = []; % create an empty list.
+            
+            if nargin == 1
+                start = start_node(0, diameter); % create a start node
+                object.pipe_diameter = diameter;
+            else
+                start = start_node(0, 10);
+                object.pipe_diameter = 10;
+            end
+            
+%             object.nodes = [start];
+%             object.nodes(1) = object.nodes(1).draw_at_position([0;0]);
+%                                     
+            object = object.addNode(start, [0; 0]);
+        end
+        
+        %% Othre functions
+        % add node function for adding nodes to the world
+        % 
+        
+        function [object] = addNode(object, node, position, distance, orientation)        
+            % When adding nodes, they need to be of the same type. Then it
+            % should be easiest to convert them to the super class, node to
+            % fit all the nodes into the same array.
+            if nargin < 3
+                disp('Too few arguments');
+            elseif nargin == 3
+                if ~strcmp(class(node), 'super_node')
+                    % convert the node to super node and put into array
+                    
+                    node = node.super_node(); %convert the node to the super class node
+                    node = node.setPosition(position);
+                    
+                    object.nodes = [object.nodes; node]; % add the node to the list
+                    %object.nodes(end) = object.nodes(end).draw_at_position(position);
+                else
+                    % is of type node.
+                    node = node.setPosition(position);
+                    object.nodes = [object.nodes; node]; % add the node to the list
+                    %object.nodes(end) = object.nodes(end).draw_at_position(position);
+                end
+                
+            elseif nargin == 5 %% supplied the distance and orientation instead
+                if ~strcmp(class(node), 'super_node')
+                    % convert the node to super node and put into array
+                    node = node.super_node(); %convert the node to the super class node
+                    
+                                    
+                else
+                    % is of type node.
+%                     node = node.setPosition(position);
+                    object.nodes = [object.nodes; node]; % add the node to the list
+                    %object.nodes(end) = object.nodes(end).draw_at_position(position);
+                end 
+            end
+        end
+              
+                
+        function [] = draw(object)
+            
+            for i = 1:length(object.nodes)
+                object.nodes(i) = object.nodes(i).draw_at_position(object.nodes(i).position);
+                object.nodes(i).draw_edges(); % indicate what kind of junction it is.
+            end
+        end
+        
+        
+        function [] = draw_edges(object)
+            % algorithm: 1. find which nodes is connected to who.
+            %            2. draw the edges between them, with according
+            %            distances
+            %            3. Draw the edges which are not connected to any
+            %            4. finished
+            
+            % extra: Need to handle faults and errors, check if the
+            % distance is correct. Check if there really is an edge at the
+            % exiting at the bearing allowed by the node in question.
+            
+            for i = 1:length(object.nodes) % Assumes that the nodes array are sorted 
+           
+                if i ~= length(object.nodes)
+                    distance = object.nodes(i+1).dist_prev_node;
+                    
+                    % draw the edges
+                    
+                    hold on
+                    plot([object.nodes(i).position(1), object.nodes(i+1).position(1)],...
+                        [object.nodes(i).position(2), object.nodes(i+1).position(2)]);
+                    hold off;
+                                        
+                else
+                    distance = 0; %no noeds after this one.
+                    
+                    disp('Last node in list');
+                end
+                
+                
+                
+            end
+            
+            
+        end
+        
+        
+    end
+end
+
+\end{lstlisting}
+
+
+\subsection{\emph{super\_node.m}}
+
+\begin{lstlisting}
+%% Class definition for the genreal node in the world representation. 
+% The plan is to make this class a super class and let the different types
+% of nodes inherit form this one.
+% Description of the properties:
+%           type: the type of the node.
+%           number: is the number in the node, usually describing the
+%                   number in which it is discovered
+%           prev_node: is the link to the previous visited node.
+%           discovered: is the timestamp when the node was recognized
+%           diameter: the estimated diameter of the pipe
+%           dist_prev_node: is the estimated distance to the previous node.
+%           anomalies: A list of anomalies discovered between this node and
+%                      the previous one,
+%           orientation: The orientation of the node, relative to NED
+% List of methods:
+%           
+classdef super_node
+    properties
+        type;
+        number;
+        orientation;
+        prev_node;
+        discovered;
+        diameter;
+        dist_prev_node;
+        anomalies;
+        color;
+%     end
+    
+%     properties(GetAccess = protected, SetAccess = protected) % Drawing properties
+        number_of_edges; % The number of edges connecting to the node
+        angles_of_edges; % array with the angles of the connected edges. Relative to NED
+        position;
+    end
+    
+    
+    methods
+        
+        %% constructor
+        function [object] = super_node(number, orientation, prev_node, diameter, dist_prev_node)
+            if nargin == 0 
+                % do nothing, because the felds are empty.
+            elseif nargin == 1 % maybe just a struct?
+                if isstruct(number)
+                    object.number = number.number;
+                    object.orientation = number.orientation;
+                    object.prev_node = number.prev_node;
+                    object.diameter = number.diameter;
+                    object.discovered = number.discovered;
+                    object.dist_prev_node = number.dist_prev_node;
+                    object.type = number.type;
+                    object.anomalies = number.anomalies;
+                    object.color = number.color;
+                    object.number_of_edges = number.number_of_edges;
+                    object.position = number.position;
+                    object.angles_of_edges = number.angles_of_edges;
+                end
+                    
+            else
+                if ~isempty(number)
+                    object.number = number;
+                else
+                    object.number = [];
+                end
+                if ~isempty(orientation)
+                    object.orientation = orientation;
+                else
+                    object.orientation = [];
+                end
+                if ~isempty(diameter)
+                    object.diameter = diameter;
+                else
+                    object.diameter = [];
+                end
+                if ~isempty(prev_node)
+                    object.prev_node = prev_node;
+                else
+                    object.prev_node = [];
+                end
+                if ~isempty(dist_prev_node)
+                    object.dist_prev_node = dist_prev_node;
+                else
+                    object.dist_prev_node = [];
+                end
+            end 
+            if isempty(object.discovered)
+                object.discovered = datevec(datestr(now, 0));
+            end
+        end
+        
+        
+        
+        %% Adding anomalies which have been observed during the travel
+        
+        % TODO need some error check to see that the anomaly is put into the 
+        % table correctly.
+        function [object] = addAnomaly(object, anomaly)
+            object.anomalies = [object.anomalies; anomaly];
+        end
+        
+        %% Set functions
+ 
+        function [object] = setPostition(object, pos)
+            
+            if nargin == 1
+                object.position = pos;
+            else
+                disp('Too few arguments');
+            end
+            
+        end
+       
+        %% display functions
+        
+        function [object] = draw_at_position(object, pos) % Draws the node at pos x, y using fill
+            or = (object.orientation);
+            
+            r = [cosd(or), -sind(or);
+                 sind(or), cosd(or)];
+        
+            % Need to check that it is a column vector
+            if size(pos) == 2 
+                posb = r'*pos'; % transform to body coords
+            else
+                posb = r'*pos;
+            end
+            
+            
+            % need to rotate the box with regard to the orientation
+            % transform to global coords
+            pos1 = r*(posb + [-1; -1]);
+            pos2 = r*(posb + [-1; 1]);
+            pos3 = r*(posb + [1; 1]) ;
+            pos4 = r*(posb + [1; -1]);
+            
+            x = [pos1(1), pos2(1), pos3(1), pos4(1)];
+            y = [pos1(2), pos2(2), pos3(2), pos4(2)];
+            
+            hold on; % 
+            fill(x, y, object.color);
+            hold off;
+            
+            object.position = pos;
+        end
+        
+        function [] = draw_edges(object)
+            r = 1; %set defualt lenght of edges
+            
+            for i = 1:object.number_of_edges
+                angle = (object.angles_of_edges(i) + object.orientation);
+                
+                x = r*cosd(angle) + object.position(1);
+                y = r*sind(angle) + object.position(2);
+             
+                hold on;
+                plot([object.position(1), x], [object.position(2), y], 'white', 'LineWidth', 3);
+                hold off;
+            end
+        
+        end
+        
+        
+        
+        function [object] = setPosition(object, position)
+                    object.position = position;
+        end
+        
+        function [object] = setOrientattion(object, orient)
+                object.orientation = orient;
+            
+        end
+        
+        
+    end 
+end
+ 
+
+\end{lstlisting}
+
+
+\subsection{t\_junction.m}
+
+\begin{lstlisting}
+%% Class defs of T-junction
+ 
+classdef t_junction < super_node
+    properties    
+    end
+    methods
+        
+        function [t] = t_junction(number, orientation, prev_node, diameter, dist_prev_node)
+            
+            %% Default constuctor
+            if nargin == 0
+                args = {};
+            else
+                if ~isempty(number)
+                    args{1} = number;
+                end
+                if ~isempty(orientation)
+                    args{2} = orientation;
+                end
+                if ~isempty(prev_node)
+                    args{3} = prev_node;
+                end
+                if ~isempty(diameter)
+                    args{4} = diameter;
+                end
+                if ~isempty(dist_prev_node)
+                    args{5} = dist_prev_node;
+                end
+            end
+            
+            %% calling super constructor.
+            t = t@super_node(args{:});
+            
+            %% class specific
+            
+            t.color = 'green';
+            t.type = 'T Junction';
+            
+            t.number_of_edges = 3;
+            t.angles_of_edges = [0, 180, 270]; %standard  
+        end
+        
+        function [lhs] = super_node(rhs)
+            %% converting function
+            lhs.number = rhs.number;
+            lhs.type = rhs.type;
+            lhs.orientation = rhs.orientation;
+            lhs.prev_node = rhs.prev_node;
+            lhs.discovered = rhs.discovered;
+            lhs.diameter = rhs.diameter;
+            lhs.dist_prev_node = rhs.dist_prev_node;
+            lhs.anomalies = rhs.anomalies;
+            lhs.color = rhs.color;
+            lhs.number_of_edges = rhs.number_of_edges;
+            lhs.angles_of_edges = rhs.angles_of_edges;
+            lhs.position = rhs.position;
+            
+            lhs = super_node(lhs);
+            
+        end
+        
+        function [t] = setType(obj, nodetype)
+            obj.type = nodetype;
+            t = obj;
+        end
+    end
+end
+
+\end{lstlisting}
+
+\subsection{start\_node.m}
+
+\begin{lstlisting}
+%% Class defs for the start node
+ 
+classdef start_node < super_node
+    properties
+    end
+    methods
+        
+        function [t] = start_node(orientation, diameter)
+            
+            %% Default constuctor
+            if nargin == 0
+                args = {};
+            else
+                args{1} = 1;
+                args{3} = [];
+                args{5} = [];
+                if ~isempty(orientation)
+                    args{2} = orientation;
+                else 
+                    args{2} = [];
+                end
+                if ~isempty(diameter)
+                    args{4} = diameter;
+                else
+                    args{4} = [];
+                end
+                
+            end
+            
+            %% calling super constructor.
+            t = t@super_node(args{:});
+            
+            %% class specific
+            
+            t.color = 'yellow';
+            t.type = 'Start Node';
+            
+            t.number_of_edges = 1;
+            t.angles_of_edges = 180; %standard  
+        end
+        
+        function [lhs] = super_node(rhs)
+            %% converting function
+            lhs.number = rhs.number;
+            lhs.type = rhs.type;
+            lhs.orientation = rhs.orientation;
+            lhs.prev_node = rhs.prev_node;
+            lhs.discovered = rhs.discovered;
+            lhs.diameter = rhs.diameter;
+            lhs.dist_prev_node = rhs.dist_prev_node;
+            lhs.anomalies = rhs.anomalies;
+            lhs.color = rhs.color;
+            lhs.number_of_edges = rhs.number_of_edges;
+            lhs.angles_of_edges = rhs.angles_of_edges;
+            lhs.position = rhs.position;
+            
+            lhs = super_node(lhs);            
+        end
+        
+ 
+       
+        function [t] = setType(obj, nodetype)
+            obj.type = nodetype;
+            t = obj;
+        end
+    end
+end
+
+\end{lstlisting}
+
+\subsection{\emph{right\_bend.m}}
+
+\begin{lstlisting}
+%% Class defs of right-bend pipe
+ 
+classdef right_bend < super_node
+    properties
+    end
+    methods
+        function [t] = right_bend(number, orientation, prev_node, diameter, dist_prev_node)
+            
+            %% Default constuctor
+            if nargin == 0
+                args = {};
+            else
+                if ~isempty(number)
+                    args{1} = number;
+                end
+                if ~isempty(orientation)
+                    args{2} = orientation;
+                end
+                if ~isempty(prev_node)
+                    args{3} = prev_node;
+                end
+                if ~isempty(diameter)
+                    args{4} = diameter;
+                end
+                if ~isempty(dist_prev_node)
+                    args{5} = dist_prev_node;
+                end
+            end    
+            %% calling super constructor.
+            t = t@super_node(args{:});
+            
+            %% class specific
+            
+            t.color = 'red';
+            t.type = 'Right Bend';
+        end
+        function [lhs] = super_node(rhs)
+            %% converting function
+            lhs.number = rhs.number;
+            lhs.type = rhs.type;
+            lhs.orientation = rhs.orientation;
+            lhs.prev_node = rhs.prev_node;
+            lhs.discovered = rhs.discovered;
+            lhs.diameter = rhs.diameter;
+            lhs.dist_prev_node = rhs.dist_prev_node;
+            lhs.anomalies = rhs.anomalies;
+            lhs.color = rhs.color;
+            lhs.number_of_edges = rhs.number_of_edges;
+            lhs.angles_of_edges = rhs.angles_of_edges;
+            lhs.position = rhs.position;
+            
+            lhs = super_node(lhs);            
+        end
+        
+    end
+end
+ 
+
+\end{lstlisting}
+
+
+\section{\emph{sensorInterpreter.m}}
+
+\begin{lstlisting}
+%% Sensor Interpreter
+%
+% This is the class object which is resposible for recognizing the sensor
+% output. 
+% Output form this class is:    - Node Type
+%                               - Position and Orientation
+%                               - Distance traveled
+%                               - Velocity
+%                               - Distance to walls (?)
+%                               - Register anomalies and irregualrities
+ 
+ 
+classdef sensorinterpreter 
+   
+    properties(GetAccess = public, SetAccess = protected)
+        
+        %% Output data Whenever recognized
+        recognized_node_struct; % A struct containing the data needed for the world object to draw the node.
+        registered_anomalies_struct; % A struct containing details about the detected anomaly.
+        
+        %% Continous output data
+        velocities; % size 3, 1 
+        dist_to_walls; % size 2, 1 
+        
+        verden; % binding til verdenen over.
+%     end
+    
+    %properties(GetAccess = private, SetAccess = private)
+        %% Internal properties
+        pipeline_profiles; % The profiles to match the sensor data to
+    
+        %% The sensor readings.
+        LRF_data; % input: angles and ranges 2xN
+        LRF_paramsy; % structs for holding data asociated with line fit
+        LRF_paramsx; 
+        LRF_height; % The height of the measurement plane.
+        
+%         FittedStructures_2D; % Structures for gathering 2d structures
+%         FittedStructures_3D; % structures for gathering 3d Structures
+        
+        ToF_data; % input: point cloud, x,y,z Mx3
+        ToF_params; % struct for the cylinder fits
+        a0; % assumed direction of the pipe. 
+        interval; %tof cylinder fit interval
+        
+        Stereo_data; % input: x,y,z of features
+    
+    end
+    
+    methods
+        %% Constructor
+        
+        function object = sensorinterpreter(args)
+           
+            if nargin < 1 % default constuctor
+                object.velocities = zeros(3,1);
+                object.dist_to_walls = zeros(2,1);
+                
+                
+                object.LRF_paramsy = struct('x0_urg', [], 'a_urg' ,[],...
+                    'd_urg' , [], 'normd_urg', [],'x_urg' , [],'y_urg' , [],...
+                    'histrange', []);
+                
+                object.LRF_paramsx = struct('x0_urg', [], 'a_urg' ,[],...
+                    'd_urg' , [], 'normd_urg', [],'x_urg' , [],'y_urg' , [],...
+                    'histrange', []);
+            
+                object.ToF_params = struct('x0k', [], 'ank',  [], 'rk', [],...
+                    'dk', [], 'length_d', [], 'a_parmk', [], 'x0', []);
+                            
+                object.LRF_height = 0.07; % 7 cm above ground.
+                
+            elseif nargin == 2
+                
+                
+            end
+        end
+        
+        %% Asociating sensors to the object.
+        
+        function this = setLRFData(this, LRF_data)
+            if (size(LRF_data, 1) ~= 2) || isempty(LRF_data)
+                error('The LRF-data should be on the form 2xM')
+            else
+                this.LRF_data = LRF_data;
+            end
+        end
+        
+        function this = setToFData(this, ToF_data)
+            if (size(ToF_data, 2) ~= 3) || isempty(ToF_data) 
+                error('The LRF-data should be on the form Mx3')
+            else
+                this.ToF_data = ToF_data; 
+            end
+        end
+        
+        
+        %% Internal Calculation Function
+function [this, radius, closestRadius, indexMin] = fuseSensors(this, threshold)
+            % find pralell lines, start with lines assumed along the pipe.
+            if ~isempty(this.LRF_paramsy.a_urg)
+                directions = this.LRF_paramsy.a_urg;
+                
+                equalToLine1 = zeros(size(directions,1),1);
+                
+                %should start with line nearest to origin.
+                
+                %compare the first with the others
+                for i = 2:size(directions, 1)
+                    if compareValue(directions(i,1), directions(1,1), threshold) == 0
+                        if compareValue(directions(i,2), directions(1,2), threshold) == 0
+                            disp('line 1 and line %i are within the threshold')
+                            equalToLine1(i) = 1;
+                        else
+                            disp('Not equal');
+                        end
+                    end
+                end
+                
+                %then find the ones that are closes togheter
+                
+                distanceToLine1 = zeros(size(directions,1),1);
+                distanceToLine1(1) = Inf;
+                for i = 2:size(directions, 1)
+                    if equalToLine1(i) == 1
+                        %calculat the distance from centeroids at x=0
+                        distanceToLine1(i) = norm([0, this.LRF_paramsy.x0_urg(i,2)]-...
+                            [0, this.LRF_paramsy.x0_urg(1,2)]);
+                    end
+                end
+                
+                %find the smalles distance assume this is at the center of the
+                %pipe.
+                [minDist, indexMin] = min(distanceToLine1);
+                if minDist == 0
+                    disp('No paralell lines found');
+                    radius = 0;
+                    closestRadius = 0;
+                    indexMin = 0;
+                else
+                    disp('Found paralell lines');
+                    radius = this.LRF_height/2 + (minDist^2)/(8*this.LRF_height);
+                    indexMin
+                    distanceToLine1
+                    
+                    closestRadius = inf;
+                    
+                    %compare the distance to the calculated radiuses.
+                    for i = 1:size(this.ToF_params.rk,1)
+                        switch compareValue(this.ToF_params.rk(i), radius, threshold/10)
+                            case 0
+                                disp('Found a radius whitihn 10 % of threshold of radius');
+                                
+                                closestRadius = this.ToF_params.rk(i);
+                            case -1
+                                disp('Found a radius smaller than radius');
+                                if abs(radius - this.ToF_params.rk(i)) < 0.03
+                                    closestRadius = this.ToF_params.rk(i);
+                                end
+                            case 1
+                                disp('Found a radius larger than radius')
+                                if abs(this.ToF_params.rk(i) - radius) < 0.03
+                                    closestRadius = this.ToF_params.rk(i);
+                                end
+                            otherwise
+                                disp('Unkonwn error')
+                        end
+                    end
+                    
+                    % Add the cylinder to the back of the ToF_params.
+                    
+                    % find direction
+                    
+                    
+                    
+                    direction = [ (this.LRF_paramsy.a_urg(1,2)+this.LRF_paramsy.a_urg(indexMin,2)/2), 0,...
+                        -(this.LRF_paramsy.a_urg(1,1)+this.LRF_paramsy.a_urg(indexMin,1)/2)];
+                    x0 = [0, this.LRF_height/2,0.2];
+                 
+                    [X, Y, Z] = cylinder(radius*ones(2,1), 125); % plot the cone.
+                    
+                    
+                    % find rotation axis and transformation matrix
+                    rot_axis = cross(this.a0, direction')
+                    if norm(rot_axis) > eps
+                        rot_angle = asin(norm(rot_axis))
+                        if(dot(this.a0, direction')< 0)
+                            rot_angle = pi-rot_angle;
+                        end
+                    else
+                        rot_axis = this.a0
+                        rot_angle = 0
+                    end
+                    
+                    Rxyz = makehgtform('axisrotate', rot_axis, rot_angle);
+                    Txyz = makehgtform('translate', x0');
+                    
+                    tf = Txyz*Rxyz;
+                    
+                    Xny = zeros(2, size(X,2));
+                    Yny = zeros(2, size(Y,2));
+                    Zny = zeros(2, size(Z,2));
+                    % Transform cylinder to right scale and position
+                    for i = 1:126
+                        for j = 1:2
+                            Xny(j, i) = (tf(1, 1:4)*[X(j,i); Y(j,i); Z(j,i); 1]);
+                            Yny(j, i) = (tf(2, 1:4)*[X(j,i); Y(j,i); Z(j,i); 1]);
+                            Zny(j, i) = (tf(3, 1:4)*[X(j,i); Y(j,i); Z(j,i); 1]);
+                        end
+                    end
+                end
+                figure;
+                set(gcf, 'Renderer', 'opengl');
+                plot3(this.ToF_data(:,3), this.ToF_data(:,1), this.ToF_data(:,2), '.');
+                hold on;
+                if minDist ~= 0
+                    surface(Zny./tf(4,4), Xny./tf(4,4), Yny./tf(4,4));
+                end
+                hold off;
+                axis equal;
+                xlabel('Depth');
+                ylabel('Camera X-direction');
+                zlabel('Camera Y-direction');
+                grid on
+            end
+        
+            
+end
+ 
+  
+  function type = matchPipeProfile(this)
+            
+  end
+        
+        
+        %% find lines in 2d data
+        function this = find2Dlines(this, number_points_x, number_points_y,...
+                 histogram_interval_x, histogram_interval_y)
+            
+            if nargin ~= 5
+                error('Too few arguments. Usage: find2DLines(num_point_x, num_points_x, histx_int, hitsy_int')
+            else
+                % start interpreting the data.
+                %transform to cartesian coordinates
+                [urgx, urgy] = pol2cart(this.LRF_data(1,:), this.LRF_data(2, :));
+                
+                % sort on x descending order
+                sorted = sortrows([urgx', urgy'], -1);
+                
+                temp = sorted;
+                temp(~any(sorted,2),:)=[]; %% remove trivial points (0,0)
+                
+                %form histogram ranges and calculate histograms
+                this.LRF_paramsy.histrange = (-4.6:histogram_interval_y:4.7)';
+                this.LRF_paramsx.histrange = (-4.6:histogram_interval_x:4.7)';
+                
+                [nx] = hist(temp(:,1), this.LRF_paramsx.histrange);
+                [ny] = hist(temp(:,2), this.LRF_paramsy.histrange);
+                
+                for k = 1:size(this.LRF_paramsy.histrange)
+                    
+                    threshold = this.LRF_paramsy.histrange(k);
+                    % horizontal lines. from the parallell to the y-axis
+                    
+                    data = [];
+                    if ny(k) > number_points_y
+                        for i = 1:size(temp(:,2))
+                            if (temp(i,2) > threshold-histogram_interval_y) && ...
+                                    (temp(i,2) < threshold+histogram_interval_y)
+                                data = [data; temp(i,:)];
+                            end
+                        end
+                    end
+                    
+                    %look for different shapes, arcs, lines, parallell to the y-axis
+                    if (~isempty(data)) && (size(data, 1) > 2)
+                        [x0_urgt, a_urgt, d_urgt, normd_urgt] = ls2dline(data);
+                        
+                        this.LRF_paramsy.x0_urg = [this.LRF_paramsy.x0_urg; x0_urgt'];
+                        this.LRF_paramsy.a_urg = [this.LRF_paramsy.a_urg; a_urgt'];
+                        this.LRF_paramsy.d_urg = [this.LRF_paramsy.d_urg; zeros(50,1); d_urgt]; %%adding zeros to see where the new line starts
+                        this.LRF_paramsy.normd_urg =[this.LRF_paramsy.normd_urg; normd_urgt];
+                        
+                        %calculate the line
+                        
+                        %scaling
+                        startline = -x0_urgt(1)+ min(data(:,1));
+                        t = sqrt((max(data(:,1))-min(data(:,1)))^2 + (max(data(:,2))-min(data(:,2)))^2) ;
+                        
+                        x_urgt_s = (x0_urgt(1) + ((a_urgt(1)*startline)));
+                        y_urgt_s = (x0_urgt(2) + ((a_urgt(2)*startline)));
+                        
+                        x_urgt_l = (x0_urgt(1) + (a_urgt(1)*t));
+                        y_urgt_l = (x0_urgt(2) + (a_urgt(2)*t));
+                        
+                        
+                        % assign start and stop points to the y-struct
+                        this.LRF_paramsy.x_urg = [this.LRF_paramsy.x_urg; [x_urgt_s, x_urgt_l]];
+                        this.LRF_paramsy.y_urg = [this.LRF_paramsy.y_urg; [y_urgt_s, y_urgt_l]];
+                    end
+                end
+                
+                % look along the x-axis
+                for k = 1:size(this.LRF_paramsx.histrange)
+                    threshold = this.LRF_paramsx.histrange(k);
+                    datax = [];
+                    if nx(k) > number_points_x
+                        for i = 1:size(temp(:,2))
+                            if (temp(i,1) > threshold-histogram_interval_x) && ...
+                                    (temp(i,1) < threshold+histogram_interval_x)
+                                
+                                datax = [datax; temp(i,:)];
+                            end
+                        end
+                    end
+                    if (~isempty(datax)) && (size(datax, 1) > 2)
+                        [x0_urgtx, a_urgtx, d_urgtx, normd_urgtx] = ls2dline(datax);
+                        this.LRF_paramsx.x0_urg = [this.LRF_paramsx.x0_urg; x0_urgtx'];
+                        this.LRF_paramsx.a_urg = [this.LRF_paramsx.a_urg; a_urgtx'];
+                        this.LRF_paramsx.d_urg = [this.LRF_paramsx.d_urg; zeros(50,1); d_urgtx];
+                        this.LRF_paramsx.normd_urg =[this.LRF_paramsx.normd_urg; normd_urgtx];
+                        
+                        %calculate the line
+                        
+                        %scaling
+                        startline = -x0_urgtx(2)+ min(datax(:,2));
+                        t = sqrt((max(datax(:,1))-min(datax(:,1)))^2 + (max(datax(:,2))-min(datax(:,2)))^2) ;
+                        
+                        x_urgt_s = (x0_urgtx(1) + ((a_urgtx(1)*startline)));
+                        y_urgt_s = (x0_urgtx(2) + ((a_urgtx(2)*startline)));
+                        
+                        x_urgt_l = (x0_urgtx(1) + (a_urgtx(1)*t));
+                        y_urgt_l = (x0_urgtx(2) + (a_urgtx(2)*t));
+                        
+                        this.LRF_paramsx.x_urg = [this.LRF_paramsx.x_urg; [x_urgt_s, x_urgt_l]];
+                        this.LRF_paramsx.y_urg = [this.LRF_paramsx.y_urg; [y_urgt_s, y_urgt_l]];
+                    end
+                end
+            end
+        end
+        
+        
+        function this = find3Dcylinders(this, interval, a0)
+ 
+            this.a0 = a0;
+            this.interval = interval;
+            
+            % sort rows and remove trivial points
+            this.ToF_data= sortrows(this.ToF_data, 3); % sort the vector on z value.
+            temp = this.ToF_data;
+            temp(~any(this.ToF_data,2),:)=[]; %% remove trivial points
+            this.ToF_data = temp;
+            
+            % Calculate the interval
+            startz = this.ToF_data(1,3);
+            stopz = this.ToF_data(size(this.ToF_data, 1), 3);
+            
+            pieces = ceil((stopz-startz)/interval); % round upwards toward nearest integer to ensure all values
+            
+            
+            for k = 1:pieces
+                %% Select data from total selection
+                
+                temp = [];
+                for i = 1:size(this.ToF_data,1) % might be optimized because of the sorted array
+                    if (this.ToF_data(i, 3) >= interval*(k-1)) && (this.ToF_data(i, 3) <= interval*k)
+                        temp = [temp; this.ToF_data(i, :)];
+                    end
+                end
+                
+                
+                
+                %% Start the surface fit
+                
+                this.ToF_params.x0 = [this.ToF_params.x0; 0,0,interval*(k-1)];
+                
+                % [x0n, an, phin, rn, d, sigmah, conv, Vx0n, Van, uphin, urn, ...
+                % GNlog, a, R0, R] = lscone(temp, x0, a0, angle, radius, 0.1, 0.1);
+                
+                if (isempty(temp) ) || (size(temp,1) < 5)
+                    warning('Too few points')
+                else
+                    % Start cylinder fit using gauss-newton
+                    [x0n, an, rn, d, sigmah, conv, Vx0n, Van, urn, GNlog, a] = ...
+                        lscylinder(temp, (this.ToF_params.x0(k, :))', a0,...
+                        this.verden.pipe_diameter/2, .001, .001);
+                    
+                    this.ToF_params.x0k = [this.ToF_params.x0k; x0n'];
+                    this.ToF_params.ank = [this.ToF_params.ank; an'];
+                    this.ToF_params.rk = [this.ToF_params.rk; rn];
+                    this.ToF_params.dk = [this.ToF_params.dk; d];
+                    this.ToF_params.length_d = [this.ToF_params.length_d; size(d,1)];
+                    this.ToF_params.a_parmk = [this.ToF_params.a_parmk; a'];
+                end
+                
+            end
+        end
+        
+        
+        
+        %% Output function
+        
+        % This shows what the view should be like with the previous sensor
+        % readings. This should open a plot with the the given view.
+        function [rot_axis, rot_angle] = showSynthesizedView(this)
+            
+            rot_axis = zeros(3, size(this.ToF_params.x0k, 1));
+            rot_angle = zeros(size(this.ToF_params.x0, 1), 1);
+            
+            figure;
+            set(gcf, 'Renderer', 'opengl');
+            test = plot3(this.ToF_data(:,3), this.ToF_data(:,1), this.ToF_data(:,2), '.');
+            hold on;
+            for k = 1:size(this.ToF_params.x0k, 1)
+                
+                if this.ToF_params.rk(k) > 2*(this.verden.pipe_diameter)/2 || this.ToF_params.rk(k) < 0
+                    warning('Radius errenous. Skipping...');
+                else
+                    %% start constructing the cylinder from the given parameters.
+                    [X, Y, Z] = cylinder(this.ToF_params.rk(k)*ones(2,1), 125); % plot the cone.
+                    
+                    
+                    % find rotation axis and transformation matrix
+                    rot_axis(:, k) = cross(this.a0,this.ToF_params.ank(k,:)');
+                    if norm(rot_axis(:,k)) > eps
+                        rot_angle(k) = asin(norm(rot_axis(:,k)));
+                        if(dot(this.a0, this.ToF_params.ank(k,:)')< 0)
+                            rot_angle(k) = pi-rot_angle(k);
+                        end
+                    else
+                        rot_axis(:,k) = this.a0;
+                        rot_angle(k) = 0;
+                    end
+                    
+                    Sz = makehgtform('scale',[1;1;this.interval] );
+                    Txyz = makehgtform('translate', this.ToF_params.x0k(k,:));
+                    Rxyz = makehgtform('axisrotate', rot_axis(:,k), rot_angle(k));
+                    Tz = makehgtform('translate', [0;0;-(this.interval/2)]);
+                    
+                    tf = Txyz*Rxyz*Sz;
+                    Xny = zeros(2, size(X,2));
+                    Yny = zeros(2, size(Y,2));
+                    Zny = zeros(2, size(Z,2));
+                    
+                    % Transform cylinder to right scale and position
+                    for i = 1:size(X,2)
+                        for j = 1:2
+                            Xny(j, i) = (tf(1, 1:4)*[X(j,i); Y(j,i); Z(j,i); 1]);
+                            Yny(j, i) = (tf(2, 1:4)*[X(j,i); Y(j,i); Z(j,i); 1]);
+                            Zny(j, i) = (tf(3, 1:4)*[X(j,i); Y(j,i); Z(j,i); 1]);
+                        end
+                        
+                    end
+                    h(k) = surface(Zny./tf(4,4), Xny./tf(4,4), Yny./tf(4,4));
+                    
+                    
+                end
+                
+            end
+            
+            hold off;
+            axis equal;
+            xlabel('Depth');
+            ylabel('Camera X-direction');
+            zlabel('Camera Y-direction');
+            grid on
+            
+            figure;
+            plot(this.ToF_params.dk);
+            title('Distance of points from the fitted cylinder');
+            hold on
+            plot([this.ToF_params.length_d; size(this.ToF_params.dk,1)],...
+                zeros(1, size(this.ToF_params.length_d,1)+1), '+r', 'MarkerSize', 10);
+            hold off;
+            
+%             figure;
+%             plot(this.ToF_params.dk, this.ToF_data(:,3)); % distribution of the points along the z-axis
+%             xlabel('Length from point on cylinder [m]');
+%             ylabel('Detpth into the pipe, Z-axis [m]');
+%             grid on
+%             
+        end
+        
+        % this creates the real view from the sensors at the given moment.
+        function [] = plot2Dlines(this)
+            
+            [x, y ]= pol2cart(this.LRF_data(1,:), this.LRF_data(2,:));
+            figure;
+            subplot(2, 2, 1:2);
+            plot(x, y, 'b.');
+            hold on;
+            grid on;
+            xlabel('Depth into the pipe Z-axis [m]');
+            ylabel('X-axis relative to ToF-camera [m]');
+            title('URG Laser Range Finder');
+            
+            for i = 1:size(this.LRF_paramsy.x_urg,1)
+                line([this.LRF_paramsy.x_urg(i,1);this.LRF_paramsy.x_urg(i,2)],...
+                    [this.LRF_paramsy.y_urg(i,1);this.LRF_paramsy.y_urg(i,2)], 'Color', 'magenta', ...
+                    'LineWidth', 1.5);
+                %plot centroid
+                plot(this.LRF_paramsy.x0_urg(i,1), this.LRF_paramsy.x0_urg(i,2), 'k*');
+            end
+            
+            for i = 1:size(this.LRF_paramsx.x_urg,1)
+                line([this.LRF_paramsx.x_urg(i,1);this.LRF_paramsx.x_urg(i,2)],...
+                    [this.LRF_paramsx.y_urg(i,1);this.LRF_paramsx.y_urg(i,2)], 'Color', 'red', ...
+                    'LineWidth', 1.5);
+                %plot centroid
+                plot(this.LRF_paramsx.x0_urg(i,1), this.LRF_paramsx.x0_urg(i,2), 'g*');
+            end
+            hold off;
+            
+            
+            subplot(2, 2, 3);
+            plot(this.LRF_paramsy.d_urg);
+            title('Error from the fitted lines Horizontal');
+            grid on;
+            
+            subplot(2, 2, 4);
+            plot(this.LRF_paramsx.d_urg);
+            title('Error from the fitted lines Vertical');
+            grid on;
+            
+            
+            figure;
+            subplot(1, 2, 1)
+            hist(x, this.LRF_paramsx.histrange);
+            title('Histogram of Vertical pixels');
+            xlabel('Position depth into the pipe (camera z-axis) [m]');
+            
+            subplot(1, 2, 2);
+            hist(y, this.LRF_paramsy.histrange);
+            title('Histogram of Horizontal pixels');
+            xlabel('Position lateral position into the pipe(camera x-axis) [m]');
+            
+            
+        end
+        
+        
+        %% Other functions
+        
+        function this = setWorld(this, world)
+           this.verden = world; 
+        end
+        
+        
+    end
+    
+end
+\end{lstlisting}
+
+
+\chapter{\emph{C/C++ implementations}}
+
+\section{Stereo Camera Interface}
+
+\lstloadlanguages{[ISO]C++}
+
+\lstset{% general command to set parameter(s)
+    language=C++,
+    basicstyle=\scriptsize, % print whole listing small
+    stringstyle=\ttfamily, % typewriter type for strings
+    showstringspaces=false} % no special string spaces
+
+
+\subsection{denseStereo.cpp}
+
+\begin{lstlisting}
+/*
+ * DenseStereo.cpp
+ *
+ *  Created on: 17. apr. 2010
+ *      Author: anderga
+ */
+
+
+#include <iostream>
+#include <string>
+#include <cstdio>
+#include <cstdlib>
+
+#include <fstream>
+#include <iomanip> // for manipulating streams
+
+
+
+#include "StereoVision.h"
+#include "StereoCamera.h"
+
+#include <opencv/highgui.h>
+
+int sampleTimeout;
+CvMat* imageRectifiedPair;
+
+std::string filename = "c:\\test2.txt";
+
+void displayOutput(StereoCamera * camera, StereoVision * vision){
+
+    CvSize imageSize = vision->getImageSize();
+    if(!imageRectifiedPair)
+    	imageRectifiedPair = cvCreateMat( imageSize.height, imageSize.width*2,CV_8UC3 );
+
+    vision->stereoProcess(camera->getFramesGray(0), camera->getFramesGray(1), STEREO_MATCH_BY_BM);
+
+
+    CvMat part;
+    cvGetCols( imageRectifiedPair, &part, 0, imageSize.width );
+    cvCvtColor( vision->imagesRectified[0], &part, CV_GRAY2BGR );
+    cvGetCols( imageRectifiedPair, &part, imageSize.width,imageSize.width*2 );
+    cvCvtColor( vision->imagesRectified[1], &part, CV_GRAY2BGR );
+
+    for(int j = 0; j < imageSize.height; j += 16 )
+    	cvLine( imageRectifiedPair, cvPoint(0,j),
+    			cvPoint(imageSize.width*2,j),
+    			CV_RGB((j%3)?0:255,((j+1)%3)?0:255,
+    					((j+2)%3)?0:255));
+
+    cvShowImage( "rectified", imageRectifiedPair );
+
+    cvShowImage( "depth", vision->imageDepthNormalized );
+}
+
+
+int calibrationLoad(StereoVision* vision, std::string filename)
+{
+    std::cout << "Loading calibration file..." << filename;
+    if(0 == vision->calibrationLoad(filename.c_str())){
+        std::cout << " OK" << std::endl;
+        return 0;
+    }else{
+        std::cout << " -FAIL" << std::endl;
+        return 1;
+    }
+}
+
+void calibrationSave(StereoVision* vision, std::string filename)
+{
+    std::cout << "Saving calibration file..." << filename;
+    if(0 == vision->calibrationSave(filename.c_str())){
+        std::cout << " OK" << std::endl;
+    }else{
+        std::cout <<" -FAIL"<< std::endl;
+    }
+}
+
+void writeToFile(IplImage* _3dimage){
+
+	//open the file
+
+	FILE *File;
+
+	File = fopen(filename.c_str(), "a");
+
+	std::cout << "Check image atributes" << std::endl;
+
+	if (_3dimage->depth == IPL_DEPTH_16S)
+		std::cout << "Depth of image is signed 16 bit integer" << std::endl;
+	else if (_3dimage->depth == IPL_DEPTH_32F)
+		std::cout << "Depth of image is 32 bit float" << std::endl;
+	else if (_3dimage->depth == IPL_DEPTH_8S)
+		std::cout << "Depth of image is signed 8 bit integer" << std::endl;
+
+	std::cout << "Number of channels in the image is " << _3dimage->nChannels << std::endl;
+
+	if( _3dimage->dataOrder == IPL_DATA_ORDER_PIXEL)
+		std::cout << "The dataorder of the image is Ordered Pixel" << std::endl;
+	else if (_3dimage->dataOrder == IPL_DATA_ORDER_PLANE)
+		std::cout << "The dataorder of the image is Ordered Plane" << std::endl;
+
+
+
+
+	std::cout << "Starting to write file...";
+
+
+	if (File != NULL){
+		//access the image data.
+		for (int y = 0; y < _3dimage->height; y++){
+			float * ptr = (float*)(_3dimage->imageData + y*_3dimage->widthStep);
+			for (int x = 0; x < _3dimage->width; x++){
+/*
+				File << fixed << std::setprecision(1) << (int)ptr[3*x] << "," <<
+						fixed << std::setprecision(1) << (int)ptr[3*x+1] << "," <<
+						fixed << std::setprecision(1) << (int)ptr[3*x+2];
+				if ( x == _3dimage->width-1)
+					File << " ";
+				else
+					File << ",";
+
+					*/
+				fprintf(File, "%f,%f,%f,", (float)ptr[3*x], (float)ptr[3*x+1], (float)ptr[3*x+2]);
+
+			}
+			fprintf(File, "\n");
+		}
+	}
+	fclose(File);
+	std::cout << " Done!" << std::endl;
+
+
+}
+
+
+void create3dOutput(StereoCamera *camera, StereoVision * vision, IplImage * dest){
+	CvSize imageSize = vision->getImageSize();
+	//if(!imageRectifiedPair)
+		//imageRectifiedPair = cvCreateMat( imageSize.height, imageSize.width*2,CV_8UC3 );
+
+	//process the stereo
+	//vision->stereoProcess(camera->getFramesGray(0), camera->getFramesGray(1), STEREO_MATCH_BY_BM);
+
+	//cvShowImage("left", camera->frames[0]);
+
+	if (vision->Q == 0){
+		std::cout << "Q matrix not set."<< std::endl;
+		cvSetIdentity(vision->Q);
+	}else if( vision->imageDepth == 0){
+		std::cout << "Depth Image not set" << std::endl;
+	}else{
+
+		CvMat *realDisp = cvCreateMat(vision->imageDepth->height,
+				vision->imageDepth->width,
+				CV_16SC1);
+		cvConvertScale( vision->imageDepth, realDisp, 1.0/16, 0 );
+
+		cvReprojectImageTo3D(realDisp, dest, vision->Q, true);
+//		cvSave("c:\\reprojection_matrix_Q.xml", vision->Q);
+//		cvSave("c:\\resultImage3d.xml", dest);
+
+		writeToFile(dest);
+	}
+
+	//cvShowImage( "depth", dest );
+}
+
+
+int main(int argc, char* argv[]){
+
+	bool usefile = false;
+	bool saveCalibration = false;
+
+	bool writefile = false;
+	int iterator = 0;
+
+	CvMat C1, C2, D1, D2, F;
+
+	IplImage *img3d = 0;
+
+	CvSize resolution = cvSize(640,480);
+
+	StereoCamera *camera = new StereoCamera(resolution);
+
+    StereoVision* vision = new StereoVision(resolution);
+
+	int cornersX, cornersY;
+
+	cornersX = 8;
+	cornersY = 5;
+
+	int result;
+
+	while(1){
+
+		if(!camera->ready){
+			std::cout <<"Connecting to cameras..." << std::endl;
+			if(0 != camera->setup(resolution)){
+				std::cout << "-FAILED" << std::endl;
+			}else{
+				std::cout <<"...OK" << std::endl;
+
+				cvNamedWindow( "left");
+				cvNamedWindow( "right");
+				cvNamedWindow( "rectified", 1 );
+				cvNamedWindow( "depth", 1 );
+				vision->calibrationStart(cornersX, cornersY);
+			}
+		}else{
+			if(0 == camera->capture()){
+				if(!vision->getCalibrationDone()){
+					cvShowImage("left",camera->frames[0]);
+					cvShowImage("right",camera->frames[1]);
+				}
+				int c = cvWaitKey( 1 );
+					if( c == 27 ) //if esc key break.
+						break;
+					else if (c == 'c'){
+						vision->reCalibrate(cornersX, cornersY);
+						std::cout << "Recalibrate" << std::endl;
+					}else if (c == 's'){
+						writefile = true;
+						std::cout << "User chose to write file"<< std::endl;
+					}else if (c == 'l'){
+						std::cout << "Loading calibration... " << std::endl;
+						calibrationLoad(vision, "calibration1.xml");
+						std::cout << "Loading calibration... Done!" << std::endl;
+					}
+			}
+
+
+			if(vision->getCalibrationStarted()){//start the calibration process to rectify the images
+
+				if (usefile ){
+					if(calibrationLoad(vision, "calibration.xml") == 0){
+						std::cout << "Calibration Done !" << std::endl;
+						usefile = false;
+					}
+				}else{
+
+					IplImage * left_gray = camera->getFramesGray(0);
+					IplImage * right_gray = camera->getFramesGray(1);
+
+					result = vision->calibrationAddSample(left_gray, right_gray);
+
+					if(0 == result){
+						std::cout << "+OK" << std::endl;
+						if(vision->getSampleCount() >= 30){
+							vision->calibrationEnd(
+									STEREO_CALIBRATE_BOTH_CAMERAS,
+									&D1, &C1, &D2, &C2, &F);
+							std::cout << "Calibration Done !" << std::endl;
+							if(saveCalibration)
+								calibrationSave(vision, "calibration");
+						}
+					}else{
+						std::cout <<"-FAIL Try a different position. Chessboard should be visible on both cameras." << std::endl;
+					}
+				}
+
+			}else{ // Display the depth output.
+				if(vision->getCalibrationDone()){
+					displayOutput(camera, vision);
+
+					if (writefile && iterator <= 4){
+						if (img3d == 0)
+							img3d = cvCreateImage( resolution, IPL_DEPTH_32F, 3 );
+
+						create3dOutput(camera, vision, img3d);
+						iterator++;
+					}
+					if (iterator > 4){
+						writefile = false;
+						iterator = 0;
+					}
+
+
+				}
+			}
+
+
+		}
+	}
+
+
+
+	cvDestroyAllWindows();
+	cvReleaseMat(&imageRectifiedPair);
+	cvReleaseImage(&img3d);
+
+
+
+    delete vision;
+    delete camera;
+
+    return 0;
+}
+\end{lstlisting}
+
+\subsection{StereoCamera.h}
+
+\begin{lstlisting}
+/*
+ * StereoCamera.h
+ *
+ *  Created on: 17. apr. 2010
+ *      Author: anderga
+ */
+
+#ifndef STEREOCAMERA_H_
+#define STEREOCAMERA_H_
+
+#include "opencv/cv.h"
+#include "opencv/cxmisc.h"
+#include "opencv/cvaux.h"
+#include "opencv/highgui.h"
+
+
+
+class StereoCamera
+{
+    CvCapture* captures[2];
+
+    CvSize imageSize;
+
+public:
+
+    IplImage* frames[2];
+    IplImage* framesGray[2];
+
+    //IplImage* render[2];
+
+    CvMat D1, D2, R1, R2; //used for parameter output and saving of estimated paramters.
+
+
+    StereoCamera();
+    StereoCamera(CvSize size);
+    ~StereoCamera();
+
+    int setup(CvSize imageSize);
+    bool ready;
+    int capture();
+    IplImage* getFramesGray(int lr);
+
+};
+
+
+#endif /* STEREOCAMERA_H_ */
+
+\end{lstlisting}
+
+
+\subsection{StereoCamera.cpp}
+
+\begin{lstlisting}
+/*
+ * StereoCamera.cpp
+ *
+ *  Created on: 17. apr. 2010
+ *      Author: anderga
+ */
+
+#include "StereoCamera.h"
+
+
+StereoCamera::StereoCamera()
+{
+    for(int lr=0;lr<2;lr++){
+        captures[lr] = 0;
+        frames[lr] = 0;
+        framesGray[lr] =0;
+
+    }
+    ready = false;
+}
+
+StereoCamera::StereoCamera(CvSize size)
+{
+    for(int lr=0;lr<2;lr++){
+        captures[lr] = 0;
+        frames[lr] = 0;
+        framesGray[lr] =0;
+
+    }
+    imageSize = size;
+
+    ready = false;
+}
+
+
+
+StereoCamera::~StereoCamera()
+{
+    for(int lr=0;lr<2;lr++){
+        cvReleaseImage(&frames[lr]);
+        cvReleaseImage(&framesGray[lr]);
+        cvReleaseCapture(&captures[lr]);
+        //cvReleaseImage(&render[lr]);
+    }
+
+}
+
+int StereoCamera::setup(CvSize imageSize){
+    this->imageSize = imageSize;
+
+    captures[0] = cvCaptureFromCAM(0);
+    captures[1] = cvCaptureFromCAM(1);
+
+/*    frames[0] = cvCreateImage(imageSize,IPL_DEPTH_8U,3);
+    framesGray[0] = cvCreateImage(imageSize,IPL_DEPTH_8U,1);
+    frames[1] = cvCreateImage(imageSize,IPL_DEPTH_8U,3);
+    framesGray[1] = cvCreateImage(imageSize,IPL_DEPTH_8U,1);
+*/
+    if( (captures[0]) && (captures[1])){
+
+        for(int i=0;i<2;i++){
+                cvSetCaptureProperty(captures[i] ,CV_CAP_PROP_FRAME_WIDTH,imageSize.width);
+                cvSetCaptureProperty(captures[i] ,CV_CAP_PROP_FRAME_HEIGHT,imageSize.height);
+        }
+
+
+        ready = true;
+        return 0;
+    }else{
+        ready = false;
+        return 1;
+    }
+
+}
+
+int StereoCamera::capture(){
+
+
+    frames[0] = cvQueryFrame(captures[0]);
+    frames[1]= cvQueryFrame(captures[1]);
+
+    //render[0] = cvCloneImage(frames[0]);
+    //render[1] = cvCloneImage(frames[1]);
+
+
+    return (captures[0] && captures[1]) ? 0 : 1;
+}
+
+IplImage*  StereoCamera::getFramesGray(int lr){
+    if(!frames[lr])
+    	return 0;
+    if(frames[lr]->depth == 1){
+        framesGray[lr] = frames[lr];
+        return frames[lr];
+    }else{
+        if(framesGray[lr] == 0)
+        	framesGray[lr] = cvCreateImage(cvGetSize(frames[lr]),IPL_DEPTH_8U,1);
+        cvCvtColor(frames[lr],framesGray[lr],CV_BGR2GRAY);
+        return framesGray[lr];
+    }
+}
+
+\end{lstlisting}
+
+
+
+\subsection{StereoVision.h}
+
+\begin{lstlisting}
+/*
+ * StereoVision.h
+ *
+ *  Created on: 17. apr. 2010
+ *      Author: anderga
+ */
+
+#ifndef STEREOVISION_H_
+#define STEREOVISION_H_
+
+#include <opencv/cv.h>
+#include <opencv/cxmisc.h>
+#include <opencv/cvaux.h>
+#include <opencv/highgui.h>
+
+using namespace std;
+#include <vector>
+
+enum{
+	STEREO_CALIBRATE_BOTH_CAMERAS = 0,
+	STEREO_CALIBRATE_INDIVIDUAL_CAMERAS = 1,
+	STEREO_MATCH_BY_BM = 2,
+	STEREO_MATCH_BY_GC = 3
+};
+
+
+class StereoVision
+{
+private:
+    //chesboard board corners X,Y, N = X*Y ,  number of corners = (number of cells - 1)
+    int cornersX,cornersY,cornersN;
+    int sampleCount;
+    bool calibrationStarted;
+    bool calibrationDone;
+
+    CvSize imageSize;
+
+
+    vector<CvPoint2D32f> ponintsTemp[2];
+    vector<CvPoint3D32f> objectPoints;
+    vector<CvPoint2D32f> points[2];
+    vector<int> npoints;
+
+public:
+    StereoVision(int imageWidth,int imageHeight);
+    StereoVision(CvSize size);
+    ~StereoVision();
+
+    //matrices resulting from calibration (used for cvRemap to rectify images)
+    CvMat *mx1,*my1,*mx2,*my2;
+
+    CvMat * Q; //perspective transformation matrix created by stereoRectify
+
+    CvMat* imagesRectified[2];
+    CvMat  *imageDepth,*imageDepthNormalized;
+
+    CvMat * disp_gc[2];
+
+
+    void calibrationStart(int cornersX,int cornersY);
+    int calibrationAddSample(IplImage* imageLeft,IplImage* imageRight);
+    int calibrationEnd(int flag, CvMat* dist1, CvMat* cam1, CvMat* dist2, CvMat* cam2,CvMat* fundamentalMat );
+
+    int calibrationSave(const char* filename);
+    int calibrationLoad(const char* filename);
+
+    int stereoProcess(CvArr* imageSrcLeft,CvArr* imageSrcRight, int match);
+
+    CvSize getImageSize(){return imageSize;}
+    bool getCalibrationStarted(){return calibrationStarted;}
+    bool getCalibrationDone(){return calibrationDone;}
+    int getSampleCount(){return sampleCount;}
+
+    void reCalibrate(int cornersX, int cornersY);
+
+};
+
+
+#endif /* STEREOVISION_H_ */
+
+\end{lstlisting}
+
+\subsection{StereoVision.cpp}
+
+\begin{lstlisting}
+
+/*
+ * StereoVision.cpp
+ *
+ *  Created on: 17. apr. 2010
+ *      Author: anderga
+ */
+
+#include "StereoVision.h"
+
+#include <iostream>
+#include <string>
+
+StereoVision::StereoVision(int imageWidth,int imageHeight)
+{
+    this->imageSize = cvSize(imageWidth,imageHeight);
+    mx1 = my1 = mx2 = my2 = 0;
+    Q = 0;
+    calibrationStarted = false;
+    calibrationDone = false;
+    imagesRectified[0] = imagesRectified[1] = imageDepth = imageDepthNormalized = 0;
+    sampleCount = 0;
+    disp_gc[0] = disp_gc[1] = 0;
+}
+
+StereoVision::StereoVision(CvSize size){
+
+	this->imageSize = size;
+	mx1 = my1 = mx2 = my2 = 0;
+	Q = 0;
+	calibrationStarted = false;
+	calibrationDone = false;
+	imagesRectified[0] = imagesRectified[1] = imageDepth = imageDepthNormalized = 0;
+	imageDepth = 0;
+	sampleCount = 0;
+	disp_gc[0] = disp_gc[1] = 0;
+}
+
+StereoVision::~StereoVision()
+{
+    cvReleaseMat(&imagesRectified[0]);
+    cvReleaseMat(&imagesRectified[1]);
+    cvReleaseMat(&imageDepth);
+    cvReleaseMat(&imageDepthNormalized);
+    cvReleaseMat(&disp_gc[0]);
+    cvReleaseMat(&disp_gc[1]);
+}
+
+void StereoVision::calibrationStart(int cornersX,int cornersY){
+    this->cornersX = cornersX;
+    this->cornersY = cornersY;
+    this->cornersN = cornersX*cornersY;
+    ponintsTemp[0].resize(cornersN);
+    ponintsTemp[1].resize(cornersN);
+    sampleCount = 0;
+    calibrationStarted = true;
+}
+
+void StereoVision::reCalibrate(int cornersX, int cornersY){
+	calibrationStarted = false;
+	calibrationDone = false;
+	calibrationStart(cornersX, cornersY);
+
+}
+
+
+int StereoVision::calibrationAddSample(IplImage* imageLeft,IplImage* imageRight){
+
+    if(!calibrationStarted) return 1;
+
+    IplImage* image[2] = {imageLeft,imageRight};
+
+    int succeses = 0;
+
+    for(int lr=0;lr<2;lr++){
+        CvSize imageSize =  cvGetSize(image[lr]);
+
+         if(imageSize.width != this->imageSize.width || imageSize.height != this->imageSize.height)
+            return 1;
+
+        int cornersDetected = 0;
+
+        printf("Processing sample %d of 2 Finding chessboard corners ...\n", lr+1) ;
+
+		// Find chessboard corners:
+		int result = cvFindChessboardCorners(
+				image[lr],
+				cvSize(cornersX, cornersY),
+				&ponintsTemp[lr][0],
+				&cornersDetected,
+				CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_FILTER_QUADS );
+
+		// Get subpixel accuracy on those corners
+
+		cvFindCornerSubPix(
+				image[lr],
+				&ponintsTemp[lr][0],
+				cornersDetected,
+				cvSize( 11, 11 ),
+				cvSize( -1, -1 ),
+				cvTermCriteria( CV_TERMCRIT_EPS+CV_TERMCRIT_ITER, 30, 0.1 ));
+
+
+        if(result && (cornersDetected == cornersN)){
+            succeses++;
+        }
+
+    }
+    if(succeses == 2){
+        for(int lr=0;lr<2;lr++){
+            points[lr].resize((sampleCount+1)*cornersN);
+            copy( ponintsTemp[lr].begin(), ponintsTemp[lr].end(),  points[lr].begin() + sampleCount*cornersN);
+        }
+        sampleCount++;
+        return 0;
+    }else{
+        return 1;
+    }
+}
+
+int StereoVision::calibrationEnd(int flag,
+				CvMat* dist1, //output of distrotion paramters for cam1
+				CvMat* cam1,  // output of camera matrix for cam1
+				CvMat* dist2,
+				CvMat* cam2,
+				CvMat* fundamentalMat){
+
+    calibrationStarted = false;
+
+    int useUncalibrated = 0;
+
+    // ARRAY AND VECTOR STORAGE:
+    double M1[3][3], M2[3][3], D1[5], D2[5];
+    double R[3][3], T[3], E[3][3], F[3][3];
+    CvMat _M1,_M2,_D1,_D2,_R,_T,_E,_F;
+
+    _M1 = cvMat(3, 3, CV_64F, M1 );
+    _M2 = cvMat(3, 3, CV_64F, M2 );
+    _D1 = cvMat(1, 5, CV_64F, D1 );
+    _D2 = cvMat(1, 5, CV_64F, D2 );
+    _R = cvMat(3, 3, CV_64F, R );
+    _T = cvMat(3, 1, CV_64F, T );
+    _E = cvMat(3, 3, CV_64F, E );
+    _F = cvMat(3, 3, CV_64F, F );
+
+    // HARVEST CHESSBOARD 3D OBJECT POINT LIST:
+    objectPoints.resize(sampleCount*cornersN);
+
+    for(int k=0;k<sampleCount;k++)
+        for(int i = 0; i < cornersY; i++ )
+            for(int j = 0; j < cornersX; j++ )
+                objectPoints[k*cornersY*cornersX + i*cornersX + j] = cvPoint3D32f(i, j, 0);
+
+
+    npoints.resize(sampleCount,cornersN);
+
+    int N = sampleCount * cornersN;
+
+
+    CvMat _objectPoints = cvMat(1, N, CV_32FC3, &objectPoints[0] );
+    CvMat _imagePoints1 = cvMat(1, N, CV_32FC2, &points[0][0] );
+    CvMat _imagePoints2 = cvMat(1, N, CV_32FC2, &points[1][0] );
+    CvMat _npoints = cvMat(1, npoints.size(), CV_32S, &npoints[0] );
+    cvSetIdentity(&_M1);
+    cvSetIdentity(&_M2);
+    cvZero(&_D1);
+    cvZero(&_D2);
+
+
+    switch(flag){
+    case STEREO_CALIBRATE_BOTH_CAMERAS:
+    	//CALIBRATE THE STEREO CAMERAS
+    	cvStereoCalibrate( &_objectPoints, &_imagePoints1,
+    			&_imagePoints2, &_npoints,
+    			&_M1, &_D1, &_M2, &_D2,
+    			imageSize, &_R, &_T, &_E, &_F,
+    			cvTermCriteria(CV_TERMCRIT_ITER+CV_TERMCRIT_EPS, 100, 1e-5),
+    			CV_CALIB_FIX_ASPECT_RATIO + CV_CALIB_ZERO_TANGENT_DIST + CV_CALIB_SAME_FOCAL_LENGTH
+    	);
+    	break;
+    case STEREO_CALIBRATE_INDIVIDUAL_CAMERAS:
+    	//calibrate left camera
+    	cvCalibrateCamera2( &_objectPoints, &_imagePoints1,
+    			&_npoints, imageSize,
+    			&_M1, &_D1, NULL, NULL,
+    			0
+    	);
+    	cvCalibrateCamera2( &_objectPoints, &_imagePoints2,
+    			&_npoints, imageSize,
+    			&_M2, &_D2, NULL, NULL,
+    			0
+    	);
+    	cvStereoCalibrate( &_objectPoints, &_imagePoints1,
+    			&_imagePoints2, &_npoints,
+    			&_M1, &_D1, &_M2, &_D2,
+    			imageSize, &_R, &_T, &_E, &_F,
+    			cvTermCriteria(CV_TERMCRIT_ITER+CV_TERMCRIT_EPS, 100, 1e-5),
+    			CV_CALIB_FIX_INTRINSIC
+    	);
+    	break;
+    default:
+    	break;
+    }
+
+    //Always work in undistorted space
+    cvUndistortPoints( &_imagePoints1, &_imagePoints1,&_M1, &_D1, 0, &_M1 );
+    cvUndistortPoints( &_imagePoints2, &_imagePoints2,&_M2, &_D2, 0, &_M2 );
+
+    //COMPUTE AND DISPLAY RECTIFICATION
+
+	cvReleaseMat(&mx1);
+	cvReleaseMat(&my1);
+	cvReleaseMat(&mx2);
+	cvReleaseMat(&my2);
+	mx1 = cvCreateMat( imageSize.height,imageSize.width, CV_32F );
+	my1 = cvCreateMat( imageSize.height,imageSize.width, CV_32F );
+	mx2 = cvCreateMat( imageSize.height,imageSize.width, CV_32F );
+	my2 = cvCreateMat( imageSize.height,imageSize.width, CV_32F );
+
+    double R1[3][3], R2[3][3], P1[3][4], P2[3][4];
+    CvMat _R1 = cvMat(3, 3, CV_64F, R1);
+    CvMat _R2 = cvMat(3, 3, CV_64F, R2);
+
+    if(useUncalibrated == 0){
+    	CvMat _P1 = cvMat(3, 4, CV_64F, P1);
+    	CvMat _P2 = cvMat(3, 4, CV_64F, P2);
+
+    	if(!Q) // create the perspective transformation
+    		Q = cvCreateMat(4, 4, CV_32F);
+
+    	cvStereoRectify( &_M1, &_M2, &_D1, &_D2, imageSize,
+    			&_R, &_T,
+    			&_R1, &_R2, &_P1, &_P2, Q,
+    			0/*CV_CALIB_ZERO_DISPARITY*/ );
+    	//Precompute maps for cvRemap()
+    	cvInitUndistortRectifyMap(&_M1,&_D1,&_R1,&_P1,mx1,my1);
+    	cvInitUndistortRectifyMap(&_M2,&_D2,&_R2,&_P2,mx2,my2);
+
+    }else{
+
+    	//HARTLEY'S RECTIFICATION METHOD
+    	double H1[3][3], H2[3][3], iM[3][3];
+    	CvMat _H1 = cvMat(3, 3, CV_64F, H1);
+    	CvMat _H2 = cvMat(3, 3, CV_64F, H2);
+    	CvMat _iM = cvMat(3, 3, CV_64F, iM);
+
+    	cvStereoRectifyUncalibrated(
+    			&_imagePoints1,&_imagePoints2, &_F,
+    			imageSize,
+    			&_H1, &_H2, 3
+    	);
+    	cvInvert(&_M1, &_iM);
+    	cvMatMul(&_H1, &_M1, &_R1);
+    	cvMatMul(&_iM, &_R1, &_R1);
+    	cvInvert(&_M2, &_iM);
+    	cvMatMul(&_H2, &_M2, &_R2);
+    	cvMatMul(&_iM, &_R2, &_R2);
+
+
+    	cvInitUndistortRectifyMap(&_M1,&_D1,&_R1,&_M1,mx1,my1);
+    	cvInitUndistortRectifyMap(&_M2,&_D2,&_R2,&_M2,mx2,my2);
+    }
+    calibrationDone = true;
+
+    // copy the paramtere matrices
+    cvInitMatHeader(dist1, 5, 1, CV_64F, D1);
+    cvInitMatHeader(cam1, 3, 3, CV_64F, M1);
+    cvInitMatHeader(dist2, 5, 1, CV_64F, D2);
+    cvInitMatHeader(cam2, 3, 3, CV_64F, M2);
+    cvInitMatHeader(fundamentalMat, 3, 3, CV_64F, F);
+
+    return 0;
+}
+
+int StereoVision::stereoProcess(CvArr* imageSrcLeft,CvArr* imageSrcRight, int match){
+    if(!calibrationDone)
+    	return 1;
+
+    if(!imagesRectified[0])
+    	imagesRectified[0] = cvCreateMat( imageSize.height,imageSize.width, CV_8U );
+    if(!imagesRectified[1])
+    	imagesRectified[1] = cvCreateMat( imageSize.height,imageSize.width, CV_8U );
+
+    //rectify images
+    cvRemap( imageSrcLeft, imagesRectified[0] , mx1, my1 );
+    cvRemap( imageSrcRight, imagesRectified[1] , mx2, my2 );
+
+    CvStereoBMState *BMState = cvCreateStereoBMState();
+    CvStereoGCState * GCState = cvCreateStereoGCState(16, 2);
+
+    //chose algorithm
+    switch(match) {
+    case STEREO_MATCH_BY_BM:
+    	if(!imageDepth)
+   	    	imageDepth = cvCreateMat( imageSize.height,imageSize.width, CV_16S );
+  	    if(!imageDepthNormalized)
+   	    	imageDepthNormalized = cvCreateMat( imageSize.height,imageSize.width, CV_8U );
+
+
+    	BMState->preFilterSize=41;
+    	BMState->preFilterCap=31;
+    	BMState->SADWindowSize=41;
+    	BMState->minDisparity=-64;
+    	BMState->numberOfDisparities=128;
+    	BMState->textureThreshold=10;
+    	BMState->uniquenessRatio=15;
+
+    	cvFindStereoCorrespondenceBM( imagesRectified[0],
+    			imagesRectified[1],
+    			imageDepth,
+    			BMState);
+    	cvNormalize( imageDepth, imageDepthNormalized, 0, 256, CV_MINMAX );
+
+
+    	cvReleaseStereoBMState(&BMState);
+    	break;
+
+    case STEREO_MATCH_BY_GC:
+
+    	if(!disp_gc[0])
+   	    	disp_gc[0] = cvCreateMat( imageSize.height,imageSize.width, CV_16S );
+  	    if(!disp_gc[1])
+   	    	disp_gc[1] = cvCreateMat( imageSize.height,imageSize.width, CV_16S );
+
+
+
+  	    cvFindStereoCorrespondenceGC(imagesRectified[0],
+  	    		imagesRectified[1],
+  	    		disp_gc[0],
+  	    		disp_gc[1],
+  	    		GCState,
+  	    		0);
+
+  	    if(!imageDepthNormalized)
+  	       	imageDepthNormalized = cvCreateMat( imageSize.height,imageSize.width, CV_8U );
+
+
+  	    cvConvertScale(disp_gc[0], imageDepthNormalized, -16);
+
+  	    cvReleaseStereoGCState(&GCState);
+  	    break;
+    }
+
+
+
+    return 0;
+}
+
+int StereoVision::calibrationSave(const char* filename){
+    if(!calibrationDone)
+    	return 1;
+
+
+    FILE* f =  fopen(filename,"wb");
+    if(!f)
+    	return 1;
+    if(!fwrite(mx1->data.fl,sizeof(float),mx1->rows*mx1->cols,f))
+    	return 1;
+    if(!fwrite(my1->data.fl,sizeof(float),my1->rows*my1->cols,f))
+    	return 1;
+    if(!fwrite(mx2->data.fl,sizeof(float),mx2->rows*mx2->cols,f))
+    	return 1;
+    if(!fwrite(my2->data.fl,sizeof(float),my2->rows*my2->cols,f))
+    	return 1;
+    fclose(f);
+
+
+    return 0;
+}
+
+
+int StereoVision::calibrationLoad(const char* filename){
+	calibrationStarted = false;
+    cvReleaseMat(&mx1);
+    cvReleaseMat(&my1);
+    cvReleaseMat(&mx2);
+    cvReleaseMat(&my2);
+    mx1 = cvCreateMat( imageSize.height,imageSize.width, CV_32F );
+    my1 = cvCreateMat( imageSize.height,imageSize.width, CV_32F );
+    mx2 = cvCreateMat( imageSize.height,imageSize.width, CV_32F );
+    my2 = cvCreateMat( imageSize.height,imageSize.width, CV_32F );
+    FILE* f =  fopen(filename,"rb");
+    if(!f) return 1;
+    if(!fread(mx1->data.fl,sizeof(float),mx1->rows*mx1->cols,f)) return 1;
+    if(!fread(my1->data.fl,sizeof(float),my1->rows*my1->cols,f)) return 1;
+    if(!fread(mx2->data.fl,sizeof(float),mx2->rows*mx2->cols,f)) return 1;
+    if(!fread(my2->data.fl,sizeof(float),my2->rows*my2->cols,f)) return 1;
+    fclose(f);
+    calibrationDone = true;
+    return 0;
+}
+
+\end{lstlisting}
+
+\section{Hokuyo URG Matlab Interface}
+
+\begin{lstlisting}
+
+
+#include <mex.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+#include "urg/urg_ctrl.h"
+
+
+void urg_exit(urg_t *urg, const char *message)
+{
+	printf("%s: %s\n", message, urg_error(urg));
+	urg_disconnect(urg);
+
+	return;
+}
+
+void createEmptyOutputMatrices(int nlhs, mxArray * plhs[])
+{
+    int i;
+    for (i=0; i<nlhs;i++)
+    {
+        plhs[i] = mxCreateDoubleMatrix(0, 0, mxREAL);
+    }
+}
+
+
+int createOutput(urg_t * urg,
+		unsigned long * data,
+		unsigned long timestamp,
+		unsigned int n_points,
+		int nlhs,
+		mxArray * plhs[],
+		int giveIntensity)
+{
+	int numOutArgs;
+	if(giveIntensity)
+		numOutArgs =  2; //getNumOutputArgs(sensorType, scanType);
+	else
+		numOutArgs = 1;
+
+    if (numOutArgs <= 0)
+    {
+        createEmptyOutputMatrices(nlhs,plhs);
+    }
+
+    int maxNumPoints = urg_dataMax(urg);
+
+
+    if (n_points > maxNumPoints)
+    {
+        printf("createOutput: ERROR:too many points received = %d,\n", n_points);
+        createEmptyOutputMatrices(nlhs,plhs);
+        return -1;
+    }
+
+    if (n_points % numOutArgs != 0)
+    {
+        printf("createOutput: ERROR: (number of data points) mod (number of output vars) is not zero!! n_points=%d, n_vars=%d\n",
+        		n_points, numOutArgs);
+        createEmptyOutputMatrices(nlhs,plhs);
+        return -1;
+    }
+
+    mxArray *out0, *out1, *out2;
+    int i;
+    switch (numOutArgs)
+    {
+        case 1:
+            out0=mxCreateDoubleMatrix(n_points,1,mxREAL);
+            for (i=0;i<n_points;i++)
+            {
+            	if (i <= 44){
+            		mxGetPr(out0)[i] = 0.0;
+            	}else {
+            		mxGetPr(out0)[i]=(double)(data[i]);
+            	}
+            }
+
+            plhs[0]=out0;
+            break;
+
+        case 2:
+            out0=mxCreateDoubleMatrix(n_points/2,1,mxREAL);
+            out1=mxCreateDoubleMatrix(n_points/2,1,mxREAL);
+
+            for (i=0;i<n_points;i+=2)
+            {
+            	if ( i <= 44){
+            		mxGetPr(out0)[i/2]=0.0;
+            		mxGetPr(out1)[i/2]=0.0;
+            	}else{
+            		mxGetPr(out0)[i/2]=(double)(data[i]);
+            		mxGetPr(out1)[i/2]=(double)(data[i+1]);
+            	}
+            }
+
+            plhs[0]=out0;
+            plhs[1]=out1;
+            break;
+
+        case 3:
+            out0=mxCreateDoubleMatrix(n_points/3,1,mxREAL);
+            out1=mxCreateDoubleMatrix(n_points/3,1,mxREAL);
+            out2=mxCreateDoubleMatrix(n_points/3,1,mxREAL);
+
+            for (i=0;i<n_points;i+=3)
+            {
+                mxGetPr(out0)[i/3]=(double)(data[i]);
+                mxGetPr(out1)[i/3]=(double)(data[i+1]);
+                mxGetPr(out2)[i/3]=(double)(data[i+2]);
+            }
+
+            plhs[0]=out0;
+            plhs[1]=out1;
+            plhs[2]=out2;
+            break;
+
+        default:
+            createEmptyOutputMatrices(nlhs,plhs);
+            return -1;
+    }
+
+    if (nlhs > numOutArgs)
+    {
+        for (i=numOutArgs;i<nlhs;i++)
+        {
+            plhs[i]=mxCreateDoubleMatrix(0, 0, mxREAL);
+        }
+    }
+    return 0;
+}
+
+
+
+
+void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
+
+	static urg_t urg; //structure for urg control
+
+	int data_max;
+	long *data;
+	int ret;
+	int n;
+
+	long com_baudrate;
+
+    // Get input arguments
+    if (nrhs == 0) {
+        mexErrMsgTxt("hokuyoAPI: Need input argument");
+    }
+
+    const int BUFLEN = 256;
+    char buf[BUFLEN];
+    if (mxGetString(prhs[0], buf, BUFLEN) != 0) {
+        mexErrMsgTxt("hokuyoAPI: Could not read string.");
+    }
+
+    if (strcasecmp(buf, "open") == 0){ //conncetion routine for urg device
+
+        if (nrhs != 3){ 
+            mexErrMsgTxt("hokuyoAPI: Please enter correct arguments: 'open', <device>, <baud rate>\n");
+        }
+
+        switch ((int)mxGetPr(prhs[2])[0]){
+            case 19200:
+                com_baudrate = 19200;
+                break;
+            case 115200:
+                com_baudrate = 115200;
+                break;
+            default:
+                mexErrMsgTxt("hokuyoAPI: Invalid hokuyo baud rate. Options are 19200, 115200. Using Default.");
+                com_baudrate = 115200;
+                break;
+        }
+
+        /* Connection */
+        // If there are 3 args, then the 2nd should be the device 
+        if (nrhs == 3){
+        	if (mxGetString(prhs[1], buf, BUFLEN) != 0) {
+        		mexErrMsgTxt("hokuyoAPI: Could not read string while reading the device name");
+        	}
+
+        	ret = urg_connect(&urg, buf, com_baudrate);
+
+        	if (ret < 0) {
+        		printf("hokuyoAPI: return urg_connect is < 0, exiting\n");
+        		urg_exit(&urg, "urg_connect()");
+        	}else{
+        		printf("Connected with URG-04LX\n");
+        	}
+        }else{
+        	mexErrMsgTxt("hokuyoAPI: Please enter correct arguments\n");
+        }
+
+    }else if(strcasecmp(buf, "getReading")== 0){ //get one reading
+    	int getIntensity = 0;
+
+    	if (nrhs == 2){
+//    		printf("Intensity reading\n");
+    		getIntensity = 1;
+    	}else if (nrhs == 1){
+//    		printf("normal reading\n");
+    	}else{
+    		printf("Wrong use. Use 'getReading', or 'getReading', 'intensity' for intensity readings as well\n");
+    		return;
+    	}
+
+    	//if(urg_isConnected(&urg) == 0){
+    		/* Reserve for reception data */
+    		data_max = urg_dataMax(&urg);
+    		data = (long*)malloc(sizeof(long) * data_max);
+    		if (data == NULL) {
+    			mexErrMsgTxt("hokuyoAPI: Malloc error!\n");
+    		}
+
+    		/* Request for GD data */
+    		if(getIntensity){
+    			ret = urg_requestData(&urg, URG_GD_INTENSITY, URG_FIRST, URG_LAST);
+    		}else{
+    			ret = urg_requestData(&urg, URG_GD, URG_FIRST, URG_LAST);
+    		}
+    		if (ret < 0) {
+    			urg_exit(&urg, "urg_requestData()");
+    		}
+
+    		/* Reception */
+    		n = urg_receiveData(&urg, data, data_max);
+//    		printf("# n = %d\n", n);
+    		if (n < 0) {
+    			printf("Error receiving data\n");
+    			urg_exit(&urg, "urg_receiveData()");
+    		}else{
+    			if (createOutput(&urg, data, urg_recentTimestamp(&urg), n, nlhs, plhs, getIntensity) == -1){
+    				printf("Error creating output\n");
+    			}
+    		}
+
+    		//urg_disconnect(&urg);
+    		free(data);
+
+    	//}else{
+   // 		mexErrMsgTxt("URG device not connected. Connect using 'open'\n");
+
+    	//}
+
+    }else if(strcasecmp(buf, "close")== 0){
+ //   	if(urg_isConnected(&urg)== 0){
+    		urg_disconnect(&urg);
+    		printf("Closing urg connection\n");
+   // 	}else{
+    //		mexErrMsgTxt("URG device not connected.\n");
+    	//}
+
+    }else if(strcasecmp(buf, "getParameters") == 0){ // opens device, get parameters and closes the connection
+
+    	urg_parameter_t parameters;
+
+        if (nrhs != 3){
+             mexErrMsgTxt("hokuyoAPI: Please enter correct arguments: 'getParameters', <device>, <baud rate>\n");
+         }
+
+         switch ((int)mxGetPr(prhs[2])[0]){
+             case 19200:
+                 com_baudrate = 19200;
+                 break;
+             case 115200:
+                 com_baudrate = 115200;
+                 break;
+             default:
+                 mexErrMsgTxt("hokuyoAPI: Invalid hokuyo baud rate. Options are 19200, 115200. Using Default.");
+                 com_baudrate = 115200;
+                 break;
+         }
+
+         /* Connection */
+         // If there are 3 args, then the 2nd should be the device
+         if (nrhs == 3){
+         	if (mxGetString(prhs[1], buf, BUFLEN) != 0) {
+         		mexErrMsgTxt("hokuyoAPI: Could not read string while reading the device name");
+         	}
+
+         	ret = urg_connect(&urg, buf, com_baudrate);
+
+         	if (ret < 0) {
+         		printf("hokuyoAPI: return urg_connect is < 0, exiting\n");
+         		urg_exit(&urg, "urg_connect()");
+         	}else{
+         		printf("Connected with URG-04LX\n");
+         	}
+         }else{
+         	mexErrMsgTxt("hokuyoAPI: Please enter correct arguments\n");
+         }
+
+         /* Get sensor parameter */
+         ret = urg_parameters(&urg, &parameters);
+         printf("urg_getParameters: %s\n", urg_error(&urg));
+         if (ret < 0) {
+        	 printf("Could not get parameters \n");
+        	 urg_disconnect(&urg);
+         }
+
+         urg_disconnect(&urg);
+
+         /* Display */
+         printf("distance_min: %ld\n", parameters.distance_min_);
+         printf("distance_max: %ld\n", parameters.distance_max_);
+         printf("area_total: %d\n", parameters.area_total_);
+         printf("area_min: %d\n", parameters.area_min_);
+         printf("area_max: %d\n", parameters.area_max_);
+         printf("area_front: %d\n", parameters.area_front_);
+         printf("scan_rpm: %d\n", parameters.scan_rpm_);
+         printf("\n");
+
+         /* Display information from URG structure (same resource as above) */
+         printf("urg_getDistanceMax(): %ld\n", urg_maxDistance(&urg));
+         printf("urg_getDistanceMin(): %ld\n", urg_minDistance(&urg));
+         printf("urg_getScanMsec(): %d\n", urg_scanMsec(&urg));
+         printf("urg_getDataMax(): %d\n", urg_dataMax(&urg));
+
+    }else if(strcasecmp(buf, "continuousReading") == 0){ //using the MD/MS command
+
+    	// Need an array of pointers to data arrays with scans
+    	// Read the data in a for loop n times, put in n matrices.
+
+    	int captureTimes = 1; //default 1
+    	int i;
+
+		int timestamp = -1;
+    	int previous_timestamp;
+    	int remain_times;
+		int scan_msec;
+
+    	if (nrhs == 2){ // assume that the capture times are the second argument.
+    		captureTimes = (int)(mxGetPr(prhs[1])[0]);
+    	}else {
+    		printf("Need exactly 2 arguments. Usage: 'continuousReading', <no of captures>\n");
+    		return;
+    	}
+
+    	urg_parameter_t parameter;
+
+
+    	/* Reserve for receive buffer */
+    	data_max = urg_dataMax(&urg);
+    	data = (long*)malloc(sizeof(long) * data_max);
+    	if (data == NULL) {
+    		printf("Malloc error\n");
+    		return;
+    	}
+
+    	urg_parameters(&urg, &parameter);
+    	scan_msec = urg_scanMsec(&urg);
+
+    	/* Request for MD data */
+    	/* To get data continuously for more than 100 times, set capture times equal
+    	     to infinity times(UrgInfinityTimes) */
+    	/* urg_setCaptureTimes(&urg, UrgInfinityTimes); */
+
+    	urg_setCaptureTimes(&urg, captureTimes);
+
+    	/* Request for data */
+    	ret = urg_requestData(&urg, URG_MD, URG_FIRST, URG_LAST);
+    	if (ret < 0) {
+    		urg_exit(&urg, "urg_requestData()");
+    	}
+
+    	for (i = 1; i < captureTimes; ++i) {
+    		/* Reception */
+    		n = urg_receiveData(&urg, data, data_max);
+    		printf("n = %d\n", n);
+    		if (n < 0) {
+    			urg_exit(&urg, "urg_receiveData()");
+    		} else if (n == 0) {
+    			printf("n == 0\n");
+    			--i;
+    			continue;
+    		}
+
+    		/* Display the front data with timestamp */
+    		/* Delay in reception of data at PC causes URG to discard the data which
+    	       cannot be transmitted. This may  results in remain_times to become
+    	       discontinuous */
+    		previous_timestamp = timestamp;
+    		timestamp = urg_recentTimestamp(&urg);
+    		remain_times = urg_remainCaptureTimes(&urg);
+
+
+    		if (remain_times <= 0) {
+    			break;
+    		}
+
+    	}
+
+    }else{
+    	printf("doing nothing\n");
+    }
+
+    return;
+
+
+}
+\end{lstlisting}
+
+
+\chapter{URG Communication Protocol}
+
+%\fullpage[1-25]{urg-communication}
+

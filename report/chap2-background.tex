@@ -58,7 +58,7 @@ criteria.
 To represent transformations, i.e. rotations, translations, shear and scaling, it is
 practical to represent those transformations in matrix form. But it is not mathematically
 possible to represent both rotations and translations in the same matrix as long as it is
-contained in $\mathbb{R}^3$. ******REFERENCE******
+contained in $\mathbb{R}^3$. 
 
 To overcome this problem, the coordinates are projected into a fourth dimensional space.
 All points and vectors gain an extra element which describes if the coordinate is a vector
@@ -844,7 +844,41 @@ that the robot will travel through.
 
 
 \subsection{Point Feature Histograms}
-\cite{pfh-segmenting} and \cite{pfh}.******************WRITE ABOUT THIS***********
+Point feature histograms is a way of assessing the local geometry around a point in a
+3D point cloud. This can be used to segment the point cloud into given geometrical
+primitives. The computation of a point feature histogram works as follows, for each point
+$p$, all of $p$'s neighbours inside a sphere with radius $r$ is selected. For every pair
+of points in the selected subset the normals $n_i$ and $n_j$ are estimated. A Darboux
+$uvn$ frame are defined according to 
+\begin{equation}
+    u = n_i, \quad v = (p_j - p_i)\times u, \quad w = u \times v
+\end{equation}
+The following angular variations are then used for categorizing the points. \cite{pfh}
+\begin{equation}
+    \begin{aligned}
+        \alpha &= v \cdot n_j \\
+        \phi &= (u \cdot (p_j - p_i)) / || p_j - p_i|| \\
+        \theta &= \arctan (w \cdot n_j, u \cdot n_j)
+    \end{aligned}
+\end{equation}
+These angular variations are sorted into histogram bins according to 
+\begin{equation}
+    idx = \sum_{i=0}^{i \leq 2} \left [ \frac{f_i \cdot d}{f_{i_{max}} - f_{i_{min}}}
+    \right] \cdot d^i
+\end{equation}
+where $idx$ is the point feature histogram bin index, $d$ is the number of subdivision of
+the features maximum theoretical value range $(f_{i_{max}} - f_{i_{min}})$. This will sort
+the points into bins according to how the angular variations vary. 
+
+Different geometric surface primitives have different signatures. \cite{pfh-geometric}
+shows the distinct histogram formation for convex surfaces as cones, spheres, cylinders
+and planes. This can be used to classify points and thereby isolating important features
+in the scene. 
+
+\cite{pfh-segmenting} uses a combination of local fast point feature histograms to segment
+the object of interests into geometric primitives, then a global version of the point
+feature histogram are employed to detect and categorize objects in the given scene. The
+shown results are promising. 
 
 
 \subsection{Surface Fit Algorithms}
