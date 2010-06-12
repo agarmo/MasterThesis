@@ -1,7 +1,7 @@
 
 \chapter{Introduction}
 Making an autonomous robot has been the goal of scientists and engineers for years. This
-is a difficult task which include many disciplines, and has up to date, not been solved in
+is a difficult task which includes many disciplines, and has up to date, not been solved in
 a general way. Robots which can reason and take own decisions based on how it senses the
 environment would greatly simplify our lives in many ways. Many tasks could be completely
 outsourced to autonomous robots which do not tier, and is expendable. This means that it
@@ -9,34 +9,34 @@ can go places that a human could not. In short this can be summarized into the t
 namely \emph{dull, dirty} and \emph{dangerous} work. Imagine an autonomous robot going
 into an earthquake area, mapping out dangerous spots, and where injured people are,
 before medical personnel enter the area. Or a robot mapping and inspecting the vast sewer
-network of a large city, searching for weak spots and clogged pipes which obstructs the
+network of a large city, searching for weak spots and clogged pipes which obstruct the
 sewer flow. Or robots crawling the pipelines carrying water, oil or gas to detect leaks
-which will cause catastrophic events if not tended to. All of this examples are important work which
-is either dangerous, dirty or dull, or all three at once.
+which will cause catastrophic events if not tended to. All of these examples are important work which
+is dangerous, dirty or dull, or all three at once.
 
 The problem when a robot is going into an unknown area and mapping the surroundings using
 a pack of sensors is formalized into something called \emph{SLAM}, short for
 \emph{Simultaneous Localization and Mapping}.
-This is a problem that have been thoroughly researched, and has been tried with numerous sensor types
+This is a problem that has been thoroughly researched, and has been tried with numerous sensor types
 and many solutions are proposed. Some are best in structured environments, like office
 landscapes and industrial areas, while other will preform better in more sparse areas with
 less landmarks and recognizable features. 
 
-In our global world, the transport of resources,like oil, gas and water are of great importance. Much of this
-transport is done using pipelines. There are literally millions of kilometers with pipelines around
+In our global world, the transport of resources, like oil, gas and water are of great importance. Much of this
+transport is done using pipelines. There are literally millions of kilometres with pipelines around
 the world. Some of these can be inspected from the outside, but most of them are on the
 sea floor or under ground and does not allow for outside inspections. 
 The pipelines need regular inspections to ensure that the pipeline is intact
-and undamaged. Also sewers, as mentioned above, needs inspections to keep a satisfactory
+and undamaged. Also sewers, as mentioned above, need inspections to keep a satisfactory
 standard. Some of the pipes are considered accessible by humans, i.e. diameter over 80 cm,
 but most are smaller than this, and uses various inspection devices feeding video to a human
 operator that must detect, record, and classify the damages. This is tedious work which
 can be automated using robots. \cite{MAKRO-project}
 
 One such robot suitable for pipe inspection might be the \emph{Pipe Inspection Konda}
-(PIKo) developed by SINTEF. This is a snake like robot, consisting a series of identical
+(PIKo) developed by SINTEF. This is a snake like robot, consisting of a series of identical
 modules interconnected by two degrees of freedom active joints. On each module there is a
-set of four wheels, two near the ground and two on on the top of the modules. For
+set of four wheels, two near the ground and two on the top of the modules. For
 horizontal motion it uses these wheels and a train like motion to propel itself forward. Since the joints 
 connecting the modules have two degrees of freedom, the robot is capable of traversing vertical pipes
 as well. This is achieved by spanning the robot inside the pipe alternately and pushing the wheels towards
@@ -53,7 +53,7 @@ is a tremendous task and has up to date not been solved for the general environm
     \label{chap1:fig-piko}
 \end{figure}
 
-Some of the key challenges when designing such a navigation system is the difficulties
+Some of the key challenges when designing such a navigation system are the difficulties
 with keeping track of where the robot is, and more importantly where it has been. This is
 difficult in a pipe environment because it does not allow for a redundant positioning
 system for global position estimation, such as GPS. The robot is then limited to using
@@ -91,7 +91,7 @@ simplify and limit the task some assumptions are taken and summarized below.
 \begin{itemize}
     \item Only planar motion is assumed, even though the implementation platform is
     capable of vertical motion. 
-    \item The environment which the robot will operate are structured. Most pipe
+    \item The environment which the robot will operate is structured. Most pipe
     environments are heavily structured. This allows for good prediction on what the robot
     might face in the mission. A good database can be created for what it will encounter. 
 \end{itemize}
@@ -101,10 +101,10 @@ The complete navigation system for a pipe inspection robot should meet the follo
 demands and qualities. 
 \begin{itemize}
     \item Robustness. The system should be robust and able to take the right decisions
-    even when the sensors does not give good readings, at least for a limited time.
+    even when the sensors do not give good readings, at least for a limited time.
     \item Real-time system with limited computational abilities. The system is embedded
     and the processor power and memory available are limited. The algorithms should be
-    efficient and the sensor data should be treated and stored in an memory efficient way. 
+    efficient and the sensor data should be treated and stored in a memory efficient way. 
     \item Simplicity. Make thing as simple as possible but not simpler, a great scientist
     once said. This might help to keep the complexity of the system down. 
     \item Consistency. When faced with the same challenge over and over, the robot should
@@ -132,7 +132,7 @@ calibration of those sensors. The lens distortion parameters and intrinsic param
 sensors will be estimated and calibrated. 
 
 A representation of the world will be proposed in Chapter \ref{chap5} together with how the sensor
-output are interpreted.
+outputs are interpreted.
 
 Chapter \ref{chap6} and \ref{chap7} will deal with implementation and testing of the
 proposed system, while Chapter \ref{chap8} will evaluate how the proposed system preformed
