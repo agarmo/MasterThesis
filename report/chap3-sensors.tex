@@ -12,9 +12,9 @@ navigation will be a 2D laser range finder, a Time-of-flight camera and a stereo
 rig. The other sensors involved on the PiKo platform is beyond the scope of this report
 and will not be investigated. 
 
-Some common laser range finders will be compared and one will be selected. The stereo
-camera rig are calibrated and both extrinsic, intrinsic parameters and distortion
-coefficients will be determined. The time-of-flight camera are also calibrated for lens
+Some common laser range finders will be compared, and one will be selected for
+implementation into the project. The stereo camera rig need to be calibrated to provide
+dense stereo images to be reprojected to 3D. The time-of-flight camera are also calibrated for lens
 distortions and intrinsic parameters will be determined. The different error sources associated
 with the senors will also be mentioned.
 
@@ -104,7 +104,8 @@ the measurement starts at $-135^\circ$ and stops at $135^\circ$.
 \end{figure}
 
 The sensor can not measure below 20 mm because it is not practical, and the range codes
-from 0--19 are error codes. The codes can describe if the intensity of the reflected light
+from 0--19 are used as error codes. The codes describe errors related to when the intensity 
+the reflected light
 is too low or too high which indicates erroneous results. A detailed summary of the
 error codes and what they mean can be found in Appendix \ref{app:urg-error}.
 
@@ -118,14 +119,15 @@ detection or redundancy are used.
 
 
 \section{Stereo Camera Minoru 3D WebCam}
-The stereo camera chosen for the project is the first commercially available 3D Webcam.
+The stereo camera chosen for the project is the first commercially available 3D Webcam
+form Minoru.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.35\textwidth]{pics/minoru3d}
     \caption{The Minoru 3D WebCam. \url{www.minoru3d.com}}
     \label{chap3:fig-minoru}
 \end{figure}
-It is actually just two cheap webcams and a USB hub in the same casing. The camera is
+It is actually two webcams and a USB hub in the same casing. The camera is
 available for about 900 NOK, so both optics and imaging chips are expected to be of poor
 quality. Also, the left and right camera shutters does not synchronize, \cite{nma-web}
 suggests it might be as much as 16.5 milliseconds which might cause problems in fast
@@ -134,13 +136,14 @@ moving environments.
 
 \subsection{Camera Calibration}
 To work with stereo images the captured images need to be rectified, i.e. the images need
-to be corrected for distortion introduced by the camera lenses. This is a part of
-calibrating the camera, meaning that the intrinsic parameters of the camera are
-determined and the lens distortion parameters described in Chapter \ref{chap2}.
+to be corrected for distortion introduced by the camera lenses. In this part 
+the intrinsic parameters of the camera are determined and the lens distortion parameters 
+described in Chapter \ref{chap2}, are estimated. 
 
 To determine the parameters the \emph{Camera Calibration Toolbox} for Matlab is used
-\cite{camera-calib-toolbox}. 20 image pairs are captured of a checker board in various
-distances and orientation from the stereo rig. This images for left and right camera are
+\cite{camera-calib-toolbox} based on \cite{heikila} and \cite{mat-toolbox}.
+20 image pairs are captured of a checker board in various
+distances and orientation by the stereo rig. The images for left and right camera are
 processed individually to calculate the distortions of the individual camera. 
 \begin{figure}[htbp]
     \centering
@@ -150,7 +153,7 @@ processed individually to calculate the distortions of the individual camera.
 \end{figure}
 The four extreme-most corners of the checkerboard is selected in each image, and an
 internal algorithm detects the corners of the squares in each image. This gives an initial
-guess on how the distortion parameters are. The reprojection error is then minimized with
+guess of the distortion parameters. The reprojection error is then minimized with
 regard to the distortion parameters using a nonlinear gradient decent algorithm. For more
 information on how this is carried out, see \cite{heikkila}.
 The distortion parameters for both cameras are summarized in Table
@@ -173,7 +176,7 @@ The distortion parameters for both cameras are summarized in Table
     \label{chap3:tab-distortion-coeffs}
 \end{table}
 
-Figure \ref{chap3:fig-comp-lensdist} below shows how the camera lenses of the Stereo camera distorts the pictures
+Figure \ref{chap3:fig-comp-lensdist} below shows how the camera lenses distorts the pictures
 towards the edges of the lens. 
 \begin{figure}[htbp]
     \centering
@@ -183,9 +186,7 @@ towards the edges of the lens.
     \label{chap3:fig-comp-lensdist}
 \end{figure}
 The Figure clearly shows that the principal axis are offset from the center of the images,
-and that it is opposite for the left and right images. This means that the view field of
-the two cameras will be quite different, and result in a reduced field-of-view for the
-total stereo rig.
+and that it is opposite for the left and right images. 
 
 The intrinsic parameters for the cameras are summarized in Table
 \ref{chap3:tab-intrinsic-stereo}. The values are all in pixel coordinates. The real focal
@@ -207,11 +208,16 @@ distances can be calculated by knowing the pixel-to-length ratio.
     uncertainties}
     \label{chap3:tab-intrinsic-stereo}
 \end{table}
-The focus distances in the x and y-direction are slightly different in both cameras. This
-suggests that the pixels of two cameras are not exactly square. The principal axis in both
+The focus distances in the $x$ and $y$-direction are slightly different in both cameras. This
+suggests that the pixels of two cameras are not exactly square, but the difference is very
+small and can be neglected. The principal axis in both
 cameras are also in very different places. This is problematic because a stereo rig should
 be horizontally aligned to give the best results. Because for the off-center principal
 axis the field-of-view of the stereo rig will be quite reduced.
+
+This distortion can be removed and are called rectifying the image. This makes common
+features in the two images aligned horizontally. This makes it much easier for the matching
+algorithm because it only need to match vertically.
 
 The extrinsic parameters of the stereo rig are estimated based on the displacement of the
 checkerboard corners in the different views. The estimated extrinsic parameters are as
@@ -227,7 +233,8 @@ follows. The values are given in millimeters.
                 0.00 \pm 0.00  \end{matrix} \right]
 \end{equation}
 The baseline given by the manufacturer is 6 cm which correspond very good the estimated
-values.
+values. Figure \ref{chap3:fig-stereo-extrinsic} show how the different checkerboards in
+the image sequence. 
 \begin{figure}[hbtp]
     \centering
     \includegraphics[width=0.7\textwidth]{pics/stereo-extrinsic}
@@ -237,10 +244,6 @@ values.
 \end{figure}
 
 
-This distortion can be removed and are called rectifying the image. This makes common
-features in the two images aligned horizontally. This makes it much easier for the matching
-algorithm because it only need to match vertically.
-
 
 \subsection{Depth resolution}
 The depth resolution which can be expected from the Stereo cam are,
@@ -248,17 +251,18 @@ The depth resolution which can be expected from the Stereo cam are,
     \Delta Z = \frac{Z^2}{f T}\Delta d
 \end{equation}
 where $\Delta d$ is the smallest increment in disparity, $f$ is the focal distance, and
-$T$ is the baseline. This is determined in the implementation in this case the OpenCV
-library. This is useful when calibrating the stereo rig, and when testing the program,
+$T$ is the baseline. The disparity is assumed to be integers. Therefor the spatial
+resolution influences the depth resolution. 
+This is useful when calibrating the stereo rig, and when testing the program,
 because it tells what kind of ranges one can expect from the rig.
 
 
 \subsection{Noise- and Error Sources}
-The major source of errors connected with stereo cameras are bad feature matches. This
+The major source of errors connected with stereo cameras are bad feature matches, and 
 will cause bogus distances. This is heavily correlated with the amount of noise captured
-by the imaging sensors and other disturbances.
+by the imaging sensors and light conditions. 
 
-As said above, the left and right cameras does not synchronize, and because of the
+The left and right cameras does not synchronize, and because of the
 capturing process is sequential the images are not captured at the same time, this might
 give raise to erroneous range measurements. 
 
@@ -273,7 +277,8 @@ are $176\times144$ with a field-of-view of $47.5^\circ \times 39.6^\circ$.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.4\textwidth]{pics/sr3000}
-    \caption{The SwissRanger-3000 Time-of-Flight Camera. \url{http://www.mesa-imaging.ch}}
+    \caption[The SwissRanger-3000 Time-of-Flight Camera.]{The SwissRanger-3000 Time-of-Flight 
+    Camera. \url{http://www.mesa-imaging.ch}}
     \label{chap3:fig-sr3000}
 \end{figure}
 The amplitude modulation frequency are set to 20 MHz which gives a non-ambiguity range of
@@ -283,9 +288,9 @@ larger, but this distance is good for the application of the project.
 Since the camera needs lots of cooling because of the LEDs and electronics the camera are
 mounted on a stem of aluminium, to secure the airflow through the camera. 
 
-The camera outputs standard Cartesian coordinates or spherical coordinates and the
-intensity, which is comparable to a standard gray scale camera. Figure 
-\ref{chap3:fig-tof-amppicture} shows a typical amplitude plot of the inside of a pipe. The
+The camera outputs standard Cartesian coordinates or spherical coordinates and a  
+intensity image, which is comparable to a standard gray scale camera. Figure 
+\ref{chap3:fig-tof-amppicture} shows a typical intensity image of the inside of a pipe. The
 blue areas are closer, and red areas are farther away. 
 \begin{figure}[htbp]
     \centering
@@ -311,6 +316,13 @@ stereo rig. This is to determine the lens distortions and principal axis, see Ta
         $c_x$   & $88.63 \pm 5.00$  & $88$ \\
         $c_y$   & $ 62.96 \pm 5.67 $ & $72$  \\
         \hline
+        $k_1$   & $-0.81 \pm 0.37$ & \\ 
+        $k_2$   & $6.78 \pm 4.36$  & \\
+        $k_3$   & $0 \pm 0$ & \\
+        \hline
+        $p_1$   & $0.0045 \pm 0.011$ & \\
+        $p_2$   & $0.000246 \pm 0.014$ \\
+        \hline
     \end{tabular}
     \caption{Intrinsic parameters of the ToF-camera in pixel related units including
     uncertainties}
@@ -319,12 +331,12 @@ stereo rig. This is to determine the lens distortions and principal axis, see Ta
 The focal distances given from the manufacturer are calculated using the pixel size of
 $40 \times 40 \mu m^2$ and 8 mm focal distance.
 
-The calibration method is the same as for the stereo cameras. The intensity images from
+The intensity images from
 the camera are captured, converted to 8-bit integer values and histogram normalized to
-enhance give better contrast. This makes the finding of the checkerboard corners easier in
+enhance the contrast. This makes the finding of the checkerboard corners easier in
 the calibration process. Since the spatial resolution of the camera are small, noise and
-inaccurate sampling make the corner selection problematic. This shows itself on the large
-uncertainties int in the focal distances. 
+inaccurate sampling make the corner selection problematic. This manifests itself on the large
+uncertainties in the focal distances. 
 
 \begin{figure}[htbp]
     \centering
@@ -374,7 +386,7 @@ with the field-of-view and domains of the senors. These are the
 corresponding field of view. All of the systems are defined as right-hand-systems. 
 
 For the system it is important to known the location of the different sensors, relative to
-the center of gravity of the platform, where usually the center of the body frame are
+the center of gravity of the platform, where the center of the body frame are
 defined. 
 
 
