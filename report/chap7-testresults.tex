@@ -1,7 +1,9 @@
 \chapter{Testing}
 \label{chap7}
+Testing is important to verify how the implemented algorithms and schemes work. It is
+important to know how a algorithms react to the sensor data. 
 In this chapter the test setup are described. How the tests are carried out, 
-some of the results and some immediate results.
+some of the results and some immediate results. 
 
 
 \section{Test Environment}
@@ -17,8 +19,9 @@ There are five points of interest in this environment.
 The numbers \emph{1-3} are the places where the sensors will be put and record snapshots of the pipe. 
 The letters \emph{B} and \emph{C} are places where irregularities and anomalies in the pipes are placed. 
 
-The idea behind the tests is to show how the sensors and the system reacts to different
-kinds of anomalies, and how this impacts on the ability to detect what nodes is where. 
+The idea behind the tests is to see how the sensors and the system reacts to different
+kind of anomalies, and how this impacts on the ability to detect what kind of node the
+robot is approaching. 
 
 
 \section{Test Cases}
@@ -26,9 +29,6 @@ To test the performance and robustness of the developed algorithms three cases a
 ideal situation, situation with obstacles with regular surface, and obstacles where the
 surface are irregular. This cases are carried out for all the 3 different places described
 in the previous section.
-
-The tests are snapshots of the pipe at the given locations. This will test the abilities
-of the system to recognize the environment and do the right decision. 
 
 
 \subsection{Control/Ideal Case}
@@ -38,18 +38,19 @@ considered perfect readings and all further readings will be measured up to this
 
 \subsection{Long Pipe Test}
 Since the implemented algorithms are best for long pipes, a test case including a
-$1.5$ meter long pipe is also included for reference. This pipe substitutes the L-bend in
-shown in Figure \ref{chap7:fig-environment}.
+$1$ meter long pipe is included for reference. This pipe substitutes the L-bend in
+shown in Figure \ref{chap7:fig-environment}. This is to test how the cylinder fit
+preforms. 
 
 
 \subsection{Irregular surfaced anomalies}
 The algorithm implemented relies greatly on regularity in the environment. The structure
 of the surroundings are known to great extent and all irregularities and differences from
-this are considered strange and are marked as anomalies. This case should test if this
-works.
+this are considered strange and are marked as anomalies. 
 
 The tests are carried out with a curled-up paper which is placed at the three different
-locations, marked in Figure \ref{chap7:fig-environment}. 
+locations, marked in Figure \ref{chap7:fig-environment}. The paper is seen at position B
+in the left image in Figure \ref{chap7:fig-pics-of-obstacles}.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.47\textwidth]{pics/irregularSR}
@@ -62,7 +63,7 @@ locations, marked in Figure \ref{chap7:fig-environment}.
 \subsection{Regular surfaced anomalies}
 As mentioned above the algorithm relies on regularity in the environment to detect
 anomalies. This test will try to test the ability of the system to detect regular surfaced
-objects which might look as they are a part of the environment. 
+objects and how they show up in the sensor output.
 
 This test is a opaque bottle filled with water. The right image in Figure
 \ref{chap7:fig-pics-of-obstacles} shows the bottle used in the test cases.
@@ -101,60 +102,91 @@ stated the parameters are the same for all the tests.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{pics/longpipe-tof-3d}
-    \caption{The point cloud and fitted cylinders taken from the time-of-flight camera}
+    \caption{The point cloud and fitted cylinders taken from the time-of-flight camera for
+    the long pipe test.}
     \label{chap7:fig-longpipe-tof-3d}
 \end{figure}
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{pics/longpipe-tof-dist}
-    \caption{The distance of the points from the fitted cylinders at position 1}
+    \caption{The distance of the points from the fitted cylinders at position 1 for the
+    long pipe test}
     \label{chap7:fig-longpipe-tof-dist}
 \end{figure}
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.8\textwidth]{pics/longpipe-urg-2d}
-    \caption{The data from the URG Laser Range Finder with fitted lines at position 1}
+    \caption{The data from the URG Laser Range Finder with fitted lines at position 1 for
+    the long pipe test}
     \label{chap7:fig-longpipe-urg-2d}
 \end{figure}
 
-\subsection{Control Case at Position Two Looking at the $90^\circ$ bend}
+\subsection{Control Case at Position Two Looking at the $90^\circ$ R- bend}
 This this test shows how the algorithms preforms in the ideal case when placed inside the
-pipe. The parameters where mostly the same as for the long pipe test. See Fiugres
+pipe. The parameters were the same as for the long pipe test. See Fiugres
 \ref{chap7:fig-pos21-control-tof-3d}--\ref{chap7:fig-pos21-control-urg-2d}.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.5\textwidth]{pics/pos21-control-tof-3d}
     \caption{The point cloud and fitted cylinders taken from the time-of-flight camera at
-    position 3}
+    position 2}
     \label{chap7:fig-pos21-control-tof-3d}
 \end{figure}
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.9\textwidth]{pics/pos21-control-tof-dist}
-    \caption{The distance of the points from the fitted cylinders at position 3}
+    \caption{The distance of the points from the fitted cylinders at position 2}
     \label{chap7:fig-pos21-control-tof-dits}
 \end{figure}
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.9\textwidth]{pics/pos21-control-urg-2d}
-    \caption{The data from the URG Laser Range Finder with fitted lines at position 3}
+    \caption{The data from the URG Laser Range Finder with fitted lines at position 2}
     \label{chap7:fig-pos21-control-urg-2d}
 \end{figure}
+
+
+\subsection{Irregular test at Position Two Looking at position one}
+This plots show how an open end of a pipe shows up in the sensors. The outside of the
+pipeline is quite structured, and the camera gives disparity images from the outside of
+the pipe. Figures
+\ref{chap7:fig-pos2-irregular-tof-3d}-\ref{chap7:fig-pos2-irregular-rectified} shows the
+results from the test. 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.37\textwidth]{pics/pos21-control-depth}
-    \includegraphics[width=0.6\textwidth]{pics/pos21-control-3d}
-    \caption{Depth image from the Stereo Rig with reprojected 3d coordinates}
-    \label{chap7:fig-pos21-control-depth}
+    \includegraphics[width=0.5\textwidth]{pics/pos2-irregular-tof-3d}
+    \caption{The point cloud and fitted cylinders taken from the time-of-flight camera at
+    position 2}
+    \label{chap7:fig-pos2-irregular-tof-3d}
 \end{figure}
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=\textwidth]{pics/pos21-control-rectified}
-    \caption{The rectified stereo pair from position 2 looking at position 3 }
-    \label{chap7:fig-pos21-control-rectified}
+    \includegraphics[width=0.9\textwidth]{pics/pos2-irregular-tof-dist}
+    \caption{The distance of the points from the fitted cylinders at position 2 looking at
+    position 1}
+    \label{chap7:fig-pos2-irregular-tof-dits}
 \end{figure}
-
-
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pics/pos2-irregular-urg-2d}
+    \caption{The data from the URG Laser Range Finder with fitted lines at position 2
+    looking at position 1}
+    \label{chap7:fig-pos2-irregular-urg-2d}
+\end{figure}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.37\textwidth]{pics/pos2-irregular-depth}
+    \includegraphics[width=0.6\textwidth]{pics/pos2-irregular-3d}
+    \caption{Depth image from the Stereo Rig with reprojected 3d coordinates form position
+    2 looking at position 1}
+    \label{chap7:fig-pos2-irregular-depth}
+\end{figure}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{pics/pos2-irregular-rectified}
+    \caption{The rectified stereo pair from position 2 looking at position 1 }
+    \label{chap7:fig-pos2-irregular-rectified}
+\end{figure}
 
 
 
@@ -182,9 +214,7 @@ This test shows how an irregular object affects the algorithms. See Figures
 \end{figure}
 In Figure \ref{chap7:fig-pos1-irregular-urg-2d} the irregular obstacle is not showing up
 on the URG. This is because the laser range finders scanner beams scans over the obstacle
-and therefor does not detect it. This should be taken into account when designing the
-control system. If the obstacle does not show up in one of the sensors field-of-view, does
-not mean that its not there. 
+and therefor does not detect it. 
 
 
 \subsection{Regular Obstacle at Point B at Position One}
@@ -192,7 +222,7 @@ Figures \ref{chap7:fig-pos1-regular-tof-3d}--\ref{chap7:fig-pos1-regular-urg-2d}
 results form the regular obstacle test. Figure \ref{chap7:fig-pos1-regular-urg-2d} differs
 from Figure \ref{chap7:fig-pos1-irregular-urg-2d} in the only way that the irregular
 obstacle is not in the field-of-view of the Laser Range Finder, but the regular obstacle
-is. But, as seen on the figures the difference is not notably on the line fitting.
+is. Although, this does not seem to impact the line fit notably. 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.7\textwidth]{pics/pos1-regular-urg-3d}
