@@ -1,13 +1,13 @@
 \chapter{Testing}
 \label{chap7}
 Testing is important to verify how the implemented algorithms and schemes work. It is
-important to know how a algorithms react to the sensor data. 
+important to know how the algorithms react to the sensor data. 
 In this chapter the test setup are described. How the tests are carried out, 
 some of the results and some immediate results. 
 
 
 \section{Test Environment}
-The test environment are two connected pipe segments. A Y-junction and an R-bend. This
+The test environment is two connected pipe segments. A Y-junction and an R-bend. This
 pipe segments are connected, according to Figure \ref{chap7:fig-environment}.
 \begin{figure}[htbp]
     \centering
@@ -27,25 +27,25 @@ robot is approaching.
 \section{Test Cases}
 To test the performance and robustness of the developed algorithms three cases are used,
 ideal situation, situation with obstacles with regular surface, and obstacles where the
-surface are irregular. This cases are carried out for all the 3 different places described
+surface are irregular. These cases are carried out for all the 3 different places described
 in the previous section.
 
 
 \subsection{Control/Ideal Case}
-Here the sensors are placed at the different locations and the output are recorded. This
+Here the sensors are placed at the different locations and the outputs are recorded. This
 is for reference and what the data will look like in the ideal case. This should
-considered perfect readings and all further readings will be measured up to this.
+consider perfect readings and all further readings will be measured up to this.
 
 \subsection{Long Pipe Test}
 Since the implemented algorithms are best for long pipes, a test case including a
 $1$ meter long pipe is included for reference. This pipe substitutes the L-bend in
 shown in Figure \ref{chap7:fig-environment}. This is to test how the cylinder fit
-preforms. 
+performs. 
 
 
 \subsection{Irregular surfaced anomalies}
 The algorithm implemented relies greatly on regularity in the environment. The structure
-of the surroundings are known to great extent and all irregularities and differences from
+of the surroundings is known to great extent and all irregularities and differences from
 this are considered strange and are marked as anomalies. 
 
 The tests are carried out with a curled-up paper which is placed at the three different
@@ -65,12 +65,11 @@ As mentioned above the algorithm relies on regularity in the environment to dete
 anomalies. This test will try to test the ability of the system to detect regular surfaced
 objects and how they show up in the sensor output.
 
-This test is a opaque bottle filled with water. The right image in Figure
+In this test an opaque bottle filled with water is placed in the pipe. The right image in Figure
 \ref{chap7:fig-pics-of-obstacles} shows the bottle used in the test cases.
 
 \section{Test Results}
-Some of the results are shown here. The ones that differ most from each other. The
-complete list of plots is shown in the Appendix. 
+Some of the test results are shown here. The complete list of plots are shown in the Appendix. 
 
 \subsection{Long Pipe Test at Position One}
 Figures \ref{chap7:fig-longpipe-tof-3d}--\ref{chap7:fig-longpipe-urg-2d} shows the test of
@@ -122,7 +121,7 @@ stated the parameters are the same for all the tests.
 \end{figure}
 
 \subsection{Control Case at Position Two Looking at the $90^\circ$ R- bend}
-This this test shows how the algorithms preforms in the ideal case when placed inside the
+This test shows how the algorithms perform in the ideal case when placed inside the
 pipe. The parameters were the same as for the long pipe test. See Fiugres
 \ref{chap7:fig-pos21-control-tof-3d}--\ref{chap7:fig-pos21-control-urg-2d}.
 \begin{figure}[htbp]
