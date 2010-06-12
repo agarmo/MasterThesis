@@ -4,32 +4,34 @@
 \label{chap6}
 In this chapter implementation specific issues are treated. Figure
 \ref{chap6:fig-implementation} shows the three-layer implementation of the project.
+The \emph{low-level} layer reads and converts the raw sensor data into common data which can be
+interpreted by the \emph{middle} layer. 
+
+The middle layer handles all the ''washing`` of the
+sensor data, applies the reasoning and tries to recognize the environment. The third
+and last layer is the \emph{world} layer which handles the global data, where the robot is
+and where it should move next. 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.4\textwidth]{pics/implementation}
     \caption{Three-layer implementation}
     \label{chap6:fig-implementation}
 \end{figure}
-The \emph{low-level} layer reads and converts the raw sensor data into common data which can be
-interpreted by the \emph{middle} layer. This layer handles all the ''washing`` of the
-sensor data, and applies the reasoning and tries to recognize the environment. The third
-and last layer is the \emph{world} layer which handles the global data, where the robot is
-and where it should move next. 
 
-The project is implemented in both \emph{C/C++} and Matlab. The sensor layer are
+The project is implemented in both \emph{C/C++} and Matlab. The sensor layer is 
 implemented in \emph{C/C++} while the other layers are implemented in Object-Oriented
 Matlab.
 
 \section{Low-level Interfaces}
-The low-level interfaces from the sensors are implemented in \emph{C/C++} and uses the
+The low-level interfaces from the sensors are implemented in \emph{C/C++} and use the
 supplied sensor APIs. The SwissRanger 3000 API were used directly in Matlab. The Hokuyo
-API was a little more tricky to use. A Matlab interface function were implemented to get
+API was a little trickier to use. A Matlab interface function was implemented to get
 the sensor data directly into Matlab.
 
 \subsection{Hokuyo URG Sensor Interface}
 A sensor API for \emph{C/C++} was supplied from the manufacturer of the laser range
 finder. Standard API calls were used and a precompiled matlab \emph{mex}-file was created
-for sensor access from matlab. The code can be seen in Appendix \ref{app:urg-mex}.
+for sensor access from Matlab. The code can be seen in Appendix \ref{app:urg-mex}.
 
 \subsection{SwissRanger 3000 Sensor Interface}
 MESA Imagining provided a standard matlab interface with the needed functionality, and
@@ -38,13 +40,16 @@ ready for capture. \emph{sr\_getimage()} where used to get the intensity image, 
 \emph{sr\_coordtrf()} gave the Cartesian coordinate output. Default integration time for
 the camera where used. 
 
+No compensation for the lens distortion or depth calibration was implemented, because of
+time issues. 
+
 \subsection{Stereo Camera Implementation}
-For the stereo camera, a program was written using the \emph{OpenCV} library. A open
-source computer vision library, initially developed by Intel. This library have many
+For the stereo camera, a program was written using the \emph{OpenCV} library, an open
+source computer vision library, initially developed by Intel. This library has many
 excellent and optimized functions for grabbing images, camera calibration, image rectification
 and stereo matching. This produced a disparity map, which again where reprojected into 3D
-by the \emph{cvReprojectTo3D()}-function. This coordinate images where saved to disk and
-read into Matlab for further processing. 
+by the \emph{cvReprojectTo3D()}-function. This range images where saved to disk and
+read into Matlab for further processing. Algorithm 6.1 shows the program in pseudo code.
 
 \begin{algorithm}
 \caption{The Stereo Capture Procedure}
@@ -68,17 +73,17 @@ read into Matlab for further processing.
 \end{algorithm}
 This program calibrates the cameras, rectifies the images, finds stereo correspondences
 and reprojects them to 3D coordinates. The source code is shown in Appendix
-\ref{app:dense-stereo}.
+\ref{app:stereo-camera}.
 
 
 \section{Mid-level Implantations}
 The middle layers goal is to process and interpret the sensor data to best ability. This
-layer is in charge of doing the reasoning, and draw out important information form the
+layer is in charge of doing the reasoning, and draws out important information form the
 sensor data. The main task is to find lines in the 2D sensor data, and cylinder shapes in
 the 3D data. 
 
-This functionality are implemented in a Matlab class called the \emph{SensorInterpreter}.
-The m-file is given in the Appendix \ref{app:sensorinterpreter}. The implementation is
+This functionality is implemented in a Matlab class called the \emph{SensorInterpreter}.
+The $m$-file is given in the Appendix \ref{app:sensorinterpreter}. The implementation is
 straight forward and brute force. 
 
 
@@ -92,8 +97,8 @@ estimated cylinders are output, which is a measurement on how good the cylinder 
 \section{High-level Implementations}
 
 \subsection{World Representation}
-The world representation are implemented as objects in Matlab. Each node in the world
-representation described in Chapter \ref{chap5} are implemented as a class in Matlab. 
+The world representation is implemented as objects in Matlab. Each node in the world
+representation described in Chapter \ref{chap5} is implemented as a class in Matlab. 
 \begin{figure}[htbp]
     \centering
     %\includegraphics[width=0.6\textwidth]{pics/world-uml}
@@ -101,11 +106,13 @@ representation described in Chapter \ref{chap5} are implemented as a class in Ma
     \label{chap6:fig-world-uml}
 \end{figure}
 
-As seen from Figure \ref{chap6:fig-world-uml} the implementation are based on a
+As seen from Figure \ref{chap6:fig-world-uml} the implementation is based on a
 \emph{world} class which contains the á priori map of the world and the node network
 together with some useful parameters. The nodes of the representation are also different
-classes which inherits from a super node. See Appendix \ref{app:world} for the matlab
+classes which inherit from a super node. See Appendix \ref{app:world} for the matlab
 code. 
+
+Only the drawing and organization of the map representation was implemented.
 
 
 \section{Summary of Parameters}
@@ -139,15 +146,15 @@ There are a number of things that are not implemented because of time issues. Pr
 most important thing is the segmentation of the sensor data. This is crucial for the
 least-squares method to work properly. 
 
-Depth calibration of the Time-of-flight camera are not implemented, due to the reasons
+Depth calibration of the Time-of-flight camera is not implemented, due to the reasons
 given in Section \ref{chap3:subsec-depht-calib}.
 
-The module that recognizes and matches pipe profiles are not implemented. 
+Anomaly Detector, which is the module that recognizes and matches pipe profiles are not implemented. 
 The idea of this is that it will from the sensor interpreter recognize the pipe
 profile, which is matched to some internal database of profiles.
 
 Also, the matching algorithm for finding the global position from the passed-through nodes
-have also been skipped for time issues. All, of this modules are easy to insert in the
+has also been skipped for time issues. All, of these modules are easy to insert in the
 present implementation, because of the modular architecture. 
 
 
