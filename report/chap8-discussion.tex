@@ -9,11 +9,11 @@ Evaluation of the system is done in this section. The implemented systems are ev
 and why it did not work as planned are outlined. In the last section
 possible changes are proposed that might make the system better. 
 
-The sensors are assessed individually, then the surface fit algorithms are evaluated.
+The sensors are assessed individually, and then the surface fit algorithms are evaluated.
 
 
 \subsection{MESA SwissRanger 3000}
-The output from the camera were applied directly into matlab. Default
+The output from the camera was applied directly into Matlab. Default
 integration time were used, and the intensity- and range images where captured as is from
 the camera electronics.
 
@@ -71,7 +71,7 @@ are valid for the stereo cameras as for the time-of-flight camera in the previou
 
 Another limit of the cameras, besides the field-of-view is the light sensitivity and
 the amount of noise on the captured images. The amount of noise in the captured pictures
-are dependant on the portion of ambient light in the scene. In the tests no extra
+is dependant on the portion of ambient light in the scene. In the tests no extra
 light source where used, only ambient light and sunlight. This was because
 the pipe bends where turned towards the window which gave much sunlight. An artificial
 light source were included in the tests, some of the features would be sharper and the
@@ -86,7 +86,7 @@ The inside of the test pipe were mostly featureless. The implemented algorithms 
 detect enough features in both cameras to calculate a dense stereo image of in most of the
 cases. Even when there were obstacles, both irregular and regular objects, the algorithm did not
 detect enough features, and where not able to match these features. This might be because
-that there were not enough light in the scene, and the surfaces of the irregular object
+that there were not enough light in the scene and the surfaces of the irregular object
 where not sharp enough for the algorithm to detect. Enhancing contrasts and image features
 might have given better results, for example using a histogram intensity transform,
 although this is done to some extent in the \emph{Open CV} library functions. \cite{gonzalez} 
@@ -124,8 +124,8 @@ matched.
 Another aspect worth noting is when bad matches occur. The figures
 \ref{chap8:fig-pos21-control-depth} and \ref{chap8:fig-pos21-control-rectified} show an
 example of this. The periodic structure on the walls in the pipe bend is the problem. The
-distance from the wall makes the structures fall almost exactly on top of each other, only
-that it is shifted one of the structure lengths to the left. This makes makes the
+distance from the wall makes the structures fall almost exactly on top of each other,
+but the structure is shifted one of the structure length to the left. This makes the
 disparity of the two features small, which means that the distance must be far away. 
 \begin{figure}[htbp]
     \centering
@@ -143,17 +143,17 @@ disparity of the two features small, which means that the distance must be far a
 This is exactly what is shown in the right plot in Figure
 \ref{chap8:fig-pos21-control-depth}. The distance to the matched points are calculated to
 be very far from the view, because of the small disparity. This is the danger when the
-environment are periodically structured, and at given distances this can happen.
+environment is periodically structured, and at given distances this can happen.
 Projecting structured light on the environments is a way of helping the matching procedure
 in environments with little structure, and might have given better results in this case. 
 
-When regarding speed, the \emph{OpenCV} library are reasonably fast. When running at
+When regarding speed, the \emph{OpenCV} library is reasonably fast. When running at
 $640\times480$ a brute-force implementation of the stereo matching using standard
 \emph{OpenCV}-library methods, where able to process 2-3 stereo pairs, and
 output a dense stereo range image, each second on a Pentium 4 3.0 GHz Windows XP 
 standard workstation with 2 Gb of RAM. 
 
-The last question is how can this be implemented on an embedded platform, which have limited
+The last question is how can this be implemented on an embedded platform, which has limited
 computational abilities? Porting the \emph{Open CV} library to an embedded platform is a
 topic that is not much discussed, and is probably more work than the gain. The solution
 here is most probably to implement this stereo matching algorithm that is highly optimized
@@ -164,7 +164,7 @@ for the implementation platform.
 
 \subsection{Hokuyo URG-04LX Laser Range Finder}
 The measurement errors from the laser range finder that affects the readings in the test were
-mostly random gaussian distributed noise. To get rid of this, 5 successive
+mostly random Gaussian distributed noise. To get rid of this, 5 successive
 readings where averaged. Since the update rate of the range finder is 10 Hz, the system
 will get readings from the URG twice every second. This will not impact the control system
 that much, since the dynamics of the system is not that fast. The implementation, the time
@@ -173,13 +173,13 @@ and where dependant on the time to locate enough memory to store the scan.
 
 The range finder gives dense data near the position of the sensor, and more sparse data
 when far away, which is obvious because of the nature of the scanning. The scanner does
-also have a large field-of-view, that makes it a good addition to the sensor suit of the
+also have a large field-of-view that makes it a good addition to the sensor suit of the
 platform. 
 
 The sensor is limited to planar measurement. Depending on the position of the laser
 scanner, this will limit the ability to sense obstacles which does not cover a large part 
 of the pipe. Obstacles in a pipe environment might be sediments and residues of the medium
-traveling in the pipe, and they usually settle at the bottom of the pipe. If the range
+travelling in the pipe, and they usually settle at the bottom of the pipe. If the range
 finder is placed high above the ground in the pipe, these sediments and potential
 obstacles will not be detected. This motivates the use of the sensor for estimating the
 pipe radius and matching profiles, since in many cases the obstacles in the pipe will not
@@ -187,7 +187,8 @@ affect the pipe profile, seen from the range finder.
 
 
 \subsection{Surface Fit and Pipe Properties Estimation}
-The proposed surface fit algorithm is based on the least-squares method. This does not work very good
+The proposed surface fit algorithm is based on the least-squares method. This does not
+work very well 
 when there is no segmentation employed in the system. Looking at Figure
 \ref{chap7:fig-longpipe-tof-3d} from the Long pipe test, the first cylinder axis is severely displaced. This
 is because of pipeline profile. The Y-junction is recognized as half a cylinder. The
@@ -214,14 +215,14 @@ alignment of the Time-of-Flight camera when capturing the snapshot.
                  \end{matrix} \right]
 \end{equation}
 Vector $a_2$ and $a_3$ are almost parallel with the $z$-axis, which is the view direction,
-and also the direction of the pipe. But the axis are offset in the $y$-direction which tilts
+and also the direction of the pipe. But the axes are offset in the $y$-direction which tilts
 the cylinder axis upwards. This might all be due to the sensor not placed entirely with
 the principal axis horizontal. 
 
 Figure \ref{chap7:fig-longpipe-tof-dist} is a measure on how good the cylinder fits. The
-figure have small crosses where the next next cylinder interval starts. The x-axis show
-the number of points which is fitted to the cylinder, and the y-axis scale is in meters.
-As seen from the figure, the overall distance of the points to the given cylinders are in
+figure has small crosses where the next cylinder interval starts. The $x$-axis show
+the number of points which is fitted to the cylinder and the $y$-axis scale is in meters.
+As seen from the figure, the overall distance of the points to the given cylinders is in
 general less than 5 cm, this is not a great result, but it suffices and gives the general
 direction of the pipe. This collection of points might be used for a crude selection
 criterion for which point indices that might belong to the cylinder. The algorithm might
@@ -230,7 +231,7 @@ selected set.
 
 For the laser range finder data, the line fitting worked quite well, see
 Figure \ref{chap7:fig-longpipe-urg-2d}. For the horizontal lines, the walls of the pipe
-are detected adequately. The error of the for the fitted horizontal lines are oscillating
+are detected adequately. The errors for the fitted horizontal lines are oscillating
 around zero, except for the ends of the lines. The vertical line fit , which
 really is transversal lines in the plane, are another story. The histogram bins for the
 vertical lines where chosen large in this test, and this can be seen because all the lines
@@ -245,8 +246,8 @@ of the vertical axis, but this lines are of less importance.
     \label{chap8:fig-longpipe-urg-hist}
 \end{figure}
 Figure \ref{chap8:fig-longpipe-urg-hist} shows the distribution of the points in the
-histogram bins. As seen, there are most points in the bin containing the trivial points, this is
-because of the sectors of the laser range finder which cannot be measured. This points are
+histogram bins. As seen, there are most points in the bin containing the trivial points; this is
+because of the sectors of the laser range finder which cannot be measured. These points are
 not removed from the data set, but not included in the line fitting algorithm. 
 The second plot in the figure clearly shows that there are three distinct gathering of
 points with almost the same y-coordinates, which makes up the three walls of as seen on
@@ -280,7 +281,7 @@ When looking at the tests with irregular objects, and looking at the fitted cyli
 the test at position 1, shown in Figure \ref{chap7:fig-pos1-irregular-tof-3d}, the
 cylinders are totally off axis, while the estimated cylinder from the range finer
 estimates correct, Figure \ref{chap7:fig-pos1-regular-urg-3d}. This is of course again
-because there are no segmentation of the objects in the images, which caused the cylinder
+because there is no segmentation of the objects in the images, which caused the cylinder
 fit to fail in most of the cases. 
 
 With the stereo rig, it was not possible to obtain dense enough point clouds for the
@@ -288,27 +289,26 @@ cylinder fit. The algorithm did not converge in all cases.
 
 \section{Possible Changes}
 What could make the system better? In retrospect, after tested the system, it would
-benefit from a better feature and estimation scheme. The RANSAC algorithm have proven
+benefit from a better feature and estimation scheme. The RANSAC algorithm has proven
 efficient in computer vision applications, because of its internal segmenting of points in 
 the dataset. This will probably give good results with ``flying points'' that does not
 belong to the geometrical primitive. 
 
 Another approach is to use point feature histograms to segment the dataset and separate it
-into geometric primitives, which then can be estimated using the fitting algorithms, or a
+into geometric primitives, which then can be estimated using the fitting algorithms or a
 fingerprint of the dataset can be generated and matched to a database, containing
 different junctions and features which the robot might encounter. 
 
-The possible sensor fusion of the stereo camera and the time-of-flight camera. A stereo
-rig provides acceptable results at transitions in the environment, i.e. edges and
-structures, while the time-of-flight camera seems to have more problems at this locations.
-Therefor a fusion of this sensors might prove useful to avoid, flying pixels and give good
+A stereo rig provides acceptable results at transitions in the environment, i.e. edges and
+structures, while the time-of-flight camera seems to have more problems at these locations.
+Therefor a fusion of these sensors might prove useful to avoid, flying pixels and give good
 range estimates at edges. \cite{tof-stereo-fusion} shows promising results using this
 approach. 
 
 To get better results form the stereo rig, better cameras and light would help. Also using
-structured light, such as a laser light pattern projected on the sides of the pipeline,
-and recognizing the distortion of the pattern to get dense stereo information in little
-structured environments. Later versions of \cite{makro-plus} uses this scheme with promising
+structured light, such as a laser light pattern projected on the pipeline walls and
+recognizing the distortion of the pattern, would give denser stereo information in little
+structured environments. Later versions of \cite{makro-plus} use this scheme with promising
 results. 
 
 
