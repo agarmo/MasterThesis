@@ -3,39 +3,36 @@
 
 \chapter{Data Representation and Interpretation}
 \label{chap5}
-
-
-\section{World Representation}
 The world representation should have a number of qualities. First it must represent the
 world in a satisfactory way. It should be easy to update and take up little memory on the
 implementation platform. Third it should be easy to understand for a human operator
-without too much post-processing. 
+without too much processing. 
 
 It must be possible to determine the global position of the robot uniquely form the
-observation the robot does during its mission. This can be achieved by matching the map
+observations the robot does during its mission. This can be achieved by matching the map
 created only from observations to a map supplied by the user. This is an relatively easy
 task when the both maps are of topological nature. The matching between those maps can
 then be a graph search in the map supplied by the user. Depending on the accuracy of the
 supplied map, the global position of the robot can be determined, and the path forward can
-be determined. 
+be chosen. 
 
 In a topological world representation the geometrical aspect of a map is not that
-important, instead landmarks, interesting locations and other features which are easy 
+important. Instead landmarks, interesting locations and other features which are easy 
 recognizable are represented as nodes in a graph representation. 
 
 Based on the terms that the world representation should not be spacious in memory, and
-that exact distances are difficult to measure when theres no redundant global positioning
-system the world representation is chosen to be a topological one. 
+that exact distances are difficult to measure when there is no redundant global positioning
+system, a topological world representation is pursued. 
 
 
-\subsection{Nodes}
-The representation in this project is a kind of topological map. It is abstract in the way
-that the world are classified into given nodes. Known features of the world are recognized
+\subsection{World Representation}
+The world are classified into given nodes. Known features of the world are recognized
 and represented as nodes in a graph. 
 
+Possible environments must be stored in a database for the robot to be able to interpret
+its surrounding. Said in another way, the robot must be taught its surroundings. 
 This means that the world need to be classified into predefined nodes before the mission
-is started. In this project the nodes are junctions, or bends that are easily recognized
-because of their fundamental difference to the straight pipe segments. 
+is started. A pipeline is a structured environment and can be divided into junctions. 
 
 The nodes should have a number of attributes describing how the node is different from the
 other nodes. These attributes are:
@@ -59,9 +56,8 @@ other nodes. These attributes are:
 Most of this attributes are self-explaining, but the last attribute, \emph{list of
 anomalies} deserves a closer explanation. 
 Anomalies are those things that the robot should look after, and record. An anomaly are
-everything that is not expected. In a pipe environment the surroundings are assumed to be
-in some way, because they are designed that way. Everything that is not as expected should
-be recorded for later inspections. 
+everything that is not expected. Everything that is not as expected should be recorded 
+for later inspections. 
 
 This list will contain every anomaly from the previous node to the next one, where the
 list is stored. The list will contain a time stamp of when it was discovered, distance
@@ -75,8 +71,8 @@ detected.
 
 This anomalies might be obstacles which hinder the robot in completing its mission. It is
 important that the control system is able to traverse this obstacles or take another way
-to get past these obstacles. This special types of anomalies must be handled in some way,
-but is not a topic of this project. 
+to get past these obstacles. This special types of anomalies must be handled in some way
+and should be marked as a node, but is not a topic of this project. 
 
 \section{Map-building From the Sensor Data}
 Much reasoning are needed from the control system to interpret the sensor data to select
@@ -85,9 +81,15 @@ decisions when the robot is faced with a challenge. This part is maybe the most 
 part in the complete navigation system, because it need to supply correct information to
 the higher level navigation and control system. If this part fail in assessing the
 environment in the correct way, the navigation system might take the wrong decisions and
-the mission might fail. 
+the entire mission might fail. 
 
-\subsection{Cylinder Fit from 3D Sensor Data}
+To recognize nodes the sensors must be interpreted, and the output of this interpretation
+needs to be matched to a database to determine what kind of node it is. 
+
+\subsection{Interpreting 3D Sensor Data}
+The point cloud output from the 3D sensors need to be segmented to extract the features
+which is of interest. 
+
 The three dimensional point cloud which is output form the Time-of-Flight camera are
 filtered before it is fed to the surface fit algorithm. Firstly the intensity images, is
 used for filtering out pixels with too high or too low intensity values. The high
@@ -99,12 +101,11 @@ and are filtered away.
 After doing this a number of successive captures are averaged to provide less noisy image.
 Then the coordinates are sorted on the z-coordinate and divided into $n$ equally spaced
 subsets. This means that there will be $n$ cylinders fitted to the captured point cloud.
-This is too ease the amount of memory used to process the whole point cloud, which as
-shown later was to big much for matlab to handle. 
+This is too ease the amount of memory used to process the whole point cloud. 
 
 The surface fit algorithm is a Nonlinear Least-Squares Guass-Newton algorithm. It parameterize the
 cylinder as described in Section \ref{chap2:sec-surface-fit-alg}. The input to this
-algorithm is start coordinates of the cylinder axis, $x_0$, the axis direction $a_0$, and
+algorithm is start coordinates of the cylinder axis, $x_0$, the direction cosines $a_0$, and
 the initial radius, $r_0$.
 
 \begin{algorithm}[htbp]
@@ -121,22 +122,20 @@ the initial radius, $r_0$.
             \STATE Get initial values for Surface Fit algorithm
             \STATE  $r, a, x_0, d$ $\leftarrow$ run surface fit algorithm on $SubSets$
         \ENDFOR
-        \FOR{every $r$}
-            \IF {$r > m \times PipeRadius$}
+        \FOR{every $r_i$}
+            \IF {$r_i > m \times PipeRadius$}
                 \STATE Mark $r$ as erroneous
             \ENDIF
         \ENDFOR
     \end{algorithmic}
 \end{algorithm}
 
-Here there are a couple of problems. First, the points not belonging to the geographical
+There are a couple of problems. First, the points not belonging to the geographical
 primitive, i.e. the cylinder will draw the cylinder fit off-axis, and cause the cylinder
 fit to fail, as the Least-Squares approach assumes that all the points in the supplied set
-belongs to the cylinder. The algorithm are guaranteed to converge if the term $J_k^T J_k$
-dominates the approximation to the Hessian which is used in the Gauss-Newton algorithm
-described in Section \ref{chap2:subsec-gauss-newton}. \cite{optreg}
+belongs to the cylinder. 
 
-The user parameters in this algorithm are the \emph{subset threshold} which decides the interval
+The user parameters in this algorithm are the \emph{subset size} which decides the interval
 of the subsets and also how many cylinders should be fitted to the given point cloud. The
 other parameters are $m$ which tells for which values the predicted cylinder radii are
 erroneous. 
@@ -147,19 +146,23 @@ ToF-camera sensor frame, and the initial axis which unless other is said is alon
 z-axis, i.e. into the pipe seen from the camera.
 
 
-\subsection{Line Fit in 2D Sensor Data}
+\subsection{Interpreting 2D Sensor Data}
+The laser range finder is the most accurate sensor on the platform. Therefore, this
+sensor was selected to estimate the main direction and radius of the pipe. The sensor is
+also limited to planar measurement, which limits the sensors ability to detect anomalies
+in the pipeline, this is left to the 3D sensors. 
+
 Line fit algorithm is a least-squares line fit algorithm. For this to work properly, a
 selection of points assumed belonging to the line need to be fed into the algorithm. To
 select this points a histogram is formed for both x- and y-direction of the points. This
 will detect points which lie in a horizontal- and vertical lines. This points are selected
 and fed into the line fit algorithm. 
 
-This approach is also prone to the problem with least squares, that all the points are
-assumed to belong to the geographical primitive, and that the noise averages out when
-enough samples are taken. But here the points are segmented on vertical and horizontal
-lines. Lines that are neither horizontal or will causes problem for this algorithm. If the
+It is assumed that the noise averages out when
+enough samples are taken. Lines that are neither horizontal or vertical
+will causes problem for this algorithm. If the
 histogram bins are too large, the direction of the fitted line will be diverted, and if it
-is too small the algorithm will not detect the points as a belonging to a line. 
+is too small the algorithm will not detect the points as belonging to a line. 
 \begin{algorithm}[htbp]
     \caption{2D Line Fit algorithm}
     \label{chap5:alg-2dlinefit}
@@ -189,10 +192,9 @@ other points that does not ``belong'' to the wall points. Other parameters are t
 threshold parameters for how many points there need to be in a histogram bin to pass them
 to the line fit, $NoPointsX$ and $NoPointsY$.\
 
-The horizontal lines, i.e. the ones that is along the x-axis shown in Figure
-\ref{chap3:fig-sensor-frames}, are considered the most important, since these in all cases
-are the walls of the pipeline. Most of the times this lines will be the walls of the
-pipeline. 
+The horizontal lines, i.e. the ones that is along the $x$-axis shown in Figure
+\ref{chap3:fig-sensor-frames}, are considered the most important, since these in most cases
+are the walls of the pipeline. 
 
 From these lines the radius and direction of the pipe can be found. The position of the
 Laser Range finder is assumed known, particularly the height above the ground are needed
@@ -216,6 +218,7 @@ for $P_2$ and rearranging
 This requires that two lines can be matched to be approximately parallel for the distance
 $d$ to be calculated. Therefor the direction of all the lines are compared to all the
 other lines and those parallel within some threshold, $ParallelThreshold$ are selected.
+These distances are compared to the \'a priori diameter of the pipe, inputted by the user. 
 
 The estimated parameters here can be compared to the ones estimated from the 3D point
 cloud, in a fashion that makes the system select the best estimate. The initial guess of
@@ -233,7 +236,7 @@ First, the sensor data are processed and the pipeline properties are estimated, 
 radius and direction. This can be done using the laser range finder, which probably will
 give the most accurate results, when around the robot. Then the \emph{misfit} points from
 the 3D sensor is analysed, this can be matched to a database with \emph{fingerprints} of
-the different pipeline junctions, and the best fit can be selected.
+the different pipeline junctions, and the best fit can be selected. \cite{theilemann}
 
 The \emph{MRINSPECT-V} described in \cite{MRINSPECT-V} recognizes pipe profiles using the 
 shadows created by a special illuminator. The shadow profiles are stored in tree
@@ -246,14 +249,14 @@ project, and should be a topic of further research and work.
 
 
 \section{Navigation and Positioning in the World Representation}
-How the control system positions itself in the environment is very important for the
-control system. Because the system need to know where it is, and where it has been, to be
+How the control system determines the position in the environment is very important.
+Because the system need to know where it is, and where it has been, to be
 able to determine where it will go. 
 
-Given the case that the \emph{SensorInterpreter} is capable of identifying and matching
+Given the case that the system is capable of identifying and matching
 the nodes correct, this can be used as landmark when determining global position. The
 graph which have been created, can be matched with the \`a priori map, based on what kind
-of nodes that have been passed, the taken path of the robot can be matched given that the
+of nodes that have been passed. The path taken by the robot can be matched given that the
 \`a priori map is accurate with regard to the location and order of the nodes. This is
 similar to the approach used by the MAKRO project \cite{makro-visual}.
 
@@ -264,4 +267,6 @@ ambiguities the correct position cannot be established before additional nodes a
 The pipe network need to be, using an analogue to the system identification terminology, 
 \emph{persistently exciting}. Which means that the network consists of enough unique features and
 sequences that the position can be determined uniquely. 
+
+Further research and work is needed in this field to verify the proposed concept. 
 
