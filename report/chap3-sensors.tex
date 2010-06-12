@@ -3,7 +3,7 @@
 
 \chapter{Sensors}
 \label{chap3}
-The sensors of a autonomous system is one of the key components for the application to
+The sensors of an autonomous system are one of the key components for the application to
 succeed. The sensors are eyes, ears and touch for the robot, and for the robot to be able
 to complete its mission in a favourable way, the right sensors must be chosen.
 
@@ -13,16 +13,16 @@ rig. The other sensors involved on the PiKo platform is beyond the scope of this
 and will not be investigated. 
 
 Some common laser range finders will be compared, and one will be selected for
-implementation into the project. The stereo camera rig need to be calibrated to provide
-dense stereo images to be reprojected to 3D. The time-of-flight camera are also calibrated for lens
+implementation into the project. The stereo camera rig needs to be calibrated to provide
+dense stereo images to be reprojected to 3D. The time-of-flight camera is also calibrated for lens
 distortions and intrinsic parameters will be determined. The different error sources associated
-with the senors will also be mentioned.
+with the sensors will also be mentioned.
 
 \section{Comparisons Between the Proposed Sensors}
-For this project, some of the sensors was not decided. This gave the ability to chose a
-sensor, based on cost, resolution, accuracy and delivery date. The manufacturers that were
-considered where the Japanese \emph{Hokuyo} and American \emph{SICK}. This two companies are to the
-authors knowledge the leading manufacturers of laser range finders, small enough to be
+For this project, some of the sensors were not decided. This gave the ability to choose a
+sensor, based on cost, resolution, accuracy, and delivery date. The manufacturers that were
+considered where the Japanese \emph{Hokuyo} and the American \emph{SICK}. These two companies are to the
+author's knowledge the leading manufacturers of laser range finders, small enough to be
 mounted on small robotic platforms. The various models and key parameters are summarized
 in Table \ref{chap3:tab-sensors}.
 \begin{table}[htbp]
@@ -65,7 +65,7 @@ chosen. The sensor will be discussed in Section \ref{chap3:sec-urg}.
 \subsection{3D Sensors}
 There are many different depth sensors available at the consumer market. This section will
 outline some of them, and describe the \emph{MESA Imagining} SR-3000 in more detail.
-The development of depth-sensing cameras and devices have accelerated the last years
+The development of depth-sensing cameras and devices has accelerated the last years
 because of the increased computational ability and the fact that electronics become
 cheaper and cheaper. \cite{low-cost-depthcameras}
 
@@ -84,7 +84,7 @@ Microsoft the accuracy in depth will be about 1 cm, and practical ranges will be
 \label{chap3:sec-urg}
 The laser range finder which were selected to this application was the \emph{Hokuyo
 URG-04X}. It uses an infrared laser to sweep a view field of $240^\circ$ ten times a
-second. The full $360^\circ$ circle are segmented using ten bit, which gives angular
+second. The full $360^\circ$ circle is segmented using ten bit, which gives angular
 resolution of $\frac{360}{2^{10}} = 0.3515$. The ranges have twelve bit resolution, each
 bit representing a millimeter, which gives the total measurable length of $2^{12} = 4096$.
 \begin{figure}[htbp]
@@ -93,7 +93,7 @@ bit representing a millimeter, which gives the total measurable length of $2^{12
     \caption{The Hokuyo URG-04X. \url{http://www.hokuyo.com}}
     \label{chap3:fig-urg}
 \end{figure}
-The effective area which gives range readings are the sector form the 44th step to
+The effective area which give range readings are the sector form the 44th step to
 725th step. See Figure \ref{chap3:fig-urg-sector}. If $0^\circ$ is straight ahead, then
 the measurement starts at $-135^\circ$ and stops at $135^\circ$. 
 \begin{figure}[htbp]
@@ -129,7 +129,7 @@ form Minoru.
 \end{figure}
 It is actually two webcams and a USB hub in the same casing. The camera is
 available for about 900 NOK, so both optics and imaging chips are expected to be of poor
-quality. Also, the left and right camera shutters does not synchronize, \cite{nma-web}
+quality. Also, the left and right camera shutters do not synchronize, \cite{nma-web}
 suggests it might be as much as 16.5 milliseconds which might cause problems in fast
 moving environments. 
 
@@ -151,7 +151,7 @@ processed individually to calculate the distortions of the individual camera.
     \caption{Seventh left image in the calibration sequence}
     \label{chap2:fig-checkerboard}
 \end{figure}
-The four extreme-most corners of the checkerboard is selected in each image, and an
+The four extreme-most corners of the checkerboard are selected in each image, and an
 internal algorithm detects the corners of the squares in each image. This gives an initial
 guess of the distortion parameters. The reprojection error is then minimized with
 regard to the distortion parameters using a nonlinear gradient decent algorithm. For more
@@ -210,14 +210,14 @@ distances can be calculated by knowing the pixel-to-length ratio.
 \end{table}
 The focus distances in the $x$ and $y$-direction are slightly different in both cameras. This
 suggests that the pixels of two cameras are not exactly square, but the difference is very
-small and can be neglected. The principal axis in both
+small and can be neglected. The principal axes in both
 cameras are also in very different places. This is problematic because a stereo rig should
 be horizontally aligned to give the best results. Because for the off-center principal
-axis the field-of-view of the stereo rig will be quite reduced.
+axis, the field-of-view of the stereo rig will be quite reduced.
 
 This distortion can be removed and are called rectifying the image. This makes common
 features in the two images aligned horizontally. This makes it much easier for the matching
-algorithm because it only need to match vertically.
+algorithm because it only needs to match vertically.
 
 The extrinsic parameters of the stereo rig are estimated based on the displacement of the
 checkerboard corners in the different views. The estimated extrinsic parameters are as
@@ -232,7 +232,7 @@ follows. The values are given in millimeters.
                 -0.01 \pm 0.01 \\
                 0.00 \pm 0.00  \end{matrix} \right]
 \end{equation}
-The baseline given by the manufacturer is 6 cm which correspond very good the estimated
+The baseline given by the manufacturer is 6 cm which correspond very well the estimated
 values. Figure \ref{chap3:fig-stereo-extrinsic} show how the different checkerboards in
 the image sequence. 
 \begin{figure}[hbtp]
@@ -246,24 +246,24 @@ the image sequence.
 
 
 \subsection{Depth resolution}
-The depth resolution which can be expected from the Stereo cam are,
+The depth resolutions which can be expected from the Stereo cam are
 \begin{equation}
     \Delta Z = \frac{Z^2}{f T}\Delta d
 \end{equation}
 where $\Delta d$ is the smallest increment in disparity, $f$ is the focal distance, and
-$T$ is the baseline. The disparity is assumed to be integers. Therefor the spatial
+$T$ is the baseline. The disparity is assumed to be integers. Therefore the spatial
 resolution influences the depth resolution. 
 This is useful when calibrating the stereo rig, and when testing the program,
 because it tells what kind of ranges one can expect from the rig.
 
 
 \subsection{Noise- and Error Sources}
-The major source of errors connected with stereo cameras are bad feature matches, and 
+The major source of errors connected with stereo cameras is bad feature matches, and 
 will cause bogus distances. This is heavily correlated with the amount of noise captured
 by the imaging sensors and light conditions. 
 
 The left and right cameras does not synchronize, and because of the
-capturing process is sequential the images are not captured at the same time, this might
+capturing process is sequential the images are not captured at the same time; this might
 give raise to erroneous range measurements. 
 
 
@@ -273,7 +273,7 @@ give raise to erroneous range measurements.
 The 3D sensor chosen for the project is the MESA SwissRanger-3000 Time-of-Flight Camera.
 This is based on amplitude modulation of near-infrared light (850 nm), which is emitted from an
 array of 55 LEDs and captured at a spherical PMD chip. The spatial resolution of the camera
-are $176\times144$ with a field-of-view of $47.5^\circ \times 39.6^\circ$. 
+is $176\times144$ with a field-of-view of $47.5^\circ \times 39.6^\circ$. 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.4\textwidth]{pics/sr3000}
@@ -281,14 +281,14 @@ are $176\times144$ with a field-of-view of $47.5^\circ \times 39.6^\circ$.
     Camera. \url{http://www.mesa-imaging.ch}}
     \label{chap3:fig-sr3000}
 \end{figure}
-The amplitude modulation frequency are set to 20 MHz which gives a non-ambiguity range of
+The amplitude modulation frequency is set to 20 MHz which gives a non-ambiguity range of
 7.5 meters. If the modulation frequency is lowered the maximum measured distance might be
 larger, but this distance is good for the application of the project. 
 
 Since the camera needs lots of cooling because of the LEDs and electronics the camera are
 mounted on a stem of aluminium, to secure the airflow through the camera. 
 
-The camera outputs standard Cartesian coordinates or spherical coordinates and a  
+The camera outputs standard Cartesian coordinates or spherical coordinates and an  
 intensity image, which is comparable to a standard gray scale camera. Figure 
 \ref{chap3:fig-tof-amppicture} shows a typical intensity image of the inside of a pipe. The
 blue areas are closer, and red areas are farther away. 
@@ -302,7 +302,7 @@ blue areas are closer, and red areas are farther away.
 
 \subsection{Intrinsic Parameter Calibration}
 The intrinsic parameters are determined the same way as for the individual cameras in the
-stereo rig. This is to determine the lens distortions and principal axis, see Table
+stereo rig. This is to determine the lens distortions and principal axis. See Table
 \ref{chap3:tab-intrinsic-sr3000}.
 \begin{table}[htbp]
   \centering
@@ -334,7 +334,7 @@ $40 \times 40 \mu m^2$ and 8 mm focal distance.
 The intensity images from
 the camera are captured, converted to 8-bit integer values and histogram normalized to
 enhance the contrast. This makes the finding of the checkerboard corners easier in
-the calibration process. Since the spatial resolution of the camera are small, noise and
+the calibration process. Since the spatial resolution of the camera is small, noise and
 inaccurate sampling make the corner selection problematic. This manifests itself on the large
 uncertainties in the focal distances. 
 
@@ -344,8 +344,8 @@ uncertainties in the focal distances.
     \caption{The lens distortion for SwissRanger 3000}
     \label{chap3:fig-sr3000-comp-lensdist}
 \end{figure}
-From the Figure \ref{chap3:fig-sr3000-comp-lensdist} the distortion due to lens are shown.
-The principal axis are off center in the y-direction, this might be the case, but can also
+From the Figure \ref{chap3:fig-sr3000-comp-lensdist} the distortion due to the lens is shown.
+The principal axis is off-center in the y-direction, this might be the case, but can also
 be inaccuracies caused by the calibration. Except for this off-center principal axis, the
 pixel distortion due to the lens is small.
 
@@ -366,9 +366,9 @@ systems must be robust, and an uncalibrated sensor will help test this.
 As stated in Section \ref{chap2:subsec-tof} the complete picture of the distances are
 captured fist when 4 successive exposures are complete. This means that fast moving
 objects will cause distance errors because the object might have moved between the
-exposures. Another source of errors are multiple reflections and highly reflective
+exposures. Another source of errors is multiple reflections and highly reflective
 surfaces which will cause errors because too much light is reflected. The same is the case
-with surfaces which absorbs most of the light. This surfaces will appear farther away than
+with surfaces which absorbs most of the light. These surfaces will appear farther away than
 they really are. 
 
 
@@ -381,12 +381,12 @@ they really are.
     \label{chap3:fig-sensor-frames}
 \end{figure}
 The different reference frames are shown in Figure \ref{chap3:fig-sensor-frames}, together
-with the field-of-view and domains of the senors. These are the
+with the field-of-view and domains of the sensors. These are the
 \emph{North-East-Down} frame, \emph{body} frame, and the two sensor frames with
 corresponding field of view. All of the systems are defined as right-hand-systems. 
 
 For the system it is important to known the location of the different sensors, relative to
-the center of gravity of the platform, where the center of the body frame are
+the center of gravity of the platform, where the center of the body frame is 
 defined. 
 
 
