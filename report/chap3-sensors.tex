@@ -90,7 +90,7 @@ bit representing a millimeter, which gives the total measurable length of $2^{12
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.4\textwidth]{pics/urg04lx}
-    \caption{The Hokuyo URG-04X. \url{http://www.hokuyo.com}}
+    \caption[The Hokuyo URG-04X.]{The Hokuyo URG-04X. \url{http://www.hokuyo.com}}
     \label{chap3:fig-urg}
 \end{figure}
 The effective area which give range readings are the sector form the 44th step to
@@ -124,7 +124,7 @@ form Minoru.
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.35\textwidth]{pics/minoru3d}
-    \caption{The Minoru 3D WebCam. \url{www.minoru3d.com}}
+    \caption[The Minoru 3D WebCam.]{The Minoru 3D WebCam. \url{www.minoru3d.com}}
     \label{chap3:fig-minoru}
 \end{figure}
 It is actually two webcams and a USB hub in the same casing. The camera is
@@ -141,7 +141,7 @@ the intrinsic parameters of the camera are determined and the lens distortion pa
 described in Chapter \ref{chap2}, are estimated. 
 
 To determine the parameters the \emph{Camera Calibration Toolbox} for Matlab is used
-\cite{camera-calib-toolbox} based on \cite{heikila} and \cite{mat-toolbox}.
+\cite{camera-calib-toolbox} based on \cite{heikkila} and \cite{mat-toolbox}.
 20 image pairs are captured of a checker board in various
 distances and orientation by the stereo rig. The images for left and right camera are
 processed individually to calculate the distortions of the individual camera. 
@@ -303,7 +303,7 @@ blue areas are closer, and red areas are farther away.
 \subsection{Intrinsic Parameter Calibration}
 The intrinsic parameters are determined the same way as for the individual cameras in the
 stereo rig. This is to determine the lens distortions and principal axis. See Table
-\ref{chap3:tab-intrinsic-sr3000}.
+\ref{chap3:tab-intrinsic-sr3000} and \ref{chap3:tab-dist-sr3000}.
 \begin{table}[htbp]
   \centering
     \begin{tabular}{|c|c|c|} 
@@ -316,13 +316,6 @@ stereo rig. This is to determine the lens distortions and principal axis. See Ta
         $c_x$   & $88.63 \pm 5.00$  & $88$ \\
         $c_y$   & $ 62.96 \pm 5.67 $ & $72$  \\
         \hline
-        $k_1$   & $-0.81 \pm 0.37$ & \\ 
-        $k_2$   & $6.78 \pm 4.36$  & \\
-        $k_3$   & $0 \pm 0$ & \\
-        \hline
-        $p_1$   & $0.0045 \pm 0.011$ & \\
-        $p_2$   & $0.000246 \pm 0.014$ \\
-        \hline
     \end{tabular}
     \caption{Intrinsic parameters of the ToF-camera in pixel related units including
     uncertainties}
@@ -330,6 +323,23 @@ stereo rig. This is to determine the lens distortions and principal axis. See Ta
 \end{table}
 The focal distances given from the manufacturer are calculated using the pixel size of
 $40 \times 40 \mu m^2$ and 8 mm focal distance.
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{|c|c|}
+        \hline
+        Paramtere & Value \\
+        \hline
+        $k_1$   & $-0.81 \pm 0.37$  \\ 
+        $k_2$   & $6.78 \pm 4.36$   \\
+        $k_3$   & $0 \pm 0$  \\
+        \hline
+        $p_1$   & $0.0045 \pm 0.011$ \\
+        $p_2$   & $0.000246 \pm 0.014$ \\
+        \hline
+    \end{tabular}
+    \caption{The distortion parameters of the SwissRanger 3000}
+    \label{chap3:tab-dist-sr3000}
+\end{table}
 
 The intensity images from
 the camera are captured, converted to 8-bit integer values and histogram normalized to
@@ -340,10 +350,11 @@ uncertainties in the focal distances.
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.7\textwidth]{pics/sr3000_comp_dist}
+    \includegraphics[width=0.6\textwidth]{pics/sr3000_comp_dist}
     \caption{The lens distortion for SwissRanger 3000}
     \label{chap3:fig-sr3000-comp-lensdist}
 \end{figure}
+
 From the Figure \ref{chap3:fig-sr3000-comp-lensdist} the distortion due to the lens is shown.
 The principal axis is off-center in the y-direction, this might be the case, but can also
 be inaccuracies caused by the calibration. Except for this off-center principal axis, the
