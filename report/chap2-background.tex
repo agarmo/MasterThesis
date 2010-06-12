@@ -4,10 +4,10 @@
 
 \chapter{Background and Literature Study}
 \label{chap2}
-The aims of this chapter is to outline the basics needed to understand this report. Mathematical
+The aims of this chapter are to outline the basics needed to understand this report. Mathematical
 knowledge are crucial to understand the principles used in robot navigation and decision
 making. The topics treated here include, general reference frames, homogeneous coordinate
-representations, camera modeling, feature matching, map representations and optimization
+representations, camera modelling, feature matching, map representations and optimization
 criteria. Lastly, the state-of-the-art in pipeline inspection will be surveyed. 
 
 
@@ -16,8 +16,8 @@ criteria. Lastly, the state-of-the-art in pipeline inspection will be surveyed.
 
 \subsection{Reference Frames}
 	Movement must be described relative to something. This is the task of the reference systems. There are
-	4 important reference system. The \emph{ECI} (\emph{Earth Centre Inertial}) which is a truly inertial reference
-	frame, i.e. it is not accelerating. Its axis are pointing through the North pole and through the
+	4 important reference systems. The \emph{ECI} (\emph{Earth Centre Inertial}) which is a truly inertial reference
+	frame, i.e. it is not accelerating. Its axes are pointing through the North Pole and through the
 	equatorial line of the Earth, fixed toward stationary points in space. The centre is as the name
 	suggests in the centre of the Earth. 
 	
@@ -25,31 +25,31 @@ criteria. Lastly, the state-of-the-art in pipeline inspection will be surveyed.
 	system, but the axis are rotating with the same rate as the Earths rotation rate. This means that this frame
 	is not
 	strictly inertial, but the angular velocity of the Earths rotation are considered very small, and can
-	be neglected compared to other velocities in the same frame. Position on the earth are described by
-	\emph{longitude} and \emph{latitude}.
+	be neglected compared to other velocities in the same frame. The position on the earth
+    is described by \emph{longitude} and \emph{latitude}.
 
-	An important reference frame when considering local motion are the \emph{NED}
+	An important reference frame when considering local motion is the \emph{NED}
     (\emph{North East Down}) frame. This
 	frame is defined as the tangent plane on the current position, moving with the object. The axis
 	is pointing towards north, east and down. This frame can be used in local areas, but are
 	not valid for intercontinental travel. The NED frame will primarily be used in this report. 
 
-	The last but important frame are the \emph{Body} frame, which is the local frame of the object of interest.
-	The body frame are defined as the x-axis along its forward movement, y-axis to the right of the
+	The last but important frame is the \emph{Body} frame, which is the local frame of the object of interest.
+	The body frame is defined as the x-axis along its forward movement, y-axis to the right of the
 	movement direction, and the last pointing downward, to complete the right-hand system. The
-	origin are defined in the Centre of Gravity of the object. This frame are convenient when
+	origin is defined in the Centre of Gravity of the object. This frame is convenient when
 	defining velocities, forces and moments. More on reference frames in \cite{fossen} and
     \cite{forsell}.
 
     The reference frames that will be considered in this report are the \emph{NED}- and
     \emph{body} frames. In addition to these two frames there are the last, but not least
     important frame, called the \emph{single-sensor} frame. This is where the output from
-    the sensors are defined. These output need to be transformed into the \emph{body} and
+    the sensors is defined. These output need to be transformed into the \emph{body} and
     to the \emph{NED} frames to make sense for the control system and ultimately for the
     user. 
 
     The \emph{single-sensor} frames are where the individual sensors give readings. The
-    exact mount point and orientation relative to the centre-of-gravity is need to be defined, to make the
+    exact mount point and orientation relative to the centre-of-gravity is needed to be defined, to make the
     transformation to other frames possible. The domain of the \emph{single-sensor} frames
     are defined in accordance to the domain of the sensor.
 
@@ -111,7 +111,7 @@ Likewise, scaling might be performed by the following transformation matrix
                                 0 & 0 & 0 & 1 
                                  \end{array} \right]
 \end{equation}
-All of this transformations might be combined into a single matrix by multiplying the
+All of these transformations might be combined into a single matrix by multiplying the
 matrices together, in the reverse of the order of which the transformations are carried
 out. 
 
@@ -156,10 +156,10 @@ This technique is accurate for as long as all the points are in the same plane.\
 \subsection{Time-of-Flight Measurement}
 Using the travel time of a known emitted signal, with known velocity are amongst the most
 common ways of range measurement. 
-The signal is usually either light, radio or sound waves. The precision of the
+The signal is usually light, radio or sound waves. The precision of the
 range greatly depend on the type of signal, the medium of which it travels and the quality of
 the travel time measuring device. When the velocity of the emitted signal is assumed constant, 
-the distance traveled can be determined with great accuracy according to Equation \eqref{chap2:eq-tof}
+the distance travelled can be determined with great accuracy according to Equation \eqref{chap2:eq-tof}
 \begin{equation}
     \label{chap2:eq-tof}
     d = v \frac{t}{2}
@@ -178,11 +178,11 @@ different concepts.
 \subsection{1D Sensors}
 
 \subsubsection{Proximity Sensors}
-Proximity senors are used to detect if a object is near or not. These sensors are usually
+Proximity sensors are used to detect if an object is near or not. These sensors are usually
 small and not very expensive. This means that a number of these can be fitted on a robot
-without impacting either price, size or weight of the robot notably.  
+without impacting price, size or weight of the robot notably.  
 
-Proximity sensors usually consists of a source and a detector. The detector detects the
+Proximity sensors usually consist of a source and a detector. The detector detects the
 signal from the source only if an object is close enough, and thereby triggering the
 output of the sensor. The medium used depends on the application, and can be everything
 from sound, light or other types of electromagnetic waves. \cite{proximity}
@@ -196,19 +196,19 @@ continuous wave} (FMCW). The three concepts will be addressed below. \cite{laser
 
 \paragraph{Optical Triangulation}
 Optical is very similar to classic triangulation described above and uses the same principle.
-A light source are placed at the one end of the
+A light source is placed at the one end of the
 baseline, and a light sensitive detector at the other end which senses the reflected light from the
 light source. The principle is basically the same as in normal triangulation. But, due to
 the fact that a light source is used, often a laser light source, the surface
 that the laser light hits needs to ''stay in focus``. If this is not handled correctly the laser dot will become a
 blurred disc and the uncertainty to the point will become larger. To force the dot to
 always be in focus, a special aligning of the lenses and photo detector are used, called 
-the \emph{Scheimpflug} condition. The interested reader are referred to
+the \emph{Scheimpflug} condition. The interested reader is referred to
 \cite{laser-ranging-critical-review}.
 
 The laser dot is contaminated with speckle noise which makes it more difficult to find the
 exact center of the projected dot. This makes the determination of the 
-distance a bit more tricky, because of the positional uncertainty introduced by the
+distance a bit trickier, because of the positional uncertainty introduced by the
 noise. Frequency of the light, angle and area of the collecting lenses and photo detector
 are parameters that influence the position uncertainty. 
 
@@ -226,11 +226,11 @@ train of laser light to be reflected back to the emitter. Light travels around 3
 this means that to get 1 mm accuracy of the timing devices should have resolution better
 than 6.7 ps.
 
-Only a single laser pulse is necessary for the determination of the range with centimeter
+Only a single laser pulse is necessary for the determination of the range with centimetre
 precision this technique is suitable for fast measurements and range sweeps. If the
-measurements are averaged millimeter precision can be acquired. 
+measurements are averaged millimetre precision can be acquired. 
 
-The application and ranges that are going to be measured are dependant on what kind of
+The application and ranges that are going to be measured is dependant on what kind of
 laser which is selected and the type of pulse train. The energy in the laser pulse affects the amplitude of the
 reflected light and in turn affects the measurement accuracy.
 
@@ -246,14 +246,14 @@ timing measurement.
 
 
 \paragraph{Frequency Modulated Continuous Wave}
-This technique have been used in in applications such as, surface profiling, 
+This technique have been used in applications such as, surface profiling, 
 reflectography and positioning. The dynamic range is large and
 high resolution is achieved at short range sensing. The principle is that a laser diode is applied
 with a frequency periodically shifted by $\Delta f$. The signal is usually created by 
-applying a saw-tooth biased current to a wavelength-tunable laser diode. This saw-tooth
+applying a saw-tooth biased current to a wavelength-tuneable laser diode. This saw-tooth
 signal is also sent to be mixed with the reflected signal. The phase difference in the
 reference signal and the reflected signal is $\tau = 2 R / c$ where $R$ is the range of
-the traveled signal. The range is proportional to the intermediate frequency, i.e. the
+the travelled signal. The range is proportional to the intermediate frequency, i.e. the
 frequency difference due to the travel time
 \begin{equation}
     f_i = \Delta f \tau /t_m = 2 \Delta f R /c t_m
@@ -264,21 +264,21 @@ Both $\tau$ and $f_i$ can be measured, which one that is measured depends on the
 range and resolution of the application. If the intermediate frequency is measured the resolution is best,
 since the ramp time can be chosen freely, the need for high speed electronics are not
 necessary, and a simple frequency counter in the kilohertz domain can be used to give the
-sensor millimeter resolution.
+sensor millimetre resolution.
 
-Limitations of this technique is that the frequency characteristics of the laser diode is
-seldom linear, which will result in a nonlinear reference signal, and give large  
+Limitations of this technique are that the frequency characteristics of the laser diode
+are seldom linear, which will result in a nonlinear reference signal, and give large  
 variations in the intermediate frequency measurement.
 \cite{laser-ranging-critical-review}.
 
 \subsubsection{Sonar}
-Sonars uses sound waves for determining distance. It uses the time-of-flight principle
+Sonar uses sound waves for determining distance. It uses the time-of-flight principle
 to measure the distance, assuming that the velocity of the sound wave can be determined
 within some bounds. The problem is that the travel time of sound varies with a
 number of parameters limiting the accuracy of the range estimate substantially. 
 
 There are a number of different sonar techniques. The most common are the narrow beam
-sonars, which scans the environments like the 2D Laser Range Finders. \cite{mathisen}
+sonar, which scans the environments like the 2D Laser Range Finders. \cite{mathisen}
 
 Using sound as a carrier in air is usually not preferred, because the sound waves travels
 much slower in air, and is quickly attenuated. This sensor type will not be considered for
@@ -291,7 +291,7 @@ surface robot navigation.
 Stereo vision is an inexpensive way of finding 3D range measurements. The setup is two or
 more cameras some distance away from each other. This distance is called the
 \emph{baseline}. The camera images are then compared and a common reference point is
-found. The difference between the images are used, together with the baseline distance,
+found. The difference between the images is used, together with the baseline distance,
 to triangulate the common reference point and then find the distance to it. 
 
 The process of Stereo Imaging involves 4 steps when using two cameras \cite{openCV}:
@@ -303,18 +303,18 @@ The process of Stereo Imaging involves 4 steps when using two cameras \cite{open
     \item Find the same features in the left and right camera view. This process is called
         finding \emph{stereo correspondences}. This outputs a \emph{disparity} map, which
         is for row-aligned images, the difference in x-coordinate of the feature in the left and the right image. 
-    \item If the geometric configuration of the cameras are known, the disparity map can
+    \item If the geometric configuration of the cameras is known, the disparity map can
         be translated into depth map with the help of \emph{triangulation}. This final
         step is called \emph{reprojection}.
 \end{enumerate}
-This steps will be described in detail below, but first a model of how the camera captures
+These steps will be described in detail below, but first a model of how the camera captures
 the world is needed. 
 
 
 \paragraph{Pinhole Camera Model}
 A camera model is needed to understand how light is captured on the image plane. To do
 this a \emph{pinhole camera} model is used to capture light form a point. This model
-assumes that only one light ray from each point travels trough a infinite small hole in
+assumes that only one light ray from each point travels trough an infinite small hole in
 a plane, called the \emph{focal} plane and hits a second plane, called \emph{image} plane.
 These two planes are placed a distance, $f$ from each other. Using elemental geometry the
 coordinates of the real world point imaged at the image plane can be calculated as
@@ -341,15 +341,15 @@ where
 \end{figure}
 
 Figure \ref{chap2:fig-pinholemodel} shows the configuration with the pinhole located at
-Origo and the image plane located at $f$, and the focal plane is parallel to the $x_i$
-axis. The pinhole is are often termed \emph{center of projection}. The $x$ axis of the image is located
-upwards, while the real world $Z$ axis are the horizontal axis, that are called the
-\emph{optcal axis} or the \emph{principal axis}. This lead us to the next parameters which
-is need to be defined.
+the origin and the image plane located at $f$, and the focal plane is parallel to the $x_i$
+axis. The pinhole is often termed \emph{center of projection}. The $x$ axis of the image is located
+upwards, while the real world $Z$ axis is the horizontal axis, that are called the
+\emph{optical axis} or the \emph{principal axis}. This leads to the next parameters which
+are needed to be defined.
 
 The optical axis should ideally always be aligned with the center of projection. Due to
-manufacturing inaccuracies this is rarely the case, therefor we need two parameters
-to complete the pinhole model equations. This parameters are $c_x$ and $c_y$ which
+manufacturing inaccuracies this is rarely the case; therefor we need two parameters
+to complete the pinhole model equations. These parameters are $c_x$ and $c_y$ which
 describes the offset of the optical axis from the center of projection. Also the need for
 different focal lengths in $x$ and $y$ might also be a necessity, because the individual
 pixels on a typical low-cost image chip is often rectangular rather than square. Now the
@@ -385,13 +385,13 @@ and inaccuracies.
 There are two types of lens distortions, \emph{radial} and \emph{tangential}. Radial
 distortions are due to the construction of the lens, and most distortion occurs towards the edges of
 the lens. This can be seen in pictures as ``barrel'' or ``fish-eye'' effects. 
-These kind of distortions are more present in cheap cameras which does not have the fancy lenses and optics
-that the more high-end cameras have. There is also other types of lens distortions in imaging
+These kinds of distortions are more present in cheap cameras which does not have the fancy lenses and optics
+that the more high-end cameras have. There are also other types of lens distortions in imaging
 systems, but they have typical lesser effects on the images, and will not be taken into
 account. 
 
 To model radial lens distortions the approach described by Brown in
-\cite{lens-calibration} are used. The radial distortion are in practice small and can be
+\cite{lens-calibration} are used. The radial distortion is in practice small and can be
 described by the two first terms of a Taylor series expansion around the center of the
 lens. If the lens have high radial distortion, like fish-eye lenses a third term is
 appended. The radial location of a point on the image plane can in general be described
@@ -406,8 +406,8 @@ where $r^2 = x^2 + y^2$.
 
 Tangential distortion is due to manufacturing inaccuracies and often causes the lens not to be
 perfectly parallel to the imaging plane. The image might be deformed like a
-trapezoid. This can be modeled by equations \eqref{chap2:eq-tangential-distortion}. The
-derivation of this equations can be found in \cite{brown66}.
+trapezoid. This can be modelled by equations \eqref{chap2:eq-tangential-distortion}. The
+derivation of these equations can be found in \cite{brown66}.
 \begin{equation}
     \label{chap2:eq-tangential-distortion}
     \begin{aligned}
@@ -415,8 +415,8 @@ derivation of this equations can be found in \cite{brown66}.
         y_{corrected} &= y_i + ( p_1 (r^2 + 2 y_i^2) + 2 p_2 x_i))
     \end{aligned}
 \end{equation}
-The parameters $p_1$ and $p_2$ are the tangential distortion parameters. This parameters
-gives enough information about the lens and camera to make corrections to the picture and
+The parameters $p_1$ and $p_2$ are the tangential distortion parameters. These parameters
+give enough information about the lens and camera to make corrections to the picture and
 make the matching method easier, which of course will increase range accuracy. 
 
 \begin{figure}[htbp]
@@ -452,7 +452,7 @@ projections, $C'$ and $C$ are called the \emph{epipolar planes}, shown as gray p
     \label{chap2:fig-epipolarGeometry}
 \end{figure}
 
-This allows for the following facts which simplifies the computations and matching process
+This allows for the following facts which simplify the computations and matching process
 a great deal. 
 \cite{epipolar}
 \begin{itemize}
@@ -516,7 +516,7 @@ coordinates by the perspective transformation derived by the pinhole camera mode
 
 The relation between the Essential matrix and the Fundamental matrix can be showed with
 help of the camera intrinsic matrix $M$, because we know that $q = Mp$, where $q$ are
-pixel coordinates and $p$ are the 2D world coordinates. Substituting for $P$ in Eqauation
+pixel coordinates and $p$ is the 2D world coordinates. Substituting for $P$ in Equation
 \eqref{chap2:eq-fundamental} gives: \cite{openCV}
 \begin{equation}
     q_r^T(M_r^{-1})^T E M_l^{-1} q_l = 0
@@ -535,10 +535,10 @@ This is obviously only possible for visual areas that the two camera views overl
 
 There are couple of different matching algorithms. The most common are \emph{block
 matching} algorithms. In \cite{konolige} a practical implementation of the block
-matching algorithm are described. This algorithms use sum of absolute difference (SAD) windows to match 
-points in the two views. This algorithm work only on undistorted, rectified stereo
+matching algorithm is described. This algorithms use sum of absolute difference (SAD) windows to match 
+points in the two views. This algorithm work only on undistorted, rectified, stereo
 images. It first normalizes the image brightness which enhances textures. Then the search
-for correspondences are carried out along the horizontal epipolar lines using the sum of
+for correspondences is carried out along the horizontal epipolar lines using the sum of
 absolute difference window. After this the results are filtered to eliminate bad stereo
 matches. This algorithm works best in highly textured environments, like outdoor
 environments, and will prove less effective in structured surroundings like office
@@ -557,7 +557,7 @@ Figure \ref{chap2:fig-disparity-depth} shows.
 Since the disparity is an integer, and the focal distance is assumed constant, 
 the resolution of the Stereo Rig depends on the spatial resolution of the cameras and the 
 baseline. The figure shows the depth-disparity plot with 6 different baselines, $20,
-60, 100, 150, 200$ and $300$ millimeters. It is clearly seen that the depth resolution becomes better
+60, 100, 150, 200$ and $300$ millimetres. It is clearly seen that the depth resolution becomes better
 when the baseline increases. 
 \begin{figure}[htbp]
     \centering
@@ -566,7 +566,7 @@ when the baseline increases.
     \label{chap2:fig-disparity-depth}
 \end{figure}
 
-Many robotic applications using stereo cameras utilizes the disparity maps directly,
+Many robotic applications using stereo cameras utilize the disparity maps directly,
 because they usually just require the detection of obstacles. 
 
 The 3D coordinates of the point can be calculated form the disparities given by the
@@ -583,7 +583,7 @@ mobile platforms, and using it in navigation and localization applications.
 
 The most used ranging techniques by the cameras are \emph{intensity modulation} approaches and
 \emph{optical shutter} technology. The first one is used by the best known manufacturers,
-like MESA and PMD. While the optical shutter approach is less expensive and have been used
+like MESA and PMD. The optical shutter approach is less expensive and has been used
 by Zcam, which now have been sold to Microsoft. 
 
 
@@ -621,18 +621,18 @@ signal. From this the distance can be calculated using the phase delay $\phi$.
     d = \frac{c}{4 \pi \omega} \phi
 \end{equation}
 
-There are a number of challenges when using this approach
+There is a number of challenges when using this approach
 \cite{time-of-flight-comp-graphics}
 \begin{itemize}
     \item The resolution of the sensors are small compared to standard RGB or gray scale
-        cameras. Current resolution on present day time-of-flight cameras are $204 \times
+        cameras. Current resolution on present day time-of-flight cameras is $204 \times
         204$. 
     \item ``Wiggling'' because of imperfections when creating the sinusoidal signals.
     \item Errors due to intensity measurements. Various sensor electronics might influence
         the measured intensity and give wrong readings.
     \item ``Flying Pixels'' occurs when a pixel in the camera oversees a region with
         large depth variances, e.g. at object boundaries.
-    \item Motion artifacts might occur because the phase images are captured sequentially.
+    \item Motion artefacts might occur because the phase images are captured sequentially.
     \item Multiple reflections in highly reflective environments will cause erroneous
         distance measurements.
 \end{itemize}
@@ -644,7 +644,7 @@ of the lens. The same approach as for standard cameras can be used. \cite{time-o
 
 \paragraph{Optical Shutter Approaches}
 Light travels roughly at $c \approx 3 \times 10^8$ meters per seconds. This translates to
-that light uses $6.7$ pico seconds to travel one millimeter. Imagine a light pulse emitted
+that light uses $6.7$ pico seconds to travel one millimetre. Imagine a light pulse emitted
 at time $t$. This pulse travels in a spherical pattern and hits a 3D shape. The light wall
 will be reflected back in a distorted pattern depending on the shape of the object.\cite{optical-shutter} 
 A shutter in front of the CCD chip then
@@ -657,15 +657,15 @@ according to the following relation \cite{time-of-flight-comp-graphics}
 \end{equation}
 where $I_{gate}$ is the pixel intensity which arrives when the shutter is open, and
 $I_{total}$ is the total amount of reflected light. Distances outside $d_{min}$ and
-$d_{max}$ cannot be measured in the exposure. Therefor this techniques require multiple
-exposure to get the desired depth resolution. The depth resolution of the cameras are
+$d_{max}$ cannot be measured in the exposure. Therefore this technique requires multiple
+exposures to get the desired depth resolution. The depth resolution of the cameras is 
 clearly dependant on the achievable shutter speeds. 
 
 This method is also prone to many of the challenges stated for the intensity modulation
 approach.
 
 \paragraph{3D camera calibration}
-Some of the uncertainty and difficulties described above, can be attenuated by properly
+Some of the uncertainty and difficulties described above can be attenuated by properly
 calibrating the Time-of-Flight sensor. Since the sensor uses a conventional lens to
 capture the returned light, distortion due to the lens might occur. This can be calibrated
 using the same method as for normal cameras, described in Section
@@ -674,9 +674,8 @@ using the same method as for normal cameras, described in Section
 Depth inaccuracies are present because generation of a perfect sinusoidal signal, which is
 assumed for the correlation step, is not possible due to cost and hardware limitation. This
 is the base for a systematic distance error, which when analyzed have a sinusoidal shape.
- To correct this the systematic error function is approximated
-using linear or higher-order polynomial models.  See \cite{tof-calibration} for more
-information.
+To correct this, the systematic error function is approximated using linear or higher-order 
+polynomial models.  See \cite{tof-calibration} for more information.
 
 
 \section{Map Data Representation}
@@ -684,7 +683,7 @@ information.
 The representation of sensor data is important for the functionality of the robot. This is
 dependant on the amount of processing power and capacity that is available on the
 implementation platform. 
-The area which the robot are going to map is also of great importance when choosing the
+The area which the robot is going to map is also of great importance when choosing the
 representation. 
 
 The major representation methods which is used in literature are summarized in the below
@@ -693,12 +692,12 @@ metric and topological.
 
 Metric representation uses the sensor data as we see it. It is the direct Cartesian
 representation of the way the world is. Examples of this are CAD drawings of floor plans
-and housing. This maps are often large and inexact, because of many kinds of
+and housing. These maps are often large and inexact, because of many kinds of
 uncertainties.
 
-Topological representations uses a more abstract way. The world are represented by graphs,
+A topological representation uses a more abstract approach. The world is represented by graphs,
 which is nodes and links between them. This is a sparse and efficient way of representing
-the world, but need more processing when the map is built. This kind of maps are not
+the world, but need more processing when the map is built. These kinds of maps are not
 exact, because they are not expected to be. They simply describe the connection between
 different kind of objects and the objects might have attributes describing how it really
 looks. This method is useful in highly structured environments, such as pipelines, sewers,
@@ -718,9 +717,9 @@ This method divides the world into grids with probabilities that the grid is occ
 starts with all grids at 50 \%, equal probability that the space is occupied or not. As
 the robot moves around it updates the grids according to its sensor readings. When for
 example employing a laser range finder, the grid at the distance reported from the range
-finder are marked as occupied according to some uncertainty set by the accuracy of the
-range finder. The grids between the possible detected obstacle will then be decreased
-because the probability of obstacles are less. 
+finder is marked as occupied according to some uncertainty set by the accuracy of the
+range finder. The grids between the possible detected obstacles will then be decreased
+because the probability of obstacles is less. 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.7\textwidth]{pics/occupancy-grid}
@@ -728,7 +727,7 @@ because the probability of obstacles are less.
     \label{chap2:fig-occupancy-grid}
 \end{figure}
 
-If the mission area are vast or three dimension grids are required, the occupancy gird maps 
+If the mission area is vast or three dimension grids are required, the occupancy gird maps 
 are not the most computationally effective way to represent the world.
 The representation is cumbersome and may lead to problems when dealing with
 cyclic environments, because of the uncertainty in the sensor measurements and robots
@@ -737,10 +736,10 @@ pose and odometry.
 
 \subsection{Quad- and Oct-trees}
 Quadtrees can be used to represent a 2D space by recursively dividing the space into
-exactly four rectangles or squares. If this rectangles or squares does not include
+exactly four rectangles or squares. If this rectangles or squares do not include
 interesting information then it will not be divided further. This dividing continues until
 the smallest possible square, down to a certain value, is achieved. This creates a tree structure which is easily
-traversed and searched if necessary. An \emph{Oct-tree} is the same only each node have
+traversed and searched if necessary. An \emph{Oct-tree} is the same only each node has 
 eight child nodes instead. This can be used to represent 3D spaces, see Figure
 \ref{chap2:fig-octtree}.
 \begin{figure}[htbp]
@@ -753,22 +752,22 @@ eight child nodes instead. This can be used to represent 3D spaces, see Figure
 
 
 \subsection{Topological Maps}
-Object maps are topological maps and represents the sensed world in the form of predefined nodes and links
+Object maps are topological maps and represent the sensed world in the form of predefined nodes and links
 between them. Each node has a set of attributes, like length, links to doors etc. This is
 a compact way to express the world and is much more computationally effective with larger
 maps than the occupancy grid maps might be. Examples of such nodes are corridors,
-junctions and dead ends, but this nodes must be suited to the application of the robot.
+junctions and dead ends, but these nodes must be suited to the application of the robot.
 Depending on the environment to map, the nodes might be different geometrical primitives,
 like cylinders, planes, lines, or arcs. 
 
-The map of the London Underground is an common every day example of a topological map. It describes
-the important things as stations, but not the geometrical distances which is not important
+The map of the London Underground is a common every day example of a topological map. It describes
+the important things as stations, but not the geometrical distances which are not important
 when navigating the London Underground. \cite{thrun}
 
 
 \subsection{Mixed Approaches}
 This is when you take the best of both worlds. The easy and effective way of the metric
-maps, and mix them with the abstract topological maps. This will help reduce the size of
+maps, mixed with the abstract topological maps. This will help reduce the size of
 the maps in the robots memory, and also make it more computationally effective because the
 maps are sparse. 
 
@@ -779,26 +778,26 @@ geographical information are not that important.
 \cite{thrun}
 
 \section{Sensor Fusion Techniques}
-Multi sensor fusion have been a target for much research. The topic seeks to combine the
+Multi sensor fusion has been a target for much research. The topic seeks to combine the
 abilities of several sensors and sensor types, to make the combined result better. 
 
 
-According to \cite{sensor-fusion-mobile-robots} theres a lot of ways to achieve sensor
-fusion in mobile robotics. The use of multiple sensors are favorable because the readings
+According to \cite{sensor-fusion-mobile-robots} there is a lot of ways to achieve sensor
+fusion in mobile robotics. The use of multiple sensors is favorable because the readings
 can be fused to make a better estimate of the current situation. 
 
-Multi sensor fusion are widely used in robotics today. This because it allows the designer
+Multi sensor fusion is widely used in robotics today. This because it allows the designer
 to use different measurement principles which have different capabilities. 
 
 
 \subsection{Low-level Fusion}
 The term low-level fusion is often used when the sensor data is directly integrated
-resulting in parameters and state estimates of the model. This methods are mostly purely
+resulting in parameters and state estimates of the model. These methods are mostly purely
 mathematical. This method involves the Kalman Filter, and other Bayesian approaches. In
 many cases \'a priori information are used to verify or improve the
 estimates from the sensors.
 
-This methods are probabilistic and requires that you know something about the
+These methods are probabilistic and require that you know something about the
 statistical properties of the sensors and the \'a priori model. 
 
 
@@ -825,24 +824,24 @@ means that it assumes that errors and ``wild points'' in the dataset can be aver
 Said in another way, the correctness of the dataset is a function of the size of the
 dataset. When for example in computer vision, graphical primitives such as planes, and
 cylinders are in the same scene, it is difficult to know which points in the dataset
-correspond to which graphical primitive. Therefor, one will need to sort out which points
+correspond to which graphical primitive. Therefore, one will need to sort out which points
 ``belong'' to the different primitives. If a least-squares approach is used the fitting
 procedure to the primitives would not be very successful because this method will assume
 that all points have some relation to the fitted primitive. \cite{ransac}
 
-A data set might be consisting of many different features, that cannot be detected unless
+A data set might be consisting of many different features that cannot be detected unless
 the dataset is segmented in some way. This means finding a subset of the original dataset
 only including the points which belong to the features being extracted. 
 When the subsets are extracted the parameters of the features can be estimated. 
 
 
 \subsection{Point Feature Histograms}
-Point feature histograms is a way of assessing the local geometry around a point in a
+Point feature histograms are a way of assessing the local geometry around a point in a
 3D point cloud. This can be used to segment the point cloud into given geometrical
 primitives. The computation of a point feature histogram works as follows, for each point
-$p$, all of $p$'s neighbours inside a sphere with radius $r$ is selected. For every pair
+$p$, all of $p$'s neighbours inside a sphere with radius $r$ are selected. For every pair
 of points in the selected subset the normals $n_i$ and $n_j$ are estimated. A Darboux
-$uvn$ frame are defined according to 
+$uvn$ frame is defined according to 
 \begin{equation}
     u = n_i, \quad v = (p_j - p_i)\times u, \quad w = u \times v
 \end{equation}
@@ -982,7 +981,7 @@ line. The model parameters are computed using only the points from the MSS.
 
 The next step is the \emph{test}-step, which determines the amount of points from the
 whole dataset which are consistent with the parameters computed form the MSS set. This set
-of points are called the \emph{consensus set} (CS). The algorithms search for points and
+of points is called the \emph{consensus set} (CS). The algorithms search for points and
 terminates when the probability of generating a better consensus set drops below a certain threshold, i.e.
 no more points can be added to the consensus set. The distance from the points in CS to the 
 fitted model is used as a measure on how good the model is. This model is kept as the best
@@ -1010,7 +1009,7 @@ the probability can be approximated by
 \end{equation}
 where $N_I$ is the total number of inilers, $N$ is the total number of points in the
 dataset, and $k$ is the number of times one will try to pick a set of inliers. This is a
-valid approximation because $k$ most probably are much much smaller than both $N$ and $N_I$. A
+valid approximation because $k$ most probably is much smaller than both $N$ and $N_I$. A
 estimate of the number of inliers can be found, using the number of inliers found
 up-to-date. \cite{ransac-dummies}
 
@@ -1018,7 +1017,7 @@ up-to-date. \cite{ransac-dummies}
 \section{State-of-the-Art Pipe Inspection Robots}
 \label{chap2:sec-state-of-the-art}
 To get an overview of other similar project, the next section will give an introduction to
-other research projects concerning pipe and sewer inspection robots, traveling inside the
+other research projects concerning pipe and sewer inspection robots, travelling inside the
 pipes. 
 
 The German MAKRO project \cite{MAKRO-project} uses a multi-segmented robot, each segment 
@@ -1040,14 +1039,14 @@ four-segmented robot, where two modules are driving modules with four wheels pre
 remaining modules contains the batteries and control modules. 
 The captured images form a camera is filtered and the
 shadows are extracted using a binarization and thresholding approach. The shadow profiles are
-labeled with unique ID-tags and the center of the shadow are calculated. Depending on
+labelled with unique ID-tags and the center of the shadow are calculated. Depending on
 where the shadows are cast, the direction of the pipe feature can be determined. The
-shadow pattern are matched against a database to determine what kind of profile the robot
+shadow pattern is matched against a database to determine what kind of profile the robot
 are going trough. The shadow detection system is used to locate profiles and term them as
-landmarks. When the robot are going through the landmark, a 2-axis gyro and odometry of
+landmarks. When the robot is going through the landmark, a 2-axis gyro and odometry of
 the wheels are used to determine the direction and length of the landmark and updating
-this to the internal landmark database. When the robot have passed the landmark, the 
-landmark search using shadows are restarted. This method were tested on a 8 inch (20 cm)
+this to the internal landmark database. When the robot has passed the landmark, the 
+landmark search using shadows are restarted. This method was tested on a 8 inch (20 cm)
 gas-pipeline structure, with L-shaped and T-shaped junctions arranged in a 3D dimensional
 arrangement and showed promising results. 
 
