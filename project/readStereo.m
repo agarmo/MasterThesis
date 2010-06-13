@@ -64,8 +64,8 @@ grid on
 xlabel('Depth');
 ylabel('X');
 zlabel('Y');
-% axis([0 50 -30 30 -10 10])
-% view(-31, 72);
+axis([-70 150 -30 30 -10 10])
+view(-31, 72);
 
 
 % 

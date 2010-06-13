@@ -365,7 +365,28 @@
 %: ----------------------- tie in front matter ------------------------
 
 \begin{abstracts}
-    The abstract needs to be very good. This is what defines what is done and how it went.
+In this report a partial navigation system with a time-of-flight camera, a laser range
+finder and a stereo camera rig has been outlined. The sensors have been evaluated with
+regard to domain, advantages, error sources and overall performance. The time-of-flight camera and the
+laser range finder gave adequate results out-of-the-box, while the stereo camera rig did
+not work efficient in the pipe environment, even though the intrinsic parameters and distortion
+parameters of the cameras were estimated and compensated for. This was because of the limited lighting
+conditions and absence of structure in the pipeline environment. 
+
+A topological world representation is also proposed where pipeline junctions and other
+possible landmarks are nodes in a graph. Each node has a list of attributes which is
+determined by the system depending on the condition of the pipe junction or landmark. This
+relies greatly on the ability of the system to recognize and extract features from the
+sensor data. The idea is to fit a cylinder to the 3D dataset given from the time-of-flight
+camera or stereo camera, estimate the properties as radius and direction, and match this
+to a database to find the matching node. Large deviations from the expected values can be
+assumed to be anomalies, and obstacles. 
+Unfortunately, the proposed feature extraction algorithms did not work
+according to expectations, because of no efficient dataset segmentation was proposed. For
+the 2D dataset from the laser range finder the results were more promising. Lines were
+fitted to dataset employing histogram segmentation, to extract the pipeline walls and
+worked adequately. 
+
 \end{abstracts}
 
 \frontmatter
