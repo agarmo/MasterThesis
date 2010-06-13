@@ -3,58 +3,62 @@
 \label{chap9}
 This report have proposed a partial navigation system for a pipe inspection robot using three
 types of sensors, namely a Laser Range Finder, a Time-of-Flight camera and a stereo
-camera. The system uses a modular three-layer approach to the implementation, where the lower layer is the
-sensor layer, which transforms the sensor information into a common coordinate
+camera. The system uses a modular three-layer approach, where the lower layer is the
+sensor layer. Transforms the sensor information into a common coordinate
 representation. The middle layer handles the interpretation of the sensor data, which include cylinder fit-
 and line fit algorithms. The third layer handles the world representation, that keeps track of
 the current explored areas. Further, pipe profile matching, path planning algorithms and command
-algorithms might be implemented in the third layer, but this is a topic for future work. 
+algorithms might be implemented in the third layer.
 
-The different sensors have been investigated and their abilities have been
+The different sensors have been investigated, their abilities have been
 evaluated, and possible difficulties by using the proposed sensors have been evaluated.
-This shows that the laser range finder provides reliable results in the plane without much
-filtering and treatment of the sensor data. But does only provide measurements in the
+The results show that the laser range finder provides reliable results in the plane without much
+filtering and treatment of the sensor data. It does however only provide measurements in the
 plane, which means that it easily misses obstacles that are close to the ground and does
 not cross the measurement plane of the 2D sensor. 
 
 The time-of-flight camera on the other hand,
 need more preparation before it can be utilized to create a map of the surroundings,
 mostly because it provides more denser information, and this information is more prone to
-noise. The intrinsic parameters of the camera where determined, and corresponded good to
-the values given by the manufacturer. No calibration for the range data were preformed.
-Mostly because it where thought to not impact the system performance significantly. 
+noise. The intrinsic parameters of the camera were determined, and corresponded well to
+the values given by the manufacturer. No calibration for the range data were preformed, 
+mostly because it where thought not to impact the system performance significantly. 
 
-The stereo cameras intrinsic parameters and lens distortion coefficients wherThie estimated.
+The stereo cameras intrinsic parameters and lens distortion coefficients were estimated.
 As expected this showed severe distortions and offset of the principal axes which impacted
 the field-of-view of the stereo rig. The cameras did not preform that well in the given
-environments, this is mostly due to the quality of the camera, and the lack of synthetic
+environments, mostly due to the quality of the camera, and the lack of synthetic
 lighting in the scene. Some enhancement of the images might have given better matching
-results. But this were not tested in the report. 
+results, but this were not tested.
 
 A proposed representation scheme of the sensor data were also implemented. This is a
 topological representation of the world, which is based on much reasoning and
-interpretation of the sensor data. A set of nodes are defined, this can be pipeline
-junctions, like a pipeline bend, or a T-junction and likewise. It can also be any other
-feature that is not like the usual featureless straight pipeline. As said, this relies
+interpretation of the sensor data. A set of nodes are defined. This can be pipeline
+junctions, like a $90^\circ$-bend, or a T-junction and likewise. It can also be any other
+feature that is not like the usual featureless straight pipeline. As said previously, this relies
 greatly on the interpretation of the sensors, which prove difficult with the proposed
-algorithms. Although, no matching algorithms from the sensor data to the world
+algorithms. Although no matching algorithms from the sensor data to the world
 representation is proposed, the topological approach for the world representation were
-chosen because of the simple and demanding less memory than other mapping approaches, like
-the Occupancy Grid, which demand much memory, especially if implemented in three
-dimensions. 
+chosen because of the simple and demanding less memory than other mapping approaches, for
+example the occupancy grid approach, which is quite spacious when keeping track of a three
+dimensional world. 
 
-The implemented sensor interpretation algorithms did not work according to the planned
-results. The algorithms are least-squares based algorithms, and does not work well when
-now selection of the data set is preformed. The topic of segmenting a data set into
+The implemented sensor interpretation algorithms did not work according to the expected
+results. The algorithms are least-squares based algorithms, and this does not work well when
+no selection of the dataset was preformed. The topic of segmenting a data set into
 different regions are a difficult but crucial topic when the interpreting sensor data from
 complex scenes. Unfortunately, time did not allow for developing a good solution to this
-problem. One possible solution is to use another algorithm for surface fit, like the
+problem or even more, test it. One possible solution is to use another algorithm for surface fit, like the
 RANSAC algorithm, which is widely used in computer graphics applications. This approach
 employs an internal selection of points that it thinks belongs to the data set.
 \cite{ransac}. The two dimensional line fit from the Laser Range Finder worked adequately,
-but suffered from the same problems as the three dimensional case did. 
+but suffered from the same problems as the three dimensional case did, because of the
+least-squares approach. 
 
-
+There is much work still to be done to get a fully working navigation system for pipe
+inspection. There are many things in this report which have to be taken back to the
+drawing board for more work, especially with regard to feature extraction from the
+sensors. 
 
 \section{Future Work}
 It is numerous of things that need to be looked into further. This section will try to 
@@ -62,10 +66,10 @@ summarize this points.
 
 \paragraph{Path Planning and replanning} For the system to be autonomous it will
 need some kind of path planning, which takes the decisions on where to go next. It will
-also need to find a solution if the way it initially intended is blocked, or else the
-robot might fail its mission. It should include the possibility to go back and take
+also need to find a solution if the way it initially intended to go is blocked, or else the
+robot might fail its mission. This might be as simple as to go back and take
 another turn. Since the robot is going to be autonomous and cordless this path planning
-strategies need to be efficient to maximise the operation time. 
+strategies need to be energy efficient to maximise the operation time. 
 
 \paragraph{Local navigation} This refers to the ability to avoid or overcome obstacles
 that block the passage locally. The robot should be able to assess the obstacle and take
@@ -77,9 +81,8 @@ map-related features, and transfered to the world representation. A \emph{node r
 must be developed and implemented.
 
 \paragraph{Segmenting of range images} For the topological map representation to work
-satisfactory, the sensors need to be interpreted correctly. For this to work, points from
-the time-of-flight camera or stereo camera need to be interpreted correctly, and correct
-geometric primitives need to be chosen.  This can only
+satisfactory, the sensors need to be interpreted correctly. Correct geometric primitives 
+need to be chosen.  This can only
 be achieved by determining which point belong to which geometrical primitive. Then fitting
 the selected subset to the right parametrization of the primitives used. 
 
@@ -91,17 +94,17 @@ are not sufficient.
 
 \paragraph{Matching for global positioning} For global position to be determined, the map
 obtained by the robots sensors and the map supplied by the operator must be matched. This
-means searching the tree representation for the correct sequence of nodes. Although this
+means searching the tree representation for the correct sequence of nodes. This
 can be troublesome if the map supplied by the user is not detailed enough or the map
-created by the robot is too detailed to be matched. 
+created by the robot is too detailed to be matched, and might not be a trivial task. 
 
 \paragraph{Robust Reasoning} Because of the abstract map representation and that the world
 is not a ideal place, the robots reasoning need to be robust. Other ways of recognizing
 depth data and range images can be applied. The use of neural networks and fuzzy logic
 have proven useful in applications like this, and might yield a good solution to the
-problem. 
+problem
 
-\paragraph{Expand the system to 6 DOF} The pipe inspection platform discussed in this report
+\paragraph{Expand the system to three dimensions} The pipe inspection platform discussed in this report
 have the ability to explore not only horizontal pipes, but also vertical pipes. This means
 that the proposed system should be able to navigate in three dimensional spaces. 
 
