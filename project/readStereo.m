@@ -2,7 +2,7 @@ clear all;
 close all;
 
 
-temp = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\stereo\pos1b-regular.txt');
+temp = csvread('C:\Documents and Settings\anderga\My Documents\MATLAB\stereo\pos22-irregular.txt');
 
 xall = zeros(480*5, 640);
 yall = zeros(480*5, 640);

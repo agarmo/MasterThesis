@@ -23,7 +23,6 @@
 %% World class, containing all the nodes. 
 % This is the container class for all the nodes stored in the world
 % 
-
 classdef world
     properties %(SetAccess = private) % ?
     %% private attributes?
@@ -37,12 +36,9 @@ classdef world
     end
     
     methods
- 
         %%  Constuctor
         function [object] = world(diameter)
-            
             object.nodes = []; % create an empty list.
-            
             if nargin == 1
                 start = start_node(0, diameter); % create a start node
                 object.pipe_diameter = diameter;
@@ -50,10 +46,6 @@ classdef world
                 start = start_node(0, 10);
                 object.pipe_diameter = 10;
             end
-            
-%             object.nodes = [start];
-%             object.nodes(1) = object.nodes(1).draw_at_position([0;0]);
-%                                     
             object = object.addNode(start, [0; 0]);
         end
         
@@ -91,9 +83,7 @@ classdef world
                                     
                 else
                     % is of type node.
-%                     node = node.setPosition(position);
                     object.nodes = [object.nodes; node]; % add the node to the list
-                    %object.nodes(end) = object.nodes(end).draw_at_position(position);
                 end 
             end
         end
@@ -136,15 +126,8 @@ classdef world
                     
                     disp('Last node in list');
                 end
-                
-                
-                
             end
-            
-            
         end
-        
-        
     end
 end
 
@@ -181,9 +164,9 @@ classdef super_node
         dist_prev_node;
         anomalies;
         color;
-%     end
+    end
     
-%     properties(GetAccess = protected, SetAccess = protected) % Drawing properties
+    properties(GetAccess = protected, SetAccess = protected) % Drawing properties
         number_of_edges; % The number of edges connecting to the node
         angles_of_edges; % array with the angles of the connected edges. Relative to NED
         position;
@@ -191,7 +174,6 @@ classdef super_node
     
     
     methods
-        
         %% constructor
         function [object] = super_node(number, orientation, prev_node, diameter, dist_prev_node)
             if nargin == 0 
@@ -211,7 +193,6 @@ classdef super_node
                     object.position = number.position;
                     object.angles_of_edges = number.angles_of_edges;
                 end
-                    
             else
                 if ~isempty(number)
                     object.number = number;
@@ -244,20 +225,14 @@ classdef super_node
             end
         end
         
-        
-        
         %% Adding anomalies which have been observed during the travel
         
-        % TODO need some error check to see that the anomaly is put into the 
-        % table correctly.
         function [object] = addAnomaly(object, anomaly)
             object.anomalies = [object.anomalies; anomaly];
         end
         
         %% Set functions
- 
         function [object] = setPostition(object, pos)
-            
             if nargin == 1
                 object.position = pos;
             else
@@ -280,7 +255,6 @@ classdef super_node
             else
                 posb = r'*pos;
             end
-            
             
             % need to rotate the box with regard to the orientation
             % transform to global coords
@@ -315,8 +289,6 @@ classdef super_node
         
         end
         
-        
-        
         function [object] = setPosition(object, position)
                     object.position = position;
         end
@@ -343,7 +315,6 @@ classdef t_junction < super_node
     properties    
     end
     methods
-        
         function [t] = t_junction(number, orientation, prev_node, diameter, dist_prev_node)
             
             %% Default constuctor
@@ -404,14 +375,12 @@ classdef t_junction < super_node
         end
     end
 end
-
 \end{lstlisting}
 
 \subsection{\emph{start\_node.m}}
 
 \begin{lstlisting}
 %% Class defs for the start node
- 
 classdef start_node < super_node
     properties
     end
@@ -468,8 +437,6 @@ classdef start_node < super_node
             
             lhs = super_node(lhs);            
         end
-        
- 
        
         function [t] = setType(obj, nodetype)
             obj.type = nodetype;
@@ -552,12 +519,6 @@ end
 %
 % This is the class object which is resposible for recognizing the sensor
 % output. 
-% Output form this class is:    - Node Type
-%                               - Position and Orientation
-%                               - Distance traveled
-%                               - Velocity
-%                               - Distance to walls (?)
-%                               - Register anomalies and irregualrities
  
  
 classdef sensorinterpreter 
@@ -565,15 +526,18 @@ classdef sensorinterpreter
     properties(GetAccess = public, SetAccess = protected)
         
         %% Output data Whenever recognized
-        recognized_node_struct; % A struct containing the data needed for the world object to draw the node.
-        registered_anomalies_struct; % A struct containing details about the detected anomaly.
+        recognized_node_struct; % A struct containing the data needed for 
+                                % the world object to draw the node.
+
+        registered_anomalies_struct; % A struct containing details about the 
+                                     % detected anomaly.
         
         %% Continous output data
         velocities; % size 3, 1 
         dist_to_walls; % size 2, 1 
         
         verden; % binding til verdenen over.
-%     end
+     end
     
     %properties(GetAccess = private, SetAccess = private)
         %% Internal properties
@@ -585,8 +549,8 @@ classdef sensorinterpreter
         LRF_paramsx; 
         LRF_height; % The height of the measurement plane.
         
-%         FittedStructures_2D; % Structures for gathering 2d structures
-%         FittedStructures_3D; % structures for gathering 3d Structures
+        FittedStructures_2D; % Structures for gathering 2d structures
+        FittedStructures_3D; % structures for gathering 3d Structures
         
         ToF_data; % input: point cloud, x,y,z Mx3
         ToF_params; % struct for the cylinder fits
@@ -599,13 +563,11 @@ classdef sensorinterpreter
     
     methods
         %% Constructor
-        
         function object = sensorinterpreter(args)
            
             if nargin < 1 % default constuctor
                 object.velocities = zeros(3,1);
                 object.dist_to_walls = zeros(2,1);
-                
                 
                 object.LRF_paramsy = struct('x0_urg', [], 'a_urg' ,[],...
                     'd_urg' , [], 'normd_urg', [],'x_urg' , [],'y_urg' , [],...
@@ -617,12 +579,8 @@ classdef sensorinterpreter
             
                 object.ToF_params = struct('x0k', [], 'ank',  [], 'rk', [],...
                     'dk', [], 'length_d', [], 'a_parmk', [], 'x0', []);
-                            
+                
                 object.LRF_height = 0.07; % 7 cm above ground.
-                
-            elseif nargin == 2
-                
-                
             end
         end
         
@@ -646,7 +604,7 @@ classdef sensorinterpreter
         
         
         %% Internal Calculation Function
-function [this, radius, closestRadius, indexMin] = fuseSensors(this, threshold)
+        function [this, radius, closestRadius, indexMin] = fuseSensors(this, threshold)
             % find pralell lines, start with lines assumed along the pipe.
             if ~isempty(this.LRF_paramsy.a_urg)
                 directions = this.LRF_paramsy.a_urg;
@@ -720,11 +678,9 @@ function [this, radius, closestRadius, indexMin] = fuseSensors(this, threshold)
                     % Add the cylinder to the back of the ToF_params.
                     
                     % find direction
+                    direction = [(this.LRF_paramsy.a_urg(1,2)+this.LRF_paramsy.a_urg(indexMin,2)/2),...
+                        0,-(this.LRF_paramsy.a_urg(1,1)+this.LRF_paramsy.a_urg(indexMin,1)/2)];
                     
-                    
-                    
-                    direction = [ (this.LRF_paramsy.a_urg(1,2)+this.LRF_paramsy.a_urg(indexMin,2)/2), 0,...
-                        -(this.LRF_paramsy.a_urg(1,1)+this.LRF_paramsy.a_urg(indexMin,1)/2)];
                     x0 = [0, this.LRF_height/2,0.2];
                  
                     [X, Y, Z] = cylinder(radius*ones(2,1), 125); % plot the cone.
@@ -773,9 +729,7 @@ function [this, radius, closestRadius, indexMin] = fuseSensors(this, threshold)
                 zlabel('Camera Y-direction');
                 grid on
             end
-        
-            
-end
+        end
  
   
   function type = matchPipeProfile(this)
@@ -788,7 +742,8 @@ end
                  histogram_interval_x, histogram_interval_y)
             
             if nargin ~= 5
-                error('Too few arguments. Usage: find2DLines(num_point_x, num_points_x, histx_int, hitsy_int')
+                error('Too few arguments. Usage: find2DLines(num_point_x,...
+                        num_points_x, histx_int, hitsy_int')
             else
                 % start interpreting the data.
                 %transform to cartesian coordinates
@@ -828,7 +783,10 @@ end
                         
                         this.LRF_paramsy.x0_urg = [this.LRF_paramsy.x0_urg; x0_urgt'];
                         this.LRF_paramsy.a_urg = [this.LRF_paramsy.a_urg; a_urgt'];
-                        this.LRF_paramsy.d_urg = [this.LRF_paramsy.d_urg; zeros(50,1); d_urgt]; %%adding zeros to see where the new line starts
+                                
+                        %%adding zeros to see where the new line starts
+                        this.LRF_paramsy.d_urg = [this.LRF_paramsy.d_urg; zeros(50,1); d_urgt];
+                        
                         this.LRF_paramsy.normd_urg =[this.LRF_paramsy.normd_urg; normd_urgt];
                         
                         %calculate the line
@@ -946,8 +904,6 @@ end
             end
         end
         
-        
-        
         %% Output function
         
         % This shows what the view should be like with the previous sensor
@@ -968,7 +924,6 @@ end
                 else
                     %% start constructing the cylinder from the given parameters.
                     [X, Y, Z] = cylinder(this.ToF_params.rk(k)*ones(2,1), 125); % plot the cone.
-                    
                     
                     % find rotation axis and transformation matrix
                     rot_axis(:, k) = cross(this.a0,this.ToF_params.ank(k,:)');
@@ -1374,7 +1329,8 @@ int main(int argc, char* argv[]){
 								calibrationSave(vision, "calibration");
 						}
 					}else{
-						std::cout <<"-FAIL Try a different position. Chessboard should be visible on both cameras." << std::endl;
+						std::cout <<"-FAIL Try a different position. Chessboard should be 
+                                    visible on both cameras." << std::endl;
 					}
 				}
 
@@ -1393,16 +1349,10 @@ int main(int argc, char* argv[]){
 						writefile = false;
 						iterator = 0;
 					}
-
-
 				}
 			}
-
-
 		}
 	}
-
-
 
 	cvDestroyAllWindows();
 	cvReleaseMat(&imageRectifiedPair);
@@ -1452,7 +1402,6 @@ public:
 
     CvMat D1, D2, R1, R2; //used for parameter output and saving of estimated paramters.
 
-
     StereoCamera();
     StereoCamera(CvSize size);
     ~StereoCamera();
@@ -1479,9 +1428,7 @@ public:
  *  Created on: 17. apr. 2010
  *      Author: anderga
  */
-
 #include "StereoCamera.h"
-
 
 StereoCamera::StereoCamera()
 {
@@ -1526,19 +1473,12 @@ int StereoCamera::setup(CvSize imageSize){
     captures[0] = cvCaptureFromCAM(0);
     captures[1] = cvCaptureFromCAM(1);
 
-/*    frames[0] = cvCreateImage(imageSize,IPL_DEPTH_8U,3);
-    framesGray[0] = cvCreateImage(imageSize,IPL_DEPTH_8U,1);
-    frames[1] = cvCreateImage(imageSize,IPL_DEPTH_8U,3);
-    framesGray[1] = cvCreateImage(imageSize,IPL_DEPTH_8U,1);
-*/
     if( (captures[0]) && (captures[1])){
 
         for(int i=0;i<2;i++){
                 cvSetCaptureProperty(captures[i] ,CV_CAP_PROP_FRAME_WIDTH,imageSize.width);
                 cvSetCaptureProperty(captures[i] ,CV_CAP_PROP_FRAME_HEIGHT,imageSize.height);
         }
-
-
         ready = true;
         return 0;
     }else{
@@ -1553,10 +1493,6 @@ int StereoCamera::capture(){
 
     frames[0] = cvQueryFrame(captures[0]);
     frames[1]= cvQueryFrame(captures[1]);
-
-    //render[0] = cvCloneImage(frames[0]);
-    //render[1] = cvCloneImage(frames[1]);
-
 
     return (captures[0] && captures[1]) ? 0 : 1;
 }
@@ -1643,7 +1579,8 @@ public:
 
     void calibrationStart(int cornersX,int cornersY);
     int calibrationAddSample(IplImage* imageLeft,IplImage* imageRight);
-    int calibrationEnd(int flag, CvMat* dist1, CvMat* cam1, CvMat* dist2, CvMat* cam2,CvMat* fundamentalMat );
+    int calibrationEnd(int flag, CvMat* dist1, CvMat* cam1, CvMat* dist2, 
+                            CvMat* cam2,CvMat* fundamentalMat );
 
     int calibrationSave(const char* filename);
     int calibrationLoad(const char* filename);
@@ -1768,7 +1705,6 @@ int StereoVision::calibrationAddSample(IplImage* imageLeft,IplImage* imageRight)
 				cvSize( 11, 11 ),
 				cvSize( -1, -1 ),
 				cvTermCriteria( CV_TERMCRIT_EPS+CV_TERMCRIT_ITER, 30, 0.1 ));
-
 
         if(result && (cornersDetected == cornersN)){
             succeses++;
@@ -2003,8 +1939,7 @@ int StereoVision::stereoProcess(CvArr* imageSrcLeft,CvArr* imageSrcRight, int ma
   	    if(!imageDepthNormalized)
   	       	imageDepthNormalized = cvCreateMat( imageSize.height,imageSize.width, CV_8U );
 
-
-  	    cvConvertScale(disp_gc[0], imageDepthNormalized, -16);
+        cvConvertScale(disp_gc[0], imageDepthNormalized, -16);
 
   	    cvReleaseStereoGCState(&GCState);
   	    break;
@@ -2126,8 +2061,8 @@ int createOutput(urg_t * urg,
 
     if (n_points % numOutArgs != 0)
     {
-        printf("createOutput: ERROR: (number of data points) mod (number of output vars) is not zero!! n_points=%d, n_vars=%d\n",
-        		n_points, numOutArgs);
+        printf("createOutput: ERROR: (number of data points) mod (number of output vars) 
+                     is not zero!! n_points=%d, n_vars=%d\n", n_points, numOutArgs);
         createEmptyOutputMatrices(nlhs,plhs);
         return -1;
     }
@@ -2201,9 +2136,6 @@ int createOutput(urg_t * urg,
     return 0;
 }
 
-
-
-
 void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 
 	static urg_t urg; //structure for urg control
@@ -2229,7 +2161,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
     if (strcasecmp(buf, "open") == 0){ //conncetion routine for urg device
 
         if (nrhs != 3){ 
-            mexErrMsgTxt("hokuyoAPI: Please enter correct arguments: 'open', <device>, <baud rate>\n");
+            mexErrMsgTxt("hokuyoAPI: Please enter correct arguments: '
+                                open', <device>, <baud rate>\n");
         }
 
         switch ((int)mxGetPr(prhs[2])[0]){
@@ -2240,7 +2173,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
                 com_baudrate = 115200;
                 break;
             default:
-                mexErrMsgTxt("hokuyoAPI: Invalid hokuyo baud rate. Options are 19200, 115200. Using Default.");
+                mexErrMsgTxt("hokuyoAPI: Invalid hokuyo baud rate. 
+                               Options are 19200, 115200. Using Default.");
                 com_baudrate = 115200;
                 break;
         }
@@ -2273,7 +2207,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
     	}else if (nrhs == 1){
 //    		printf("normal reading\n");
     	}else{
-    		printf("Wrong use. Use 'getReading', or 'getReading', 'intensity' for intensity readings as well\n");
+    		printf("Wrong use. Use 'getReading', or 'getReading', 
+                        'intensity' for intensity readings as well\n");
     		return;
     	}
 
@@ -2307,21 +2242,12 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
     			}
     		}
 
-    		//urg_disconnect(&urg);
+            //urg_disconnect(&urg);
     		free(data);
 
-    	//}else{
-   // 		mexErrMsgTxt("URG device not connected. Connect using 'open'\n");
-
-    	//}
-
     }else if(strcasecmp(buf, "close")== 0){
- //   	if(urg_isConnected(&urg)== 0){
     		urg_disconnect(&urg);
     		printf("Closing urg connection\n");
-   // 	}else{
-    //		mexErrMsgTxt("URG device not connected.\n");
-    	//}
 
     }else if(strcasecmp(buf, "getParameters") == 0){ // opens device, get parameters and closes the connection
 
@@ -2456,20 +2382,14 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
     		timestamp = urg_recentTimestamp(&urg);
     		remain_times = urg_remainCaptureTimes(&urg);
 
-
     		if (remain_times <= 0) {
     			break;
     		}
-
     	}
-
     }else{
     	printf("doing nothing\n");
     }
-
     return;
-
-
 }
 \end{lstlisting}
 
