@@ -4,9 +4,9 @@
 This report have proposed a partial navigation system for a pipe inspection robot using three
 types of sensors, namely a Laser Range Finder, a Time-of-Flight camera and a stereo
 camera. The system uses a modular three-layer approach, where the lower layer is the
-sensor layer. Transforms the sensor information into a common coordinate
+sensor layer. This layer transforms the sensor information into a common coordinate
 representation. The middle layer handles the interpretation of the sensor data, which include cylinder fit-
-and line fit algorithms. The third layer handles the world representation, that keeps track of
+and line fit algorithms. The third layer handles the world representation that keeps track of
 the current explored areas. Further, pipe profile matching, path planning algorithms and command
 algorithms might be implemented in the third layer.
 
@@ -19,19 +19,19 @@ not cross the measurement plane of the 2D sensor.
 
 The time-of-flight camera on the other hand,
 need more preparation before it can be utilized to create a map of the surroundings,
-mostly because it provides more denser information, and this information is more prone to
+mostly because it provides much denser information, and this information is more prone to
 noise. The intrinsic parameters of the camera were determined, and corresponded well to
 the values given by the manufacturer. No calibration for the range data were preformed, 
 mostly because it where thought not to impact the system performance significantly. 
 
 The stereo cameras intrinsic parameters and lens distortion coefficients were estimated.
 As expected this showed severe distortions and offset of the principal axes which impacted
-the field-of-view of the stereo rig. The cameras did not preform that well in the given
+the field-of-view of the stereo rig. The cameras did not perform that well in the given
 environments, mostly due to the quality of the camera, and the lack of synthetic
 lighting in the scene. Some enhancement of the images might have given better matching
-results, but this were not tested.
+results, but this was not tested.
 
-A proposed representation scheme of the sensor data were also implemented. This is a
+A proposed representation scheme of the sensor data was also implemented. This is a
 topological representation of the world, which is based on much reasoning and
 interpretation of the sensor data. A set of nodes are defined. This can be pipeline
 junctions, like a $90^\circ$-bend, or a T-junction and likewise. It can also be any other
@@ -62,7 +62,7 @@ sensors.
 
 \section{Future Work}
 It is numerous of things that need to be looked into further. This section will try to 
-summarize this points. 
+summarize these points. 
 
 \paragraph{Path Planning and replanning} For the system to be autonomous it will
 need some kind of path planning, which takes the decisions on where to go next. It will
@@ -77,19 +77,19 @@ decisions regarding if it should go over the obstacle or find a way around.
 
 \paragraph{Profile Matching} This is of course the most important thing for the
 topological map representation to work. The sensor output need to be translated into 
-map-related features, and transfered to the world representation. A \emph{node recognizer}
+map-related features, and transferred to the world representation. A \emph{node recognizer}
 must be developed and implemented.
 
 \paragraph{Segmenting of range images} For the topological map representation to work
 satisfactory, the sensors need to be interpreted correctly. Correct geometric primitives 
-need to be chosen.  This can only
-be achieved by determining which point belong to which geometrical primitive. Then fitting
-the selected subset to the right parametrization of the primitives used. 
+need to be chosen.  This can only be achieved by determining which point belongs to which 
+geometrical primitive and then fitting the selected subset to the right parametrization of the 
+primitives used. 
 
 \paragraph{Fusion of Time-of-Flight and Stereo Camera} To achieve better 3D point clouds
 a fusion between the Stereo camera and Time-of-flight camera can be implemented. This can
 provide good and exact coordinates at transition areas in the scene, where the ToF-camera
-are not sufficient. 
+is not sufficient. 
 
 
 \paragraph{Matching for global positioning} For global position to be determined, the map
@@ -99,12 +99,12 @@ can be troublesome if the map supplied by the user is not detailed enough or the
 created by the robot is too detailed to be matched, and might not be a trivial task. 
 
 \paragraph{Robust Reasoning} Because of the abstract map representation and that the world
-is not a ideal place, the robots reasoning need to be robust. Other ways of recognizing
+is not an ideal place, the robots reasoning need to be robust. Other ways of recognizing
 depth data and range images can be applied. The use of neural networks and fuzzy logic
 have proven useful in applications like this, and might yield a good solution to the
 problem
 
 \paragraph{Expand the system to three dimensions} The pipe inspection platform discussed in this report
-have the ability to explore not only horizontal pipes, but also vertical pipes. This means
+has the ability to explore not only horizontal pipes, but also vertical pipes. This means
 that the proposed system should be able to navigate in three dimensional spaces. 
 
