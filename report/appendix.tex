@@ -1,15 +1,12 @@
 
 
-
-
-
 \chapter{Matlab m-files}
 
 \lstloadlanguages{Matlab}
 
 \lstset{% general command to set parameter(s)
     language=Matlab,
-    basicstyle=\scriptsize, % print whole listing small
+    basicstyle=\tiny, % print whole listing small
     stringstyle=\ttfamily, % typewriter type for strings
     showstringspaces=false} % no special string spaces
 
@@ -175,7 +172,8 @@ classdef super_node
     
     methods
         %% constructor
-        function [object] = super_node(number, orientation, prev_node, diameter, dist_prev_node)
+        function [object] = super_node(number, orientation, prev_node, ...
+                                    diameter, dist_prev_node)
             if nargin == 0 
                 % do nothing, because the felds are empty.
             elseif nargin == 1 % maybe just a struct?
@@ -243,7 +241,8 @@ classdef super_node
        
         %% display functions
         
-        function [object] = draw_at_position(object, pos) % Draws the node at pos x, y using fill
+        function [object] = draw_at_position(object, pos) 
+            % Draws the node at pos x, y using fill
             or = (object.orientation);
             
             r = [cosd(or), -sind(or);
@@ -283,7 +282,8 @@ classdef super_node
                 y = r*sind(angle) + object.position(2);
              
                 hold on;
-                plot([object.position(1), x], [object.position(2), y], 'white', 'LineWidth', 3);
+                plot([object.position(1), x], [object.position(2), y],...
+                                        'white', 'LineWidth', 3);
                 hold off;
             end
         
@@ -315,7 +315,8 @@ classdef t_junction < super_node
     properties    
     end
     methods
-        function [t] = t_junction(number, orientation, prev_node, diameter, dist_prev_node)
+        function [t] = t_junction(number, orientation, prev_node,...
+                                        diameter, dist_prev_node)
             
             %% Default constuctor
             if nargin == 0
@@ -678,8 +679,10 @@ classdef sensorinterpreter
                     % Add the cylinder to the back of the ToF_params.
                     
                     % find direction
-                    direction = [(this.LRF_paramsy.a_urg(1,2)+this.LRF_paramsy.a_urg(indexMin,2)/2),...
-                        0,-(this.LRF_paramsy.a_urg(1,1)+this.LRF_paramsy.a_urg(indexMin,1)/2)];
+                    direction = [(this.LRF_paramsy.a_urg(1,2)+...
+                                            this.LRF_paramsy.a_urg(indexMin,2)/2),...
+                        0,-(this.LRF_paramsy.a_urg(1,1)+ ...
+                                            this.LRF_paramsy.a_urg(indexMin,1)/2)];
                     
                     x0 = [0, this.LRF_height/2,0.2];
                  
@@ -793,7 +796,8 @@ classdef sensorinterpreter
                         
                         %scaling
                         startline = -x0_urgt(1)+ min(data(:,1));
-                        t = sqrt((max(data(:,1))-min(data(:,1)))^2 + (max(data(:,2))-min(data(:,2)))^2) ;
+                        t = sqrt((max(data(:,1))-min(data(:,1)))^2 + ...
+                                                (max(data(:,2))-min(data(:,2)))^2) ;
                         
                         x_urgt_s = (x0_urgt(1) + ((a_urgt(1)*startline)));
                         y_urgt_s = (x0_urgt(2) + ((a_urgt(2)*startline)));
@@ -863,7 +867,8 @@ classdef sensorinterpreter
             startz = this.ToF_data(1,3);
             stopz = this.ToF_data(size(this.ToF_data, 1), 3);
             
-            pieces = ceil((stopz-startz)/interval); % round upwards toward nearest integer to ensure all values
+            pieces = ceil((stopz-startz)/interval); 
+                            % round upwards toward nearest integer to ensure all values
             
             
             for k = 1:pieces
@@ -1065,7 +1070,7 @@ end
 
 \lstset{% general command to set parameter(s)
     language=C++,
-    basicstyle=\scriptsize, % print whole listing small
+    basicstyle=\tiny, % print whole listing small
     stringstyle=\ttfamily, % typewriter type for strings
     showstringspaces=false} % no special string spaces
 
@@ -1107,9 +1112,10 @@ void displayOutput(StereoCamera * camera, StereoVision * vision){
     if(!imageRectifiedPair)
     	imageRectifiedPair = cvCreateMat( imageSize.height, imageSize.width*2,CV_8UC3 );
 
-    vision->stereoProcess(camera->getFramesGray(0), camera->getFramesGray(1), STEREO_MATCH_BY_BM);
-
-
+    vision->stereoProcess(camera->getFramesGray(0), 
+        camera->getFramesGray(1), STEREO_MATCH_BY_BM);
+    
+    
     CvMat part;
     cvGetCols( imageRectifiedPair, &part, 0, imageSize.width );
     cvCvtColor( vision->imagesRectified[0], &part, CV_GRAY2BGR );
@@ -1167,7 +1173,8 @@ void writeToFile(IplImage* _3dimage){
 	else if (_3dimage->depth == IPL_DEPTH_8S)
 		std::cout << "Depth of image is signed 8 bit integer" << std::endl;
 
-	std::cout << "Number of channels in the image is " << _3dimage->nChannels << std::endl;
+	std::cout << "Number of channels in the image is " 
+                    << _3dimage->nChannels << std::endl;
 
 	if( _3dimage->dataOrder == IPL_DATA_ORDER_PIXEL)
 		std::cout << "The dataorder of the image is Ordered Pixel" << std::endl;
@@ -1185,17 +1192,9 @@ void writeToFile(IplImage* _3dimage){
 		for (int y = 0; y < _3dimage->height; y++){
 			float * ptr = (float*)(_3dimage->imageData + y*_3dimage->widthStep);
 			for (int x = 0; x < _3dimage->width; x++){
-/*
-				File << fixed << std::setprecision(1) << (int)ptr[3*x] << "," <<
-						fixed << std::setprecision(1) << (int)ptr[3*x+1] << "," <<
-						fixed << std::setprecision(1) << (int)ptr[3*x+2];
-				if ( x == _3dimage->width-1)
-					File << " ";
-				else
-					File << ",";
 
-					*/
-				fprintf(File, "%f,%f,%f,", (float)ptr[3*x], (float)ptr[3*x+1], (float)ptr[3*x+2]);
+            fprintf(File, "%f,%f,%f,", (float)ptr[3*x], 
+                       (float)ptr[3*x+1], (float)ptr[3*x+2]);
 
 			}
 			fprintf(File, "\n");
@@ -1203,20 +1202,11 @@ void writeToFile(IplImage* _3dimage){
 	}
 	fclose(File);
 	std::cout << " Done!" << std::endl;
-
-
 }
 
 
 void create3dOutput(StereoCamera *camera, StereoVision * vision, IplImage * dest){
 	CvSize imageSize = vision->getImageSize();
-	//if(!imageRectifiedPair)
-		//imageRectifiedPair = cvCreateMat( imageSize.height, imageSize.width*2,CV_8UC3 );
-
-	//process the stereo
-	//vision->stereoProcess(camera->getFramesGray(0), camera->getFramesGray(1), STEREO_MATCH_BY_BM);
-
-	//cvShowImage("left", camera->frames[0]);
 
 	if (vision->Q == 0){
 		std::cout << "Q matrix not set."<< std::endl;
@@ -1304,7 +1294,8 @@ int main(int argc, char* argv[]){
 			}
 
 
-			if(vision->getCalibrationStarted()){//start the calibration process to rectify the images
+			if(vision->getCalibrationStarted()){
+                //start the calibration process to rectify the images
 
 				if (usefile ){
 					if(calibrationLoad(vision, "calibration.xml") == 0){
@@ -1329,8 +1320,9 @@ int main(int argc, char* argv[]){
 								calibrationSave(vision, "calibration");
 						}
 					}else{
-						std::cout <<"-FAIL Try a different position. Chessboard should be 
-                                    visible on both cameras." << std::endl;
+						std::cout <<"-FAIL Try a different position. 
+                            Chessboard should be visible on both cameras." 
+                                    << std::endl;
 					}
 				}
 
@@ -1400,7 +1392,8 @@ public:
 
     //IplImage* render[2];
 
-    CvMat D1, D2, R1, R2; //used for parameter output and saving of estimated paramters.
+    CvMat D1, D2, R1, R2; //used for parameter output and 
+                          //saving of estimated paramters.
 
     StereoCamera();
     StereoCamera(CvSize size);
@@ -1476,8 +1469,10 @@ int StereoCamera::setup(CvSize imageSize){
     if( (captures[0]) && (captures[1])){
 
         for(int i=0;i<2;i++){
-                cvSetCaptureProperty(captures[i] ,CV_CAP_PROP_FRAME_WIDTH,imageSize.width);
-                cvSetCaptureProperty(captures[i] ,CV_CAP_PROP_FRAME_HEIGHT,imageSize.height);
+                cvSetCaptureProperty(captures[i] ,
+                                CV_CAP_PROP_FRAME_WIDTH,imageSize.width);
+                cvSetCaptureProperty(captures[i] ,
+                                CV_CAP_PROP_FRAME_HEIGHT,imageSize.height);
         }
         ready = true;
         return 0;
@@ -1505,7 +1500,8 @@ IplImage*  StereoCamera::getFramesGray(int lr){
         return frames[lr];
     }else{
         if(framesGray[lr] == 0)
-        	framesGray[lr] = cvCreateImage(cvGetSize(frames[lr]),IPL_DEPTH_8U,1);
+        	framesGray[lr] = cvCreateImage(cvGetSize(frames[lr]),
+                                  IPL_DEPTH_8U,1);
         cvCvtColor(frames[lr],framesGray[lr],CV_BGR2GRAY);
         return framesGray[lr];
     }
@@ -1547,7 +1543,9 @@ enum{
 class StereoVision
 {
 private:
-    //chesboard board corners X,Y, N = X*Y ,  number of corners = (number of cells - 1)
+    //chesboard board corners X,Y, N = X*Y ,  
+    //number of corners = (number of cells - 1)
+    
     int cornersX,cornersY,cornersN;
     int sampleCount;
     bool calibrationStarted;
@@ -1681,7 +1679,8 @@ int StereoVision::calibrationAddSample(IplImage* imageLeft,IplImage* imageRight)
     for(int lr=0;lr<2;lr++){
         CvSize imageSize =  cvGetSize(image[lr]);
 
-         if(imageSize.width != this->imageSize.width || imageSize.height != this->imageSize.height)
+         if(imageSize.width != this->imageSize.width || 
+                        imageSize.height != this->imageSize.height)
             return 1;
 
         int cornersDetected = 0;
@@ -1714,7 +1713,8 @@ int StereoVision::calibrationAddSample(IplImage* imageLeft,IplImage* imageRight)
     if(succeses == 2){
         for(int lr=0;lr<2;lr++){
             points[lr].resize((sampleCount+1)*cornersN);
-            copy( ponintsTemp[lr].begin(), ponintsTemp[lr].end(),  points[lr].begin() + sampleCount*cornersN);
+            copy( ponintsTemp[lr].begin(), ponintsTemp[lr].end(), 
+                        points[lr].begin() + sampleCount*cornersN);
         }
         sampleCount++;
         return 0;
@@ -1780,7 +1780,9 @@ int StereoVision::calibrationEnd(int flag,
     			&_M1, &_D1, &_M2, &_D2,
     			imageSize, &_R, &_T, &_E, &_F,
     			cvTermCriteria(CV_TERMCRIT_ITER+CV_TERMCRIT_EPS, 100, 1e-5),
-    			CV_CALIB_FIX_ASPECT_RATIO + CV_CALIB_ZERO_TANGENT_DIST + CV_CALIB_SAME_FOCAL_LENGTH
+    			CV_CALIB_FIX_ASPECT_RATIO + 
+                CV_CALIB_ZERO_TANGENT_DIST + 
+                CV_CALIB_SAME_FOCAL_LENGTH
     	);
     	break;
     case STEREO_CALIBRATE_INDIVIDUAL_CAMERAS:
@@ -2183,7 +2185,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
         // If there are 3 args, then the 2nd should be the device 
         if (nrhs == 3){
         	if (mxGetString(prhs[1], buf, BUFLEN) != 0) {
-        		mexErrMsgTxt("hokuyoAPI: Could not read string while reading the device name");
+        		mexErrMsgTxt("hokuyoAPI: Could not read string 
+                            while reading the device name");
         	}
 
         	ret = urg_connect(&urg, buf, com_baudrate);
@@ -2237,7 +2240,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
     			printf("Error receiving data\n");
     			urg_exit(&urg, "urg_receiveData()");
     		}else{
-    			if (createOutput(&urg, data, urg_recentTimestamp(&urg), n, nlhs, plhs, getIntensity) == -1){
+    			if (createOutput(&urg, data, urg_recentTimestamp(&urg), 
+                            n, nlhs, plhs, getIntensity) == -1){
     				printf("Error creating output\n");
     			}
     		}
@@ -2249,12 +2253,14 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
     		urg_disconnect(&urg);
     		printf("Closing urg connection\n");
 
-    }else if(strcasecmp(buf, "getParameters") == 0){ // opens device, get parameters and closes the connection
+    }else if(strcasecmp(buf, "getParameters") == 0){ 
+        // opens device, get parameters and closes the connection
 
     	urg_parameter_t parameters;
 
         if (nrhs != 3){
-             mexErrMsgTxt("hokuyoAPI: Please enter correct arguments: 'getParameters', <device>, <baud rate>\n");
+             mexErrMsgTxt("hokuyoAPI: Please enter correct arguments:
+                            'getParameters', <device>, <baud rate>\n");
          }
 
          switch ((int)mxGetPr(prhs[2])[0]){
@@ -2265,7 +2271,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
                  com_baudrate = 115200;
                  break;
              default:
-                 mexErrMsgTxt("hokuyoAPI: Invalid hokuyo baud rate. Options are 19200, 115200. Using Default.");
+                 mexErrMsgTxt("hokuyoAPI: Invalid hokuyo baud rate. 
+                             Options are 19200, 115200. Using Default.");
                  com_baudrate = 115200;
                  break;
          }
@@ -2274,7 +2281,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
          // If there are 3 args, then the 2nd should be the device
          if (nrhs == 3){
          	if (mxGetString(prhs[1], buf, BUFLEN) != 0) {
-         		mexErrMsgTxt("hokuyoAPI: Could not read string while reading the device name");
+         		mexErrMsgTxt("hokuyoAPI: Could not read string while 
+                                reading the device name");
          	}
 
          	ret = urg_connect(&urg, buf, com_baudrate);
@@ -2331,7 +2339,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
     	if (nrhs == 2){ // assume that the capture times are the second argument.
     		captureTimes = (int)(mxGetPr(prhs[1])[0]);
     	}else {
-    		printf("Need exactly 2 arguments. Usage: 'continuousReading', <no of captures>\n");
+    		printf("Need exactly 2 arguments. Usage: 
+                        'continuousReading', <no of captures>\n");
     		return;
     	}
 

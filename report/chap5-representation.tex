@@ -8,7 +8,7 @@ world in a satisfactory way. It should be easy to update and take up little memo
 implementation platform. Third it should be easy to understand for a human operator
 without too much processing. 
 
-It must be possible to determine the global position of the robot uniquely form the
+It must be possible to determine the global position of the robot uniquely from the
 observations the robot does during its mission. This can be achieved by matching the map
 created only from observations to a map supplied by the user. This is a relatively easy
 task when the both maps are of topological nature. The matching between those maps can
@@ -90,7 +90,7 @@ needs to be matched to a database to determine what kind of node it is.
 The point cloud output from the 3D sensors needs to be segmented to extract the features
 which are of interest. 
 
-The three dimensional point cloud which is output form the Time-of-Flight camera are
+The three dimensional point cloud which is output from the Time-of-Flight camera are
 filtered before it is fed to the surface fit algorithm. Firstly the intensity images, is
 used for filtering out pixels with too high or too low intensity values. The high
 intensity values indicate that the pixel is too close to measure, or that the surface is
@@ -204,7 +204,7 @@ to calculate the radius of the pipe. The following relation is used.
     r &= P_1 + P_2  \quad \rightarrow \quad P_2 = r - P_1
 \end{align}
 Where $r$ is the radius of the pipe, $P_1$ is the distance from the measurement plane to
-the lowest point in the pipe, $P_2$ is the distance form the center of the pipe to the
+the lowest point in the pipe, $P_2$ is the distance from the center of the pipe to the
 measurement plane and $d$ is the distance between the matched line segments. Substituting
 for $P_2$ and rearranging
 \begin{equation}
