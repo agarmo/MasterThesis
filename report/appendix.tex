@@ -2394,7 +2394,25 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]){
 \end{lstlisting}
 
 
-\chapter{URG Communication Protocol}
-
-%\fullpage[1-25]{urg-communication}
+\chapter{URG Error Codes}
+\label{app:urg-error}
+\begin{table*}[htbp]
+    \centering
+    \begin{tabular}{|r|l|}
+        \hline
+        Error &  Code Error Details \\
+        \hline
+        0     & Detected object is possibly at 22 m \\
+        1     & Reflected light has low intensity \\
+        2     & Reflected light has low intensity \\
+        6     & Others \\
+        7     & Distance data on the preceding and succeeding steps have errors\\
+        8     & Intensity difference of two waves\\
+        9     & The same step had error in the last two scan\\
+        10--17& Others\\
+        18    & Error reading due to strong reflective object\\
+        19    & Non-Measurable Step \\
+        \hline
+    \end{tabular}
+\end{table*}
 

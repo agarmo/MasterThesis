@@ -210,11 +210,11 @@
 % themselves appear in a quote environment, i.e. tabbed in at both sides, and
 % on its own page.
 
-\newenvironment{acknowledgements}
+\newenvironment{preface}
 {\pagestyle{empty}
 \begin{center}
 \vspace*{1.5cm}
-{\Large \bfseries Acknowledgements}
+{\Large \bfseries Preface}
 \end{center}
 \vspace{0.5cm}
 \begin{quote}}
@@ -361,19 +361,19 @@
 
 \maketitle  % command to print the title page with above variables
 
-
+\cleardoublepage
 %: ----------------------- tie in front matter ------------------------
 
 \begin{abstracts}
-In this report a partial navigation system with a time-of-flight camera, a laser range
-finder and a stereo camera rig has been outlined. The sensors have been evaluated with
+In this report outlines a partial navigation system with a time-of-flight camera, a laser range
+finder and a stereo camera rig. The sensors have been evaluated with
 regard to domain, advantages, error sources and overall performance. The time-of-flight camera and the
-laser range finder gave adequate results out-of-the-box, while the stereo camera rig did
-not work efficient in the pipe environment, even though the intrinsic parameters and distortion
+laser range finder gave adequate results out-of-the-box. The stereo camera rig, on the
+other hand, did not work efficient in the pipe environment, even though the intrinsic parameters and distortion
 parameters of the cameras were estimated and compensated for. This was because of the limited lighting
 conditions and absence of structure in the pipeline environment. 
 
-A topological world representation is also proposed where pipeline junctions and other
+A topological world representation is also presented. Pipe line junctions and other
 possible landmarks are nodes in a graph. Each node has a list of attributes which is
 determined by the system depending on the condition of the pipe junction or landmark. This
 relies greatly on the ability of the system to recognize and extract features from the
@@ -381,20 +381,52 @@ sensor data. The idea is to fit a cylinder to the 3D dataset given from the time
 camera or stereo camera, estimate the properties as radius and direction, and match this
 to a database to find the matching node. Large deviations from the expected values can be
 assumed to be anomalies, and obstacles. 
-Unfortunately, the proposed feature extraction algorithms did not work
-according to expectations, because of no efficient dataset segmentation was proposed. For
+The proposed feature extraction algorithms did not work according to expectations due to 
+no efficient dataset segmentation was proposed. For
 the 2D dataset from the laser range finder the results were more promising. Lines were
-fitted to dataset employing histogram segmentation, to extract the pipeline walls and
+fitted to the dataset employing histogram segmentation, to extract the pipeline walls, and
 worked adequately. 
-
 \end{abstracts}
 
 \frontmatter
 
-\begin{acknowledgements}
-    This is where I thank people. The teachers and professors at my university and my
-    girlfriend and family for supporting me.
-\end{acknowledgements}
+\begin{preface}
+The road to a MSc degree in cybernetics have been long and difficult. This thesis completes a 5
+year long study at NTNU in Trondheim. The writing of this have been a long, but exciting
+process, with numerous frustrating moments, but also a few successes. 
+
+The task of creating a navigation system for pipe inspection was overwhelming. Whats
+difficult is to know where to start. The literature available on autonomous robot
+navigation is tremendous, and finding relevant information is difficult.
+
+The creation of this project have been a trail-and-error process. Much time have been
+diverted to implementation of low-level sensor interfaces, and debugging of these, because
+of this the time spent on planning of the project was considerably reduced. The result is
+a poorly presented solution to the problem. 
+
+Much time was spent on the stereo camera, which turned out not to work well in the
+pipeline surroundings. This was a major setback and damped the commitment to the task
+considerably. 
+
+For me the this project have made me aware of what not to do and the most common pitfalls
+when planning this kind of a project. If, I were to redo one aspect with this thesis it
+would be the planning phase in the beginning. Do a more thorough literature study, mapping
+the largest challenges as early as possible. This is of course easy to say now that I
+posses the knowledge of what went wrong, and what problems that should have been focused
+on. 
+
+I would like to thank my supervisors, Geir Mathisen and Epsen Helle, for help and
+guidance. Last, but not least, my gratitude goes to my girlfriend for help and support
+through frustrating times during the writing of this thesis. 
+
+
+\hfill
+
+Anders Moen Garmo
+
+June 13 2010
+
+\end{preface}
 
 
 
@@ -417,16 +449,16 @@ worked adequately.
 % Tie in external source file for definitions: /0_frontmatter/glossary.tex
 % Glossary entries can also be defined in the main text. See glossary.tex
 
-\include{glossary}
+%\include{glossary}
 
-\begin{multicols}{2} % \begin{multicols}{#columns}[header text][space]
-\begin{footnotesize} % scriptsize(7) < footnotesize(8) < small (9) < normal (10)
+%\begin{multicols}{2} % \begin{multicols}{#columns}[header text][space]
+%\begin{footnotesize} % scriptsize(7) < footnotesize(8) < small (9) < normal (10)
 
-\printnomenclature[1.5cm] % [] = distance between entry and description
-\label{nom} % target name for links to glossary
+%\printnomenclature[1.5cm] % [] = distance between entry and description
+%\label{nom} % target name for links to glossary
 
-\end{footnotesize}
-\end{multicols}
+%\end{footnotesize}
+%\end{multicols}
 
 
 
